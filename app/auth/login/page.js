@@ -1,9 +1,12 @@
+"use client";
+
 import React from 'react'
+import LoginForm from "@/components/Forms/LoginForm"
 
 const LoginPage = () => {
   return (
-    <div>
-      LoginPage
+    <div className='container'>
+      <LoginForm/>
     </div>
   )
 }
