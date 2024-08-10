@@ -8,9 +8,9 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+} from "@/app/components/ui/form"
+import { Button } from "@/app/components/ui/button"
+import { Input } from "@/app/components/ui/input"
 
 const LoginForm = () => {
   const form = useForm()
