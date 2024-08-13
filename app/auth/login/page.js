@@ -5,8 +5,8 @@ import LoginForm from "@/app/components/Forms/LoginForm"
 
 const LoginPage = () => {
   return (
-    <div className='bg-gray-400 h-screen flex items-center justify-center'>
-      <div>
+<div className="h-screen flex items-center justify-center bg-[linear-gradient(45deg,_#a5b4fc_0%,_#f5f3ff_35%,_#f5f3ff_65%,_#a5b4fc_100%)]">
+    <div>
         <div className='w-[450px] h-auto bg-white p-7 rounded-2xl'>    
           <LoginForm/>
         </div>

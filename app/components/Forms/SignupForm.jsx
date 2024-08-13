@@ -14,14 +14,13 @@ import { Button } from "@/app/components/ui/button"
 import SocialLogin from './form-components/SocialsLogin';
 
 
-const LoginForm = () => {
+const SignupForm = () => {
   const form = useForm()
   return (
     <>
         <div className="mb-6 pt-6 ">
           <h3 className="text-2xl font-bold text-[#000] text-center">
-            Log in to <span className="underline">ExamSystem</span> to continue
-            with your Projects.
+            Create an Account
           </h3>
         </div>          
         <Form {...form}>
@@ -74,7 +73,7 @@ const LoginForm = () => {
             </FormItem>
           )}
         />
-        <Button className="w-full">Login</Button>
+        <Button className="w-full">SignUp</Button>
 
         <div className="flex items-center before:flex-1 before:border-t before:border-[#D7D7D7] before:mt-0.5 after:flex-1 after:border-t after:border-[#D7D7D7] after:mt-0.5 mt-4">
           <p className="text-center text-[#4F4F4F] text-xs mx-4 mb-0">OR</p>
@@ -86,7 +85,7 @@ const LoginForm = () => {
 
         <div className="mt-3 text-xs pt-3 text-center">
           <p className='text-gray-500'>
-            Our <a className='underline'>Terms</a> and <a className='underline'>Privacy Policy</a>.
+          By signing up, you acknowledge that you have read and understood, and agree to our <a className='underline'>Terms</a> and <a className='underline'>Privacy Policy</a>.
           </p>
         </div>
       </form>
@@ -95,4 +94,4 @@ const LoginForm = () => {
   )
 }
 
-export default LoginForm;
+export default SignupForm;
