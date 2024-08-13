@@ -35,7 +35,7 @@ const SignupForm = () => {
             >
               <FormLabel
               htmlFor="email"
-              className="absolute duration-100 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] px-2 peer-focus:px-2  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1 rounded peer-focus:bg-white  bg-white  cursor-text"
+              className="a"
               >
               Email
               </FormLabel>
@@ -60,7 +60,7 @@ const SignupForm = () => {
             >
               <FormLabel
               htmlFor="password"
-              className="absolute duration-100 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] px-2 peer-focus:px-2  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1 rounded peer-focus:bg-white  bg-white  cursor-text"
+              className=""
               >
               Password
               </FormLabel>
@@ -85,7 +85,7 @@ const SignupForm = () => {
 
         <div className="mt-3 text-xs pt-3 text-center">
           <p className='text-gray-500'>
-          By signing up, you acknowledge that you have read and understood, and agree to our <a className='underline'>Terms</a> and <a className='underline'>Privacy Policy</a>.
+            By signing up, you acknowledge that you have read and understood, and agree to our <a className='underline'>Terms</a> and <a className='underline'>Privacy Policy</a>.
           </p>
         </div>
       </form>

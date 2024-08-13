@@ -2,6 +2,7 @@
 
 import React from 'react'
 import LoginForm from "@/app/components/Forms/LoginForm"
+import Link from 'next/link';
 
 const LoginPage = () => {
   return (
@@ -13,7 +14,7 @@ const LoginPage = () => {
         <div className="mt-3">
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm">
-              Dont have an account?<a className='underline'>Sign Up</a>
+              Dont have an account? <Link href={'/auth/signup'} className='underline'>Sign Up</Link>
             </p>
             <a href="" className="underline text-sm">
               Forgot Password?
