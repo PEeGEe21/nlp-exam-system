@@ -34,13 +34,6 @@ const LoginForm = () => {
             <FormItem
             className="mb-6 flex flex-col gap-1 relative"
             >
-              <FormLabel
-              htmlFor="email"
-              className=""
-              >
-              Email
-              </FormLabel>
-
               <FormControl>
               <input 
               type="email" placeholder="Email"
@@ -59,12 +52,6 @@ const LoginForm = () => {
             <FormItem
             className="mb-6 flex flex-col gap-1 relative"
             >
-              <FormLabel
-              htmlFor="password"
-              className=""
-              >
-              Password
-              </FormLabel>
               <FormControl>
               <input type="password" placeholder="Password" 
               className="block px-2 pb-2.5 pt-3 w-full text-sm text-gray-900 bg-transparent border-1 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer border focus:border-gray-600 h-10 rounded focus:outline-0"

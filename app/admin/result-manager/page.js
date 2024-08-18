@@ -1,9 +1,9 @@
 import React from 'react'
 
-const CreateQuestion = () => {
+const ResultManager = () => {
   return (
     <div>
-      CreateQuestion
+      Result Manager
     </div>
   )
 }
