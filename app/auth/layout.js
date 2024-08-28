@@ -1,7 +1,11 @@
+import SideImage from "../components/Forms/SideImage";
+
 export default function layout({ children }) {
     return (
         <>
-            {children}
+            <div className="h-screen flex flex-row justify-start bg-[#e2e8f0]">
+                    {children}
+            </div>
         </>
     );
 }
