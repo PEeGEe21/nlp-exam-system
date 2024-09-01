@@ -15,30 +15,19 @@ import {
   MenuList,
   MenuItem,
 } from '@chakra-ui/react';
+import ToggleButton from '../ToggleButton';
 
-const Navbar = ({ user, isLoadingState }) => {
-  const contextValue = useContext(DashboardMenuContext) || {};
-  const { toggleDashMenu, showDashMenu } = contextValue;
-
+const Navbar = ({ isOpen, toggleSidebar }) => {
+  // const contextValue = useContext(DashboardMenuContext) || {};
+  // const { toggleDashMenu, showDashMenu } = contextValue;
+  const isLoadingState = null;
   return (
     <>
       <header className="bg-[#373636] border-b-[0.5px] border-[#737272] z-[999] h-14 ">
         <div className="container mx-auto px-4 lg:px-4 h-full">
           <nav className="flex items-center justify-between flex-wrap py-4 h-full ">
-            <div className="md:block sm:hidden h-full">
-              <button
-                className={`navbar-burger flex items-center py-3 px-3 text-white  rounded relative transition-all duration-150 ease-linear ${
-                  showDashMenu ? 'open' : ''
-                }`}
-                id="nav-icon3"
-                onClick={toggleDashMenu}
-              >
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-              </button>
-            </div>
+            <ToggleButton isOpen={isOpen} toggleSidebar={toggleSidebar}/>
+            
             <div className="w-full hidden  flex-grow lg:flex lg:items-center lg:w-auto justify-end h-full">
               
               <div className="lg:flex lg:items-center lg:w-auto gap-4">

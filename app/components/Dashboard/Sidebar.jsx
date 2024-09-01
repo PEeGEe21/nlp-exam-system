@@ -9,32 +9,40 @@ import {
     Add,
   MessageQuestion,
   LogoutCurve,
-Book1 } from 'iconsax-react';
+Book1, 
+ArrowDown2,
+ArrowRight2} from 'iconsax-react';
 import { useDisclosure } from '@chakra-ui/react';
 import Image from 'next/image';
 import { Category } from 'react-iconly';
 import { signOut } from 'next-auth/react';
 import './nav.css';
 
-const Sidebar = ({ user }) => {
+const Sidebar = ({ isOpen, toggleSidebar }) => {
   const pathname = usePathname();
-  const {
-    isOpen: projectIsOpen,
-    onOpen: onProjectOpen,
-    onClose: onProjectClose,
-  } = useDisclosure();
+  // const {
+  //   isOpen: projectIsOpen,
+  //   onOpen: onProjectOpen,
+  //   onClose: onProjectClose,
+  // } = useDisclosure();
 
-
-  const projectbtnRef = useRef();
 
   const [isDropdown, setIsDropdown] = useState(true);
+  const [activeDropdowns, setActiveDropdowns] = useState([]);
 
   const wrapperClasses = classNames(
-    'h-full sidebar pb-4 bg-[#373636] lg:flex justify-between shadow-sm scrollbar-change flex-col overflow-y-auto overflow-x-hidden border-r-[0.5px] border-[#737272] hidden w-64 z-50'
+    ''
   );
 
-  const showDropdown = () => {
-    setIsDropdown(!isDropdown);
+  // const showDropdown = () => {
+  //   setIsDropdown(!isDropdown);
+  // };
+  const showDropdown = (index) => {
+    if (activeDropdowns.includes(index)) {
+      setActiveDropdowns(activeDropdowns.filter((i) => i !== index));
+    } else {
+      setActiveDropdowns([...activeDropdowns, index]);
+    }
   };
 
   const menuLinks = [
@@ -45,15 +53,27 @@ const Sidebar = ({ user }) => {
       isDropdownMenu: false,
     },
     {
-      label: 'Questions',
-      href: '/admin/question-bank',
-      action: (e) => {
-        e.preventDefault();
-        showDropdown();
-      },
+      label: 'Question Bank',
       icon: <MessageQuestion size={16} color="#ffffff" />,
-      projects: true,
       isDropdownMenu: true,
+      action: (e, index) => {
+        e.preventDefault();
+        showDropdown(index);
+      },
+      submenu: [
+        {
+          label: 'Question Bank',
+          href: '/admin/question-bank',
+          icon: <Category size={16} />,
+          isDropdownMenu: false,
+        },
+        {
+          label: 'Create Questions',
+          href: '/admin/question-bank/create',
+          icon: <Category size={16} />,
+          isDropdownMenu: false,
+        },
+      ]
     },
     {
       label: 'Results',
@@ -83,10 +103,13 @@ const Sidebar = ({ user }) => {
   return (
     <>
       <div
-        className={wrapperClasses}
-        style={{
-          transition: 'width 0s ease-in-out 0s ',
-        }}
+        className={`h-full sidebar pb-4 bg-[#373636] lg:flex justify-between shadow-sm scrollbar-change flex-col overflow-y-auto overflow-x-hidden border-r-[0.5px] border-[#737272] w-56 z-50 fixed md:translate-x-0 ${
+          isOpen ? "translate-x-0 " : "-translate-x-full"
+      }`}
+      onClick={toggleSidebar}
+      style={{
+        transition: 'all 500ms ease-in-out ',
+      }}
       >
         <div className="flex flex-col">
           <div className="px-4 h-14">
@@ -110,53 +133,109 @@ const Sidebar = ({ user }) => {
           </div>
 
           <nav className="mt-6 md:mt-3 grow px-2">
-            <div className=" flex-wrap space-y-2">
-              {menuLinks.map((menuItem) => (
-                <div key={menuItem.label}>
-                  <div
-                    className={`menu-item w-full font-thin ${
-                      pathname == menuItem.href ||
-                      pathname.startsWith(`${menuItem.href}/`)
-                        ? 'bg-card-background text-[#008080]'
-                        : 'text-white '
-                    }  flex items-center  px-5 rounded-md transition-colors duration-200 ease-in hover:bg-card-background hover:text-[#008080] justify-between text-sm hover:border-[#008080] text-left h-10 ${
-                      isDropdown ? 'active-dropdown' : ''
-                    }`}
-                  >
-                    <div className="flex items-center justify-start flex-grow h-full">
-                      <span
-                        onClick={menuItem.action}
-                        className="text-left mr-2 h-full flex items-center"
+            <div className="flex flex-col flex-wrap space-y-2">
+              {menuLinks.map((menuItem, index) => (
+                  (menuItem.isDropdownMenu ? 
+
+                    <div onClick={(e) => menuItem?.action(e, index)} key={menuItem.label}>
+                      <div
+                        className={`menu-item w-full font-thin ${
+                          pathname == menuItem.href ||
+                          pathname.startsWith(`${menuItem.href}/`)
+                            ? 'bg-[#008080] text-white'
+                            : 'text-white '
+                        }  flex items-center px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#008080] hover:text-white justify-between text-sm hover:border-[#008080] text-left h-10 cursor-pointer ${
+                          isDropdown ? 'active-dropdown' : ''
+                        }`}
                       >
-                        {menuItem.icon}
-                      </span>
-                      <div className=" w-full h-full flex items-center">
-                        <Link
-                          className={classNames(
-                            'text-sm font-normal w-full flex-1 flex-grow flex items-center h-full'
-                          )}
-                          href={`${menuItem.href}`}
-                        >
-                          {menuItem.label}
-                        </Link>{' '}
+                        <div className="flex items-center justify-start flex-grow h-full">
+                          <span
+                            onClick={menuItem.action}
+                            className="text-left mr-2 h-full flex items-center"
+                          >
+                            {menuItem.icon}
+                          </span>
+                          <div className=" w-full h-full flex items-center">
+                            <div
+                              className={classNames(
+                                'text-sm font-normal w-full flex-1 flex-grow flex items-center h-full'
+                              )}
+                            >
+                              {menuItem.label}
+                            </div>{' '}
+                          </div>
+                        </div>
+
+                        {menuItem.isDropdownMenu && (
+                          <div className="flex items-center">
+                            <button
+                              type='button'
+                              className="rounded-lg flex items-center h-2 w-2 justify-center text-white add-icon"
+                            >
+                                {
+                                  activeDropdowns.includes(index)? 
+                                  <ArrowDown2 size={14} />
+                                : <ArrowRight2 size={14} /> 
+                                }
+                            </button>
+                          </div>
+                        )}
                       </div>
+
+                      <div className={`${activeDropdowns.includes(index) ? 'h-auto block opacity-100 ' : 'h-0 hidden opacity-0 '}  my-2 flex flex-col gap-2`}>
+                          {menuItem.submenu.map((submenuItem) => (
+                            <Link href={submenuItem.href}
+                              key={submenuItem.label}
+                              className={`menu-item w-full font-thin ${
+                                pathname === submenuItem.href
+                                  ? 'bg-[#034343] text-[#fff]'
+                                  : 'text-white '
+                              } flex items-center px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#034343]  hover:text-[#fff] justify-between text-sm hover:border-[#008080] text-left h-10`}
+                            >
+                              <div className="flex items-center justify-start flex-grow h-full">
+                                
+                                <div className="w-full h-full flex items-center">
+                                  <div className="text-sm font-normal w-full flex-1 flex-grow flex items-center h-full">
+                                    {submenuItem.label}
+                                  </div>
+                                </div>
+                              </div>
+                            </Link>
+                          ))}
+                      </div>
+
                     </div>
-
-                    {menuItem.isDropdownMenu && (
-                      <div className="flex items-center">
-                        <button
-                          className="bg-[#373636] rounded-lg flex items-center h-2 w-2 justify-center text-white add-icon"
-                          ref={projectbtnRef}
-                          onClick={onProjectOpen}
-                        >
-                          <Add size={14} />
-                        </button>
+                    : 
+                    <Link href={`${menuItem.href}`} key={menuItem.label}>
+                      <div
+                        className={`menu-item w-full font-thin ${
+                          pathname == menuItem.href ||
+                          pathname.startsWith(`${menuItem.href}/`)
+                            ? 'bg-[#008080] text-white'
+                            : 'text-white '
+                        }  flex items-center  px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#008080] hover:text-white justify-between text-sm hover:border-[#008080] text-left h-10
+                          `}
+                      >
+                        <div className="flex items-center justify-start flex-grow h-full">
+                          <span
+                            onClick={menuItem.action}
+                            className="text-left mr-2 h-full flex items-center"
+                          >
+                            {menuItem.icon}
+                          </span>
+                          <div className=" w-full h-full flex items-center">
+                            <div
+                              className={classNames(
+                                'text-sm font-normal w-full flex-1 flex-grow flex items-center h-full'
+                              )}
+                            >
+                              {menuItem.label}
+                            </div>{' '}
+                          </div>
+                        </div>
                       </div>
-                    )}
-                  </div>
-
-                  
-                </div>
+                    </Link>
+                  )
               ))}
               
             </div>
