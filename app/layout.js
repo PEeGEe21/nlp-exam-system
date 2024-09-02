@@ -1,6 +1,6 @@
 import { Inter } from 'next/font/google'
 import './styles/globals.css'
-import { SpaceFont } from './font';
+import { GeneralSansFont, MontFont, SpaceFont } from './font';
 
 export const metadata = {
   title: {
@@ -57,7 +57,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${SpaceFont.variable} ${SpaceFont.className}`} suppressHydrationWarning={true}>
+      <body className={`${GeneralSansFont.variable} ${GeneralSansFont.className}`} suppressHydrationWarning={true}>
         {children}
       </body>
     </html>
