@@ -6,7 +6,8 @@ function layout({ children }) {
   
   return (
     <>
-      <div className="h-screen flex flex-row justify-start bg-[#e2e8f0] relative">
+      <div className="h-screen flex flex-row justify-start bg-white relative">
+      {/* bg-[#e2e8f0] */}
         <MainLayout>
           {children}
         </MainLayout>

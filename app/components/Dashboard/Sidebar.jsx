@@ -18,7 +18,7 @@ import { Category } from 'react-iconly';
 import { signOut } from 'next-auth/react';
 import './nav.css';
 
-const Sidebar = ({ isOpen, toggleSidebar }) => {
+const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
   const pathname = usePathname();
   // const {
   //   isOpen: projectIsOpen,
@@ -54,6 +54,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     },
     {
       label: 'Question Bank',
+      href: '/admin/question-bank',
       icon: <MessageQuestion size={16} color="#ffffff" />,
       isDropdownMenu: true,
       action: (e, index) => {
@@ -83,10 +84,28 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     },
 
     {
-      label: 'Quizzes',
-      href: '/admin/test-manager',
+      label: 'Test Management',
+      href: '/admin/test-management',
       icon: <Book1 size={16} color="#ffffff"/>,
       isDropdownMenu: false,
+      action: (e, index) => {
+        e.preventDefault();
+        showDropdown(index);
+      },
+      submenu: [
+        {
+          label: 'Tests',
+          href: '/admin/test-management',
+          icon: <Category size={16} />,
+          isDropdownMenu: false,
+        },
+        {
+          label: 'Create Tests',
+          href: '/admin/test-management/create',
+          icon: <Category size={16} />,
+          isDropdownMenu: false,
+        },
+      ]
     },
     {
       label: 'Sign Out',
@@ -96,6 +115,20 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         signOut();
       },
       icon: <LogoutCurve size={16} color="#ffffff" />,
+      isDropdownMenu: false,
+    },
+  ];
+  const studentMenuLinks = [
+    {
+      label: 'Dashboard',
+      href: '/student/dashboard',
+      icon: <Category size={16} color="#ffffff" />,
+      isDropdownMenu: false,
+    },
+    {
+      label: 'Quizzes',
+      href: '/student/take-test',
+      icon: <Book1 size={16} color="#ffffff"/>,
       isDropdownMenu: false,
     },
   ];
@@ -134,110 +167,219 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
           <nav className="mt-6 md:mt-3 grow px-2">
             <div className="flex flex-col flex-wrap space-y-2">
-              {menuLinks.map((menuItem, index) => (
-                  (menuItem.isDropdownMenu ? 
+              {userRole === 'student' ? 
+                <>
+                  {studentMenuLinks.map((menuItem, index) => (
+                      (menuItem.isDropdownMenu ? 
 
-                    <div onClick={(e) => menuItem?.action(e, index)} key={menuItem.label}>
-                      <div
-                        className={`menu-item w-full font-thin ${
-                          pathname == menuItem.href ||
-                          pathname.startsWith(`${menuItem.href}/`)
-                            ? 'bg-[#008080] text-white'
-                            : 'text-white '
-                        }  flex items-center px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#008080] hover:text-white justify-between text-sm hover:border-[#008080] text-left h-10 cursor-pointer ${
-                          isDropdown ? 'active-dropdown' : ''
-                        }`}
-                      >
-                        <div className="flex items-center justify-start flex-grow h-full">
-                          <span
-                            onClick={menuItem.action}
-                            className="text-left mr-2 h-full flex items-center"
+                        <div onClick={(e) => menuItem?.action(e, index)} key={menuItem.label}>
+                          <div
+                            className={`menu-item w-full font-thin ${
+                              pathname == menuItem.href ||
+                              pathname.startsWith(`${menuItem.href}/`)
+                                ? 'bg-[#008080] text-white'
+                                : 'text-white '
+                            }  flex items-center px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#008080] hover:text-white justify-between text-sm hover:border-[#008080] text-left h-10 cursor-pointer ${
+                              isDropdown ? 'active-dropdown' : ''
+                            }`}
                           >
-                            {menuItem.icon}
-                          </span>
-                          <div className=" w-full h-full flex items-center">
-                            <div
-                              className={classNames(
-                                'text-sm font-normal w-full flex-1 flex-grow flex items-center h-full'
-                              )}
-                            >
-                              {menuItem.label}
-                            </div>{' '}
-                          </div>
-                        </div>
-
-                        {menuItem.isDropdownMenu && (
-                          <div className="flex items-center">
-                            <button
-                              type='button'
-                              className="rounded-lg flex items-center h-2 w-2 justify-center text-white add-icon"
-                            >
-                                {
-                                  activeDropdowns.includes(index)? 
-                                  <ArrowDown2 size={14} />
-                                : <ArrowRight2 size={14} /> 
-                                }
-                            </button>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className={`${activeDropdowns.includes(index) ? 'h-auto block opacity-100 ' : 'h-0 hidden opacity-0 '}  my-2 flex flex-col gap-2`}>
-                          {menuItem.submenu.map((submenuItem) => (
-                            <Link href={submenuItem.href}
-                              key={submenuItem.label}
-                              className={`menu-item w-full font-thin ${
-                                pathname === submenuItem.href
-                                  ? 'bg-[#034343] text-[#fff]'
-                                  : 'text-white '
-                              } flex items-center px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#034343]  hover:text-[#fff] justify-between text-sm hover:border-[#008080] text-left h-10`}
-                            >
-                              <div className="flex items-center justify-start flex-grow h-full">
-                                
-                                <div className="w-full h-full flex items-center">
-                                  <div className="text-sm font-normal w-full flex-1 flex-grow flex items-center h-full">
-                                    {submenuItem.label}
-                                  </div>
-                                </div>
+                            <div className="flex items-center justify-start flex-grow h-full">
+                              <span
+                                onClick={menuItem.action}
+                                className="text-left mr-2 h-full flex items-center"
+                              >
+                                {menuItem.icon}
+                              </span>
+                              <div className=" w-full h-full flex items-center">
+                                <div
+                                  className={classNames(
+                                    'text-sm font-normal w-full flex-1 flex-grow flex items-center h-full'
+                                  )}
+                                >
+                                  {menuItem.label}
+                                </div>{' '}
                               </div>
-                            </Link>
-                          ))}
-                      </div>
+                            </div>
 
-                    </div>
-                    : 
-                    <Link href={`${menuItem.href}`} key={menuItem.label}>
-                      <div
-                        className={`menu-item w-full font-thin ${
-                          pathname == menuItem.href ||
-                          pathname.startsWith(`${menuItem.href}/`)
-                            ? 'bg-[#008080] text-white'
-                            : 'text-white '
-                        }  flex items-center  px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#008080] hover:text-white justify-between text-sm hover:border-[#008080] text-left h-10
-                          `}
-                      >
-                        <div className="flex items-center justify-start flex-grow h-full">
-                          <span
-                            onClick={menuItem.action}
-                            className="text-left mr-2 h-full flex items-center"
-                          >
-                            {menuItem.icon}
-                          </span>
-                          <div className=" w-full h-full flex items-center">
-                            <div
-                              className={classNames(
-                                'text-sm font-normal w-full flex-1 flex-grow flex items-center h-full'
-                              )}
-                            >
-                              {menuItem.label}
-                            </div>{' '}
+                            {menuItem.isDropdownMenu && (
+                              <div className="flex items-center">
+                                <button
+                                  type='button'
+                                  className="rounded-lg flex items-center h-2 w-2 justify-center text-white add-icon"
+                                >
+                                    {
+                                      activeDropdowns.includes(index)? 
+                                      <ArrowDown2 size={14} />
+                                    : <ArrowRight2 size={14} /> 
+                                    }
+                                </button>
+                              </div>
+                            )}
                           </div>
+
+                          <div className={`${activeDropdowns.includes(index) ? 'h-auto block opacity-100 ' : 'h-0 hidden opacity-0 '}  my-2 flex flex-col gap-2`}>
+                              {menuItem.submenu.map((submenuItem) => (
+                                <Link href={submenuItem.href}
+                                  key={submenuItem.label}
+                                  className={`menu-item w-full font-thin ${
+                                    pathname === submenuItem.href
+                                      ? 'bg-[#034343] text-[#fff]'
+                                      : 'text-white '
+                                  } flex items-center px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#034343]  hover:text-[#fff] justify-between text-sm hover:border-[#008080] text-left h-10`}
+                                >
+                                  <div className="flex items-center justify-start flex-grow h-full">
+                                    
+                                    <div className="w-full h-full flex items-center">
+                                      <div className="text-sm font-normal w-full flex-1 flex-grow flex items-center h-full">
+                                        {submenuItem.label}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Link>
+                              ))}
+                          </div>
+
                         </div>
-                      </div>
-                    </Link>
-                  )
-              ))}
-              
+                        : 
+                        <Link href={`${menuItem.href}`} key={menuItem.label}>
+                          <div
+                            className={`menu-item w-full font-thin ${
+                              pathname == menuItem.href ||
+                              pathname.startsWith(`${menuItem.href}/`)
+                                ? 'bg-[#008080] text-white'
+                                : 'text-white '
+                            }  flex items-center  px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#008080] hover:text-white justify-between text-sm hover:border-[#008080] text-left h-10
+                              `}
+                          >
+                            <div className="flex items-center justify-start flex-grow h-full">
+                              <span
+                                onClick={menuItem.action}
+                                className="text-left mr-2 h-full flex items-center"
+                              >
+                                {menuItem.icon}
+                              </span>
+                              <div className=" w-full h-full flex items-center">
+                                <div
+                                  className={classNames(
+                                    'text-sm font-normal w-full flex-1 flex-grow flex items-center h-full'
+                                  )}
+                                >
+                                  {menuItem.label}
+                                </div>{' '}
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      )
+                  ))}
+                </>
+              : 
+                <>
+                  {menuLinks.map((menuItem, index) => (
+                      (menuItem.isDropdownMenu ? 
+
+                        <div onClick={(e) => menuItem?.action(e, index)} key={menuItem.label}>
+                          <div
+                            className={`menu-item w-full font-thin ${
+                              pathname == menuItem.href ||
+                              pathname.startsWith(`${menuItem.href}/`)
+                                ? 'bg-[#008080] text-white'
+                                : 'text-white '
+                            }  flex items-center px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#008080] hover:text-white justify-between text-sm hover:border-[#008080] text-left h-10 cursor-pointer ${
+                              isDropdown ? 'active-dropdown' : ''
+                            }`}
+                          >
+                            <div className="flex items-center justify-start flex-grow h-full">
+                              <span
+                                onClick={menuItem.action}
+                                className="text-left mr-2 h-full flex items-center"
+                              >
+                                {menuItem.icon}
+                              </span>
+                              <div className=" w-full h-full flex items-center">
+                                <div
+                                  className={classNames(
+                                    'text-sm font-normal w-full flex-1 flex-grow flex items-center h-full'
+                                  )}
+                                >
+                                  {menuItem.label}
+                                </div>{' '}
+                              </div>
+                            </div>
+
+                            {menuItem.isDropdownMenu && (
+                              <div className="flex items-center">
+                                <button
+                                  type='button'
+                                  className="rounded-lg flex items-center h-2 w-2 justify-center text-white add-icon"
+                                >
+                                    {
+                                      activeDropdowns.includes(index)? 
+                                      <ArrowDown2 size={14} />
+                                    : <ArrowRight2 size={14} /> 
+                                    }
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className={`${activeDropdowns.includes(index) ? 'h-auto block opacity-100 ' : 'h-0 hidden opacity-0 '}  my-2 flex flex-col gap-2`}>
+                              {menuItem.submenu.map((submenuItem) => (
+                                <Link href={submenuItem.href}
+                                  key={submenuItem.label}
+                                  className={`menu-item w-full font-thin ${
+                                    pathname === submenuItem.href
+                                      ? 'bg-[#034343] text-[#fff]'
+                                      : 'text-white '
+                                  } flex items-center px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#034343]  hover:text-[#fff] justify-between text-sm hover:border-[#008080] text-left h-10`}
+                                >
+                                  <div className="flex items-center justify-start flex-grow h-full">
+                                    
+                                    <div className="w-full h-full flex items-center">
+                                      <div className="text-sm font-normal w-full flex-1 flex-grow flex items-center h-full">
+                                        {submenuItem.label}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Link>
+                              ))}
+                          </div>
+
+                        </div>
+                        : 
+                        <Link href={`${menuItem.href}`} key={menuItem.label}>
+                          <div
+                            className={`menu-item w-full font-thin ${
+                              pathname == menuItem.href ||
+                              pathname.startsWith(`${menuItem.href}/`)
+                                ? 'bg-[#008080] text-white'
+                                : 'text-white '
+                            }  flex items-center  px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#008080] hover:text-white justify-between text-sm hover:border-[#008080] text-left h-10
+                              `}
+                          >
+                            <div className="flex items-center justify-start flex-grow h-full">
+                              <span
+                                onClick={menuItem.action}
+                                className="text-left mr-2 h-full flex items-center"
+                              >
+                                {menuItem.icon}
+                              </span>
+                              <div className=" w-full h-full flex items-center">
+                                <div
+                                  className={classNames(
+                                    'text-sm font-normal w-full flex-1 flex-grow flex items-center h-full'
+                                  )}
+                                >
+                                  {menuItem.label}
+                                </div>{' '}
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      )
+                  ))}
+                </>
+              }
             </div>
           </nav>
         </div>

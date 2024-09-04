@@ -10,9 +10,11 @@ const MainLayout = ({children}) => {
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
+
+    const userRole = "admin"; 
     return (
         <>
-            <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>
+            <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} userRole={userRole}/>
             <div className="flex-1 h-full overflow-y-auto scrollbar-change">
                 <main className="main-wrapper">
                     <Navbar  isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

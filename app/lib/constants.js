@@ -43,6 +43,7 @@ export const questionTypes = [
       title: "Theoretical Question"
   },
 ]
+
 export const questionDifficulty = [
   {
       description: "An option type where you can choose on in the list of options", 
