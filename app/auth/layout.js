@@ -8,16 +8,9 @@ export default function Layout({ children }) {
                 <div className="pt-3 w-full block">
                     <Link
                     href={'/admin/dashboard'}
-                    className="flex items-center w-full h-full text-black text-3xl text-lg font-bold tracking-wide "
+                    className="flex mt-2 mb-7 items-center w-full h-full text-black text-3xl text-lg font-bold tracking-wide "
                     >
-                    <Image
-                        src="/images/socials-img/apple.png"
-                        height={18}
-                        width={18}
-                        className="transition 300ms ease object-contain w-auto h-auto mr-2"
-                        priority
-                        alt="logo dash"
-                    /> Exam System
+                    Exam System
                     </Link>
                 </div>
                 {children}
