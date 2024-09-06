@@ -1,10 +1,14 @@
 "use client";
-import { Progress, useToast } from "@chakra-ui/react";
+import { Progress, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, useToast } from "@chakra-ui/react";
 import { ArrowLeft, Copy, Global } from "iconsax-react";
 import Image from "next/image";
 import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import Loading from "./loading";
+import UpdateExamsForm from "@/app/components/Forms/UpdateExamsForm";
+import EmptyState from "@/app/components/EmptyState";
+import AddQuestionsToExamsList from "@/app/components/tables/AddQuestionsToExamsList";
+import { questions } from "@/app/lib/constants";
 
 const SingleQuestion = () => {
     const router = useRouter();
@@ -63,41 +67,47 @@ const SingleQuestion = () => {
                         <ArrowLeft />
                     </button>
                 </div>
-                <div className="flex flex-wrap gap-8 py-12 lg:flex-nowrap">
-                    <div className="w-full space-y-8 md:w-full lg:w-7/12">
-                        <div className="bg-[#272727] rounded-lg px-5 py-4 flex flex-col gap-5 relative">
-                            
-                            <div>
-                                <h3 className="mb-2 text-lg font-medium text-white">
-                                    Question Details
-                                </h3>
 
-                                <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
-                                    <div className="flex flex-col flex-wrap items-start w-full p-2">
-                                        <h3 className="font-medium text-[#898582] text-sm">
-                                            Question
-                                        </h3>
-                                        <div>
-                                            <div
-                                                className="text-base text-[#FF8789] text-left"
-                                                dangerouslySetInnerHTML={{
-                                                    __html: "lorem ipsum dolor sit amet, consectetur adip, lorem ipsum dolor sit amet, consectetur adip, lorem ipsum dolor sit amet, consectetur adip, lorem ipsum dolor sit amet, consectetur adip",
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-col flex-wrap items-start w-full p-2">
-                                        <h3 className="font-medium text-[#898582] text-sm">
-                                            Difficulty Level
-                                        </h3>
-                                        <span className="font-medium text-[#FFFFFF] text-base">
-                                            Easy
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+                <div className="py-2 mb-5 rounded-lg">
+                  <div className="relative w-full py-4 shadow-box">
+                    <Tabs position="relative" variant="unstyled" isLazy>
+                      <TabList className="whitespace-nowrap gap-3 border-b border-[#3B3939] text-sm">
+                        <Tab
+                          className=" border-[#3B3939] text-[#81878B]"
+                          _hover={{ borderBottomColor: "#FFA178", color: "#FFFFFF", backgroundColor:"#313131" }}
+                          _selected={{ color: "#FFF", backgroundColor:"#313131" }}
+                        >
+                          Exam Details
+                        </Tab>
+                        <Tab 
+                          // onSelect={}
+                          className=" border-[#3B3939] text-[#81878B]"
+                          _hover={{ borderBottomColor: "#FFA178", color: "#FFFFFF", backgroundColor:"#313131" }}
+                          _selected={{ color: "#FFF", backgroundColor:"#313131" }}
+                        >
+                          Add Questions
+                        </Tab>
+                      </TabList>
+                      {/* <TabIndicator
+                        mt="-1.5px"
+                        height="2px"
+                        bg="#FFA178"
+                        borderRadius="1px"
+                      /> */}
+                      <TabPanels>
+                        <TabPanel className="px-0">
+                          <UpdateExamsForm />
+                        </TabPanel>
+                        <TabPanel className="px-0">
+                          <div className="py-3">
+                            <AddQuestionsToExamsList questions={questions}/>
+                            {/* <EmptyState /> */}
+                          </div>
+                        </TabPanel>
+                      </TabPanels>
+                    </Tabs>
+                  </div>
                 </div>
             </div>
         </>
