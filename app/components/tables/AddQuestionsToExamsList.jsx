@@ -1,8 +1,9 @@
 import React from 'react'
 import EmptyState from '../EmptyState';
 import Link from 'next/link';
+import { Add } from 'iconsax-react';
 
-const QuestionsListTable = ({ questions = []}) => {
+const AddQuestionsToExamsList = ({ questions = []}) => {
     return (
         <>
             <div className='shadow-lg'>
@@ -32,6 +33,15 @@ const QuestionsListTable = ({ questions = []}) => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#A19B99]">
+                            {questions.length < 1 &&
+                                <tr>
+                                    <td colSpan={3} className="px-2 py-4 text-base whitespace-nowrap text-center">
+                                        <span className="text-[#313131] text-base">
+                                            No data found
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
                             {questions?.map((question, index) => (
                                 <tr key={index}>
                                     <td className="px-2 py-4 text-base whitespace-nowrap">
@@ -55,9 +65,10 @@ const QuestionsListTable = ({ questions = []}) => {
                                     </td>
                                     <td className="px-2 py-4 text-sm whitespace-nowrap">
                                         <div className="text-[#313131] text-xs flex items-center gap-2 flex-row">
-                                            <Link href={'/admin/question-bank/'+question.id} className='rounded-md px-2 py-1 bg-blue-gray-800 text-white '>
-                                                Preview
-                                            </Link>
+                                            <button className='rounded-md px-2 py-1 bg-blue-gray-800 text-white flex items-center'>
+                                                <Add size={14}/>
+                                                Add
+                                            </button>
                                         </div>
                                         
                                     </td>
@@ -72,4 +83,4 @@ const QuestionsListTable = ({ questions = []}) => {
     );
 };
 
-export default QuestionsListTable
+export default AddQuestionsToExamsList

@@ -1,4 +1,5 @@
 "use client";
+import CreateExamsForm from '@/app/components/Forms/CreateExamsForm';
 import CreateQuestionsForm from '@/app/components/Forms/CreateQuestionsForm'
 import { ArrowLeft } from 'iconsax-react'
 import Image from 'next/image'
@@ -24,9 +25,9 @@ const CreateQuestion = () => {
                   <div className="w-full">
                     <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">Create Test</h1>
                   </div>
-                </div>
+            </div>
 
-            {/* <CreateQuestionsForm /> */}
+            <CreateExamsForm />
         </div>
     </>
   )

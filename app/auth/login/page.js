@@ -51,8 +51,8 @@ const LoginPage = () => {
               type="button">
               Login
             </button>
-            <p class="flex justify-center mt-6 font-sans text-sm font-light">
-              Don't have an account?
+            <p class="flex justify-center mt-6 font-sans text-sm antialiased font-light leading-normal text-inherit">
+              Don&lsquo;t have an account?
               <a href="#signup"
                 class="block ml-1 font-sans text-sm font-bold text-blue-gray-900">
                 Login

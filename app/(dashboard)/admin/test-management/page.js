@@ -1,4 +1,5 @@
 "use client"
+import ExamsListTable from '@/app/components/tables/ExamsListTable';
 import QuestionsListTable from '@/app/components/tables/QuestionsListTable'
 import { ArrowLeft } from 'iconsax-react';
 import Link from 'next/link'
@@ -45,7 +46,7 @@ const TestManagement = () => {
             </div>
 
             <div className="py-6">
-                {/* <QuestionsListTable questions={questions}/> */}
+                <ExamsListTable questions={questions}/>
             </div>
         </div>
     </>

@@ -7,13 +7,13 @@ const EmptyState = ({title = 'No data found'}) => {
     <div className="flex items-center h-full w-full justify-center py-12 text-center">
       <div>
         <Image
-          src="/images/Wallet.png"
+          src="/images/undraw_taken.svg"
           alt="wallet"
-          width={150}
-          height={150}
+          width={250}
+          height={250}
           className="object-contain"
         />
-        <p className="text-sm text-[#C0C0C0] mt-3">{title}</p>
+        <p className="text-sm text-[#000] mt-3">{title}</p>
       </div>
     </div>
   );

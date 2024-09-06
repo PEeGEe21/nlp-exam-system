@@ -154,15 +154,15 @@ const CreateQuestionsForm = () => {
 
                         <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
                             <label
-                                htmlFor="token_name"
+                                htmlFor="difficulty_level"
                                 className="text-lg mb-1  font-medium"
                             >
                                 Difficulty Level
                             </label>
                             <select
-                                id="difficultyType"
+                                id="difficulty_level"
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
-                                name="difficultyType"
+                                name="difficulty_level"
                                 // defaultValue={0}
                                 // onChange={handleChange}
                             >
