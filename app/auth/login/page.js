@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react'
+import Link from 'next/link';
 
 const LoginPage = () => {
   return (
@@ -20,34 +21,37 @@ const LoginPage = () => {
               <p className="text-center text-black text-l mx-4 mb-0">or</p>
             </div>
           <div class="flex flex-col gap-4 pt-6">
-            <div class="w-full">
-                <label class="flex h-full w-full select-none text-xl font-normal text-blue-gray-400">
+            <div class="w-full mb-3">
+                <label class="flex mb-2 h-full w-full select-none text-xl font-normal text-blue-gray-400">
                   Email
                 </label>
                 <input
-                  class="h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                  class="h-[45px] w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                   type="email"
                   name="email"
-                />
-                
-              </div>
+                />                
+          </div>
 
-              <div class="w-full">
-              <label class="flex h-full w-full select-none text-xl font-normal text-blue-gray-400">
+              <div class="w-full mb-3">
+              <label class="flex mb-2 h-full w-full select-none text-xl font-normal text-blue-gray-400">
                   Password
                 </label>
                 <input
-                  class="h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                  class="h-[45px] w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                   type="password"
                   name="password"
                 />
                 
               </div>
+
+              <div>
+                <Link href={'/admin/dashboard'} className='text-xl' >Forgot Password?</Link>
+              </div>
             
           </div>
           <div class="pt-6">
             <button
-              class="w-full select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+              class="w-full h-[45px] select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans font-bold text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
               type="button">
               Login
             </button>
@@ -55,10 +59,11 @@ const LoginPage = () => {
               Don&lsquo;t have an account?
               <a href="#signup"
                 class="block ml-1 font-sans text-sm font-bold text-blue-gray-900">
-                Login
+                Sign Up
               </a>
             </p>
           </div>
+          
         </div>
   )
 }
