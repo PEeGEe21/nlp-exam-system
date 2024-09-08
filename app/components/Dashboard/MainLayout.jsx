@@ -17,7 +17,7 @@ const MainLayout = ({children}) => {
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} userRole={userRole}/>
             <div className="flex-1 h-full overflow-y-auto scrollbar-change">
                 <main className="main-wrapper">
-                    <Navbar  isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+                    <Navbar  isOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>
                     <div className="md:max-w-[calc(100%-14rem)] h-full py-2 lg:py-4 lg:px-4 mx-auto ">
                         {children}
                     </div>

@@ -136,7 +136,7 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
   return (
     <>
       <div
-        className={`h-full sidebar pb-4 bg-[#373636] lg:flex justify-between shadow-sm scrollbar-change flex-col overflow-y-auto overflow-x-hidden border-r-[0.5px] border-[#737272] w-56 z-50 fixed md:translate-x-0 ${
+        className={`h-screen sidebar pb-4 bg-[#373636] lg:flex justify-between shadow-sm scrollbar-change flex-col overflow-y-auto overflow-x-hidden border-r-[0.5px] border-[#737272] z-50 md:translate-x-0 ${
           isOpen ? "translate-x-0 " : "-translate-x-full"
       }`}
       onClick={toggleSidebar}
