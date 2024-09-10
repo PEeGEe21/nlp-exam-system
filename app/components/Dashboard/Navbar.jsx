@@ -47,7 +47,7 @@ const Navbar = ({ isOpen, toggleSidebar }) => {
                     </span>
                   </>
                 ) : (
-                  <div className="relative flex items-center justify-center z-[999] ">
+                  <div className="relative flex items-center justify-center text-black z-[999] ">
                     <Menu className=" bg-card-background">
                       <MenuButton>
                         <div className="flex items-center justify-start gap-2 bg-card-background rounded-l-full h-auto">
@@ -68,19 +68,19 @@ const Navbar = ({ isOpen, toggleSidebar }) => {
                         <MenuItem
                           icon={<Profile2User size={14} />}
                           
-                          className="hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md"
+                          className="bg-transparent hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md"
                         >
                           Profile
                         </MenuItem>
                         <MenuItem
                           icon={<Setting3 size={14} />}
-                          className="hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md"
+                          className="bg-transparent hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md"
                         >
                           Settings
                         </MenuItem>
                         <MenuItem
                           icon={<LogoutCurve size={14} color="red" />}
-                          className="hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md"
+                          className="bg-transparent hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md"
                         >
                           Sign Out
                         </MenuItem>

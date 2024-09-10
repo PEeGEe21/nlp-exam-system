@@ -2,25 +2,23 @@
 import { questionDifficulty, questionTypes } from '@/app/lib/constants';
 import { Add, Trash } from 'iconsax-react';
 import React, { useEffect, useState, useMemo } from 'react'
-// import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 
-// const Quill = dynamic(() => import('react-quill'), { ssr: false })
-
 const CreateQuestionsForm = () => {
-    const [answers, setAnswers] = useState([]);
-    const [richTextOptions, setRichTextOptions] = useState(false);
-    const [description, setDescription] = useState("");
     const [questionType, setQuestionType] = useState("");
+    const [question, setQuestion] = useState("");
+    const [qDifficulty, setQDifficulty] = useState(0);
+    const [answers, setAnswers] = useState([]);
+
+    const [richTextOptions, setRichTextOptions] = useState(false);
     const [inputs, setInputs] = useState({
         title: '',
         difficultyType: '',
         question_type: '',
-      });
+    });
+    
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
-
-
 
     //   useEffect(() => {
     //     // Set the initial selected question type
@@ -35,27 +33,38 @@ const CreateQuestionsForm = () => {
             {
                 id: 1,
                 content: "",
+                isCorrect: false
             },
             {
                 id: 2,
                 content: "",
+                isCorrect: false
             },
         ])
     }, []);
 
-
+    const updateAnswerContent = (id, newContent) => {
+        setAnswers(prevAnswers =>
+            prevAnswers.map(answer =>
+                answer.id === id
+                    ? { ...answer, content: newContent }
+                    : answer
+            )
+        );
+    };
 
     const selectCorrectOption = (id) => {
-        setAnswers(answers.map((answer) => ({
-            ...answer,
-            isCorrect: answer.id === id,
-        })));
+        setAnswers(prevAnswers =>
+            prevAnswers.map(answer =>
+                answer.id === id
+                    ? { ...answer, isCorrect: !answer.isCorrect }
+                    : { ...answer, isCorrect: false }
+            )
+        );
     };
 
     const deleteOption = (id) => {
-        if (answers.length > 2) {
-            setAnswers(answers.filter((answer) => answer.id !== id));
-        }
+        setAnswers(prevAnswers => prevAnswers.filter(answer => answer.id !== id));
     };
 
     const addOption = () => {
@@ -68,24 +77,8 @@ const CreateQuestionsForm = () => {
         console.log(answers, 'clicked');
     };
 
-
-    
-    // const handleChange = (e) => {
-    //     setInputs((prev) => {
-    //       return { ...prev, [e.target.name]: e.target.value };
-    //     });
-    //     console.log(inputs, 'inputs')
-    //   };
-    const handleChange = (e) => {
-        setQuestionType(e.target.value)
-        console.log(questionType, 'inputs')
-      };
-
-    useEffect(() => {
-        console.log('clickded', questionType)
-      }, [questionType]);
-  return (
-    <>
+    return (
+      <>
         <div className="py-6">
             <div className="shadow-md border border-black px-5 py-4 rounded-lg text-gray-900 bg-white">
                 <div>
@@ -94,22 +87,16 @@ const CreateQuestionsForm = () => {
                             <label
                                 htmlFor="question_type"
                                 className="text-lg mb-1 font-medium"
-                            >
-                                Question Type
-                            </label>
-
+                            >Question Type</label>
                             <select
                                 id="question_type"
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
                                 name="question_type"
-                                // value={questionType}
-                                // onChange={handleChange}
+                                value={questionType}
                                 onChange={(event) => {
                                     const value = event.target.value;
                                     setQuestionType(value);
-                                    // console.log(questionType)
                                 }}
-                                // defaultValue={null}
                             >
                                 <option value={''}>
                                         select an option
@@ -121,50 +108,40 @@ const CreateQuestionsForm = () => {
                                 ))}
                             </select>
                         </div>
-
                     </div>
-                    <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
 
+                    <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
                         <div className="relative flex flex-col w-full gap-1 mb-6">
                             <label
                                 htmlFor="description"
                                 className="text-lg mb-1 font-medium"
-                            >
-                                Question
-                            </label>
+                            >Question</label>
                             <ReactQuill
                                 theme="snow"
-                                value={description}
-                                onChange={setDescription}
+                                value={question}
+                                onChange={(value) => {
+                                    setQuestion(value);
+                                }}
                                 className="border border-[#464849] h-auto min-h-72"
                             />
-                            {/* <textarea
-                                id="description"
-                                className="border border-[#464849] h-auto min-h-72"
-                                name="description"
-                                value={description}
-                                onChange={setDescription}
-                                rows={15}
-                                /> */}
                         </div>
-
                     </div>
 
                     <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
-
                         <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
                             <label
                                 htmlFor="difficulty_level"
                                 className="text-lg mb-1  font-medium"
-                            >
-                                Difficulty Level
-                            </label>
+                            >Difficulty Level</label>
                             <select
                                 id="difficulty_level"
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
                                 name="difficulty_level"
-                                // defaultValue={0}
-                                // onChange={handleChange}
+                                value={qDifficulty}
+                                onChange={(event) => {
+                                    const value = event.target.value;
+                                    setQDifficulty(value);
+                                }}
                             >
                                 <option value={0}>Select Difficulty Level</option>
                                 {questionDifficulty.map((item) => (
@@ -174,19 +151,16 @@ const CreateQuestionsForm = () => {
                                 ))}
                             </select>
                         </div>
-
                     </div>
-                    {(questionType == 1 || questionType == 2 ) &&
-                        <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
 
+                    {(questionType == 1) &&
+                        <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
                             <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
                                 <div className='flex items-center justify-between'>
                                     <label
                                         htmlFor="token_name"
                                         className="text-lg mb-1 font-medium"
-                                    >
-                                        Question Options
-                                    </label>
+                                    >Question Options</label>
                                     {/* <span onClick={()=>(setRichTextOptions(!richTextOptions))} className='text-blue-600 cursor-pointer'>
                                         rich text
                                     </span> */}
@@ -208,16 +182,14 @@ const CreateQuestionsForm = () => {
                                                             className="block px-2 w-full text-sm text-gray-800 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent disabled:bg-[#3E3D3C] h-12 rounded-md focus:outline-0"
                                                             name="name"
                                                             value={answer.content}
-                                                            // defaultValue={""}
-                                                            // onChange={(e) => setName(e.target.value)}
                                                             required
                                                             autoComplete="off"
+                                                            onChange={(e) => updateAnswerContent(answer.id, e.target.value)}
                                                         />
                                                     <input
                                                         type="checkbox"
                                                         name="correctOption"
                                                         checked={answer.isCorrect || false}
-                                                        // defaultChecked={answer.isCorrect || false}
                                                         onChange={() => selectCorrectOption(answer.id)}
                                                     />
                                                     <button
@@ -231,8 +203,7 @@ const CreateQuestionsForm = () => {
                                             ))}
                                         </div>
                                     : ""
-                                    }
-                                    
+                                    }  
                                     <div className='flex items-center justify-end w-full'>
                                         <button
                                             onClick={addOption}
