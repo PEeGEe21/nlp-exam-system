@@ -4,24 +4,36 @@ import Link from 'next/link';
 export default function Layout({ children }) {
     return (
         <div className="flex h-screen">
-            <div className="w-1/2 bg-white px-[130px] pt-[100px] overflow-auto">
-                <div className="pt-3 w-full block">
-                    <Link
-                        href={'/admin/dashboard'}
-                        className="flex mt-2 mb-6 items-center w-full text-black text-3xl text-lg font-bold tracking-wide"
-                    >
-                        Exam System
-                    </Link>
+            <div className='grid grid-cols-1 md:grid-cols-2 w-full'>
+
+                <div className=" bg-white overflow-auto h-full flex items-center grow flex-col justify-center pt-2 py-4 w-full min-h-screen px-5">
+                    <div className='max-w-lg mx-auto w-full flex flex-col justify-start gap-4'>
+                        <div className="w-full block text-center w-full">
+                            <Link
+                                href={'/'}
+                                className="flex mt-2 mb-6 items-center justify-center w-full text-black text-3xl text-lg font-bold tracking-wide"
+                            >
+                                Exam System
+                            </Link>
+                        </div>
+                        <div className=''>
+                            {children}   
+                        </div>
+                        
+                    </div>
                 </div>
-                {children}
-            </div>
-            <div className="relative w-1/2 h-screen">
-                <Image
-                    src="/images/navbar-img/avatar-1.png"
-                    alt="Avatar Image"
-                    fill
-                    style={{ objectFit: 'cover' }}
-                />
+                <div className="hidden md:flex justify-center py-2">
+                    <div className="md:rounded-xl bg-bg-200 h-[clamp(40rem,97vh,97vh)] w-[clamp(30rem,100%,100%)] flex justify-center items-center overflow-hidden relative h-full">
+                        {/* <div className="relative h-full w-full">
+                            <Image
+                                src="/images/navbar-img/avatar-1.png"
+                                alt="Avatar Image"
+                                fill
+                                style={{ objectFit: 'cover' }}
+                            />
+                        </div> */}
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
 import { Inter } from 'next/font/google'
 import './styles/globals.css'
-import { GeneralSansFont, MontFont, SpaceFont } from './font';
+import { GeneralSansFont, MichromaFont, MontFont, SpaceFont } from './font';
 import { Providers } from './providers/Providers';
 
 export const metadata = {
@@ -58,7 +58,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${GeneralSansFont.variable} ${GeneralSansFont.className}`} suppressHydrationWarning={true}>
+      <body className={`${GeneralSansFont.variable} ${GeneralSansFont.className} ${MichromaFont.variable}`} suppressHydrationWarning={true}>
         <Providers>
           {children}
         </Providers>

@@ -82,7 +82,7 @@ const CreateQuestionsForm = () => {
         <div className="py-6">
             <div className="shadow-md border border-black px-5 py-4 rounded-lg text-gray-900 bg-white">
                 <div>
-                    <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                    <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nouniquewrap">
                         <div className="relative flex flex-col w-full gap-1 mb-6 ">
                             <label
                                 htmlFor="question_type"

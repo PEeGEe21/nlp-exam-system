@@ -65,3 +65,12 @@ export const GeneralSansFont = localFont({
   ],
   variable: "--font-sans",
 });
+export const MichromaFont = localFont({
+  src: [
+    {
+      path: "./Michroma-Regular.ttf",
+      weight: "400",
+    },
+  ],
+  variable: "--font-michroma",
+});

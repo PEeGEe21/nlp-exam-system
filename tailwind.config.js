@@ -24,6 +24,23 @@ module.exports = withMT({
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        'bg-000': "hsl(var(--bg-000))",
+        'bg-100': "hsl(var(--bg-100))",
+        'bg-200': "hsl(var(--bg-200))",
+        'bg-300': "hsl(var(--bg-300))",
+        'bg-400': "hsl(var(--bg-400))",
+        'bg-500': "hsl(var(--bg-500))",
+
+        'text-100': "hsl(var(--text-100))",
+        'text-200': "hsl(var(--text-200))",
+        'text-300': "hsl(var(--text-300))",
+        'text-400': "hsl(var(--text-400))",
+        'text-500': "hsl(var(--text-500))",
+
+        'border-100': "hsl(var(--border-100))",
+        'border-200': "hsl(var(--border-200))",
+        'border-300': "hsl(var(--border-300))",
+
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
@@ -59,6 +76,9 @@ module.exports = withMT({
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        michroma: ['var(--font-michroma)'],
       },
       keyframes: {
         "accordion-down": {
