@@ -14,7 +14,7 @@ const MainLayout = ({children}) => {
     const userRole = "admin"; 
     return (
         <>
-            <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} userRole={userRole}/>
+            {/* <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} userRole={userRole}/>
             <div className="flex-1 h-full overflow-y-auto scrollbar-change">
                 <main className="main-wrapper">
                     <Navbar  isOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>
@@ -27,7 +27,20 @@ const MainLayout = ({children}) => {
                 onClick={toggleSidebar} 
                 className={`absolute top-0 left-0 h-full w-full bg-black/80 z-40 cursor-auto pointer-events-auto transition-all duration-300 ease-linear md:-translate-x-full ${
                 isSidebarOpen ? "translate-x-0 " : "-translate-x-full"}`}
-            ></div>
+            ></div> */}
+
+            <div className="flex h-screen">
+                <div className="w-1/6 h-screen">
+                    <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} userRole={userRole}/>
+                </div>
+                <div className="w-5/6 overflow-x-hidden overflow-y-auto">
+                    <div className="block">
+                        <Navbar  isOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>
+                    </div>
+                    {children}
+                </div>
+            </div>
+
         </>
     )
 }

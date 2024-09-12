@@ -1,6 +1,6 @@
 "use client"
 import React, {useEffect} from 'react'
-import { db } from '@/app/appwrite/database'
+import { db } from '../../../appwrite/database'
 
 const Dashboard = () => {
 
