@@ -15,7 +15,6 @@ collections.forEach((collection) => {
         },
 
         update: async (id, payload) => {
-            console.log("saving");
             return await databases.updateDocument(
                 collection.dbid,
                 collection.id,
@@ -41,8 +40,6 @@ collections.forEach((collection) => {
         },
 
         list: async (queries) => {
-            console.log("Database ID:", collection.dbid);
-            console.log("Collection ID:", collection.id);
             return await databases.listDocuments(
                 collection.dbid,
                 collection.id,

@@ -77,13 +77,13 @@ const ExamsListTable = ({ questions = []}) => {
                                                 <button className='btn p-1 bg-[#1c699f] border border-[#15527c] rounded text-white flex items-center'>
                                                     Publish
                                                 </button>
-                                                <Link href={'/admin/test-management/'+question.id} className='btn p-1 bg-[#acb7ca] border border-[#93a1bb] rounded text-[#666] flex items-center'>
+                                                <Link href={'/admin/test-management/'+question.id} className='btn p-1 bg-[#acb7ca] border border-[#93a1bb] rounded text-black flex items-center'>
                                                     <Pen size={12}/>
                                                     Edit
                                                 </Link>
-                                                <button className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white flex items-center'>
+                                                <button className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
                                                     <Trash size={12}/>
-                                                    delete
+                                                    Delete
                                                 </button>
                                             </div>
                                             

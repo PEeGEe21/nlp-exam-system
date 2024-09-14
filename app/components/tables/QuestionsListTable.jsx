@@ -1,6 +1,8 @@
 import React from 'react'
 import EmptyState from '../EmptyState';
 import Link from 'next/link';
+import { Trash } from 'iconsax-react';
+import { Pen } from 'lucide-react';
 
 const QuestionsListTable = ({ questions = []}) => {
     return (
@@ -54,10 +56,18 @@ const QuestionsListTable = ({ questions = []}) => {
                                         
                                     </td>
                                     <td className="px-2 py-4 text-sm whitespace-nowrap">
-                                        <div className="text-[#313131] text-xs flex items-center gap-2 flex-row">
-                                            <Link href={'/admin/question-bank/'+question.id} className='rounded-md px-2 py-1 bg-blue-gray-800 text-white '>
+                                        <div className="text-[#313131] text-xs flex items-center justify-end gap-2 pr-3 flex-row">
+                                            <Link href={'/admin/question-bank/'+question.id} className='rounded-md px-2 py-1 bg-[#1c699f] text-white '>
                                                 Preview
                                             </Link>
+                                            <Link href={'/admin/question-bank/'+question.id} className='flex items-center rounded-md bg-[#acb7ca] border border-[#93a1bb] text-black px-2 py-1 '>
+                                                <Pen size={12}/>
+                                                Edit
+                                            </Link>
+                                            <button className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
+                                                <Trash size={12}/>
+                                                Delete
+                                            </button>
                                         </div>
                                         
                                     </td>
