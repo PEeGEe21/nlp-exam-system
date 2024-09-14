@@ -48,7 +48,7 @@ const LoginPage = () => {
                       </label>
 
                       <div className="">
-                          <div className=" relative rounded-full  items-center min-w-96">
+                          <div className=" relative rounded-full  items-center w-full">
                               <button type='button' onClick={()=>setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pl-3 flex items-center h-full cursor-pointer">
                                   <span className="text-[#BEBDBD] px-3">
                                       <Eye size={22} />
