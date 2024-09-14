@@ -1,17 +1,17 @@
 "use client"
 import React, {useEffect} from 'react'
-// import { db } from '../../../appwrite/database'
+import { db } from '../../../appwrite/database'
 
 const Dashboard = () => {
 
-  // useEffect(() => {
-  //   init()
-  // }, [])
+  useEffect(() => {
+    init()
+  }, [])
 
-  // const init = async () => {
-  //   const response = await db.notes.list()
-  //   console.log(response.documents)
-  // }
+  const init = async () => {
+    const response = await db.notes.list()
+    console.log(response.documents)
+  }
 
   return (
     <div>
