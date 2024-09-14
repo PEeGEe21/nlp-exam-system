@@ -76,5 +76,69 @@ export const questions = [
       options: ["Jane Austen", "George Orwell", "Stephen King", "J.K. Rowling"],
       correctAnswer: "Jane Austen"
     }
-  ]
+]
+
+export const slidesData = [
+  {
+    title: 'Create a Test.',
+    image: '/images/create-test.png',
+    quotes: {
+      top: {
+        text: 'Success is the result of preparation, hard work, and learning from failure.',
+        author: 'Colin Powell'
+      },
+      bottom: {
+        text: 'The best way to predict the future is to invent it.',
+        author: 'Alan Kay'
+      }
+    }
+    
+  },
+  {
+    title: 'Test Table.',
+    image: '/images/test-list.png',
+    quotes: {
+      top: {
+        text:'AI is likely to be either the best or worst thing to happen to humanity.',
+        author: 'Stephen Hawking'
+      },
+      bottom: {
+        text: 'The true test of intelligence is not knowledge but imagination.',
+        author: 'Albert Einstein'
+      }
+    }
+  },
+  {
+    title: 'Create a Question.',
+    image: '/images/create-question.png',
+    quotes: {
+      top: {
+        text:' Software is a great combination of artistry and engineering.',
+        author: 'Bill Gates'
+      },
+      bottom: {
+        text: 'In examinations, those who do not wish to know ask questions of those who cannot tell.',
+        author: 'Oscar Wilde'
+      }
+    }
+  }
+]
+
+export const signInTexts = [
+  "Welcome to your examination dashboard.",
+  "Please sign in to begin your exam.",
+  "Preparing the best testing experience for you...",
+  "Get ready! Your exam is about to begin.",
+  "You are one step closer to completing this assessment!",
+  "Keep calm and focus. Time is on your side.",
+  "Submit your answers confidently. You've got this!",
+  "Your test results will be available shortly.",
+  "Best of luck! Give it your best shot!",
+  "Remember, every answer counts toward your success."
+];
+
+export const signUpTexts = [
+  "Please sign up to begin your exam.",
+  "Preparing the best testing experience for you...",
+];
 

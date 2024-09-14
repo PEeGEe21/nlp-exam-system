@@ -89,3 +89,47 @@
 .ql-container.ql-snow{
   height: 300px;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 0px; /* Width of the vertical scrollbar */
+  height: 0px; /* Height of the horizontal scrollbar */
+}
+
+.animated_img {
+  animation: move 2s infinite ease alternate;
+}
+
+.animated_img2 {
+  animation: moveSide 2s infinite ease alternate;
+}
+
+.map_animated_text {
+  animation: move 2s infinite ease alternate;
+}
+
+@media only screen and (max-width: 776px) {
+  .animated_img {
+    animation: none;
+  }
+  .map_animated_text {
+    animation: none;
+  }
+}
+
+@keyframes move {
+  from {
+    transform: translateY(-15px);
+  }
+  to {
+    transform: translateY(15px);
+  }
+}
+
+@keyframes moveSide {
+  from {
+    transform: translateX(-15px);
+  }
+  to {
+    transform: translateX(15px);
+  }
+}

@@ -1,20 +1,25 @@
 "use client";
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link';
+import A4Animation from '../../components/motion/Layout';
+import { Eye } from 'iconsax-react';
+import { signInTexts } from '@/app/lib/constants';
 
 const LoginPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <>
       <div>
         <div
-            className="grid mt-10 mb-6 overflow-hidden text-black h-14">
-            <h3 className="font-michroma text-5xl font-normal text-center">
-              Sign in
-            </h3>
+            className="grid mt-10 mb-6 text-black">
+              {/* <h3 className="font-michroma text-5xl font-normal text-center">
+                Sign in
+              </h3> */}
+            <A4Animation baseText={'Sign In...'} texts={signInTexts}/>
           </div>
-          <div className="flex flex-col gap-3 text-gray-700 bg-gradient-to-b  from-bg-200  via-bg-100  to-bg-200  border-[0.5px]  border-border-300  shadow-sm  rounded-[2rem] mt-7  sm:mt-8  mx-auto  pt-5  sm:pt-6  sm:pb-9  pb-6   px-8  sm:px-12 text-sm text-text-100">
-            <h2 className="font-tiempos font-medium tracking-tight text-center">Start using Our System for yourself or your school</h2>
+          <div className="flex flex-col gap-3 text-gray-700 bg-gradient-to-b  from-bg-200  via-bg-100  to-bg-200  border-[0.5px]  border-border-100  shadow-sm  rounded-[2rem] mt-7  sm:mt-8  mx-auto  pt-5  sm:pt-6  sm:pb-9  pb-6   px-8  sm:px-12 text-sm text-text-100">
+            <h2 className="font-medium tracking-tight text-center">Start using Our System for yourself or your school</h2>
               <div>
                   {/* <button
                       className="block w-full h-12 select-none text-xl rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
@@ -26,31 +31,43 @@ const LoginPage = () => {
                   </div> */}
                   <div className="flex flex-col gap-4">
                     <div className="w-full">
-                          <label className="flex mb-2 font-medium" htmlFor='email'>
-                            Email
-                          </label>
-                          <input
-                            id="email"
-                            className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                            type="email"
-                            name="email"
-                          />
+                      <label className="flex mb-2 font-medium" htmlFor='email'>
+                        Email
+                      </label>
+                      <input
+                        id="email"
+                        className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                        type="email"
+                        name="email"
+                      />
                     </div>
 
                     <div className="w-full">
                       <label className="flex mb-2 font-medium" htmlFor='password'>
                         Password
                       </label>
-                      <input 
-                        id="password"
-                        className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                        type="password"
-                        name="password"
-                      />
+
+                      <div className="">
+                          <div className=" relative rounded-full  items-center min-w-96">
+                              <button type='button' onClick={()=>setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pl-3 flex items-center h-full cursor-pointer">
+                                  <span className="text-[#BEBDBD] px-3">
+                                      <Eye size={22} />
+                                  </span>
+                              </button>
+                              <input
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                id="password"
+                                className="block min-w-full px-3 pr-10 h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                                autoComplete="off"
+                              />
+                          </div>
+                      </div>
                     </div>
 
+
                     <div>
-                      <Link href={'/admin/dashboard'}>Forgot Password?</Link>
+                      <Link href={'/'}>Forgot Password?</Link>
                     </div>
                   
                     <div className="">
@@ -59,6 +76,7 @@ const LoginPage = () => {
                         type="button">
                         Login
                       </button>
+
                       <p className="flex justify-center mt-6 font-sans text-sm antialiased font-light leading-normal text-inherit">
                         Don&lsquo;t have an account?
                         <Link href="/auth/signup"
@@ -71,7 +89,7 @@ const LoginPage = () => {
                   
               </div>
           </div>
-        </div>
+      </div>
     </>
   )
 }
