@@ -5,7 +5,8 @@ import React, { useEffect, useState, useMemo } from 'react'
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 
-const CreateQuestionsForm = () => {
+
+const CreateQuestionsForm = ({ questions, questionToEdit }) => {
     const [questionType, setQuestionType] = useState("");
     const [question, setQuestion] = useState("");
     const [qDifficulty, setQDifficulty] = useState(0);
@@ -17,31 +18,37 @@ const CreateQuestionsForm = () => {
         difficultyType: '',
         question_type: '',
     });
+
+    const [isEditing, setIsEditing] = useState(false);
     
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
-
-    //   useEffect(() => {
-    //     // Set the initial selected question type
-    //     setInputs((prevInputs) => ({
-    //       ...prevInputs,
-    //       questionType: questionTypes[0].id,
-    //     }));
-    //   }, []);
     
     useEffect(()=>{
-        setAnswers([
-            {
-                id: 1,
-                content: "",
-                isCorrect: false
-            },
-            {
-                id: 2,
-                content: "",
-                isCorrect: false
-            },
-        ])
-    }, []);
+        if (questionToEdit) {
+            setIsEditing(true);
+            setQuestionType(questionToEdit.questionType);
+            setQuestion(questionToEdit.question);
+            setQDifficulty(questionToEdit.qDifficulty);
+            setAnswers(questionToEdit.answers || []);
+          } else {
+            setIsEditing(false);
+            setQuestionType("");
+            setQuestion("");
+            setQDifficulty(0);
+            setAnswers([
+                {
+                    id: 1,
+                    content: "",
+                    isCorrect: false
+                },
+                {
+                    id: 2,
+                    content: "",
+                    isCorrect: false
+                },
+            ])
+            }
+    }, [questionToEdit]);
 
     const updateAnswerContent = (id, newContent) => {
         setAnswers(prevAnswers =>
@@ -76,6 +83,16 @@ const CreateQuestionsForm = () => {
         console.log('clicked');
         console.log(answers, 'clicked');
     };
+
+    const handleSubmit = () => {
+        if (isEditing) {
+          // Call API to update the question
+          console.log("Updating question:");
+        } else {
+          // Call API to create a new question
+          console.log("Creating question:");
+        }
+      };
 
     return (
       <>
