@@ -142,3 +142,28 @@ export const signUpTexts = [
   "Preparing the best testing experience for you...",
 ];
 
+export const demostudents = [
+  {
+    id: 1,
+    name: "John Doe",
+    email: "johndoe@example.com",
+    password: "password123",
+    date: "Student",
+    testId: 1,
+    marks: 90,
+    time_elapsed: '40mins',
+    status: 'active'
+  },
+  {
+    id: 2,
+    name: "Jane Doe",
+    email: "janedoe@example.com",
+    password: "password456",
+    date: "Student",
+    testId: 2,
+    marks: 80,
+    time_elapsed: '35mins',
+    status: 'active'
+  }
+]
+
