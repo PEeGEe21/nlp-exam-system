@@ -31,7 +31,7 @@ const TestResult = () => {
                   </button>
 
                 <div className="w-full">
-                    <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">Test Detail</h1>
+                    <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">Social Studies Test</h1>
                 </div>
             </div>
 
@@ -40,11 +40,11 @@ const TestResult = () => {
                 <div className="overflow-x-auto md:overflow-x-auto p-4 text-[#313131] scrollbar-change rounded-md">
                     <div>
                         <TableContainer>
-                            <Table size='sm'>
+                            <Table size='sm' className='table-bordered'>
                                 <Tbody>
                                     <Tr>
                                         <Td>Title</Td>
-                                        <Td>Sample test</Td>
+                                        <Td>Social Studies Test</Td>
                                         <Td>Test Duration(min)	</Td>
                                         <Td>30</Td>
                                     </Tr>

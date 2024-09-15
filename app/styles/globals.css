@@ -133,3 +133,23 @@
     transform: translateX(15px);
   }
 }
+
+
+.table-bordered{
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.table-bordered td{
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+.table-bordered th{
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.table-bordered tr:hover{
+  background: #F7FAFC;
+  padding: 8px;
+}

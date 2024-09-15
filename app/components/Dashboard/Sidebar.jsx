@@ -11,7 +11,9 @@ import {
   LogoutCurve,
 Book1, 
 ArrowDown2,
-ArrowRight2} from 'iconsax-react';
+ArrowRight2,
+Speaker,
+Microphone} from 'iconsax-react';
 import { useDisclosure } from '@chakra-ui/react';
 import Image from 'next/image';
 import { Category } from 'react-iconly';
@@ -120,15 +122,15 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
   ];
   const studentMenuLinks = [
     {
-      label: 'Dashboard',
-      href: '/student/dashboard',
-      icon: <Category size={16} color="#ffffff" />,
+      label: 'Test Manager',
+      href: '/student/test-manager',
+      icon: <Book1 size={16} color="#ffffff"/>,
       isDropdownMenu: false,
     },
     {
-      label: 'Quizzes',
-      href: '/student/take-test',
-      icon: <Book1 size={16} color="#ffffff"/>,
+      label: 'Test Results',
+      href: '/student/test-results',
+      icon: <Microphone size={16} color="#ffffff"/>,
       isDropdownMenu: false,
     },
   ];

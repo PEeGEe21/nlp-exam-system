@@ -17,9 +17,9 @@ const ResultManagerTable = ({ tests = []}) => {
   return (
     <>
         <div className='shadow-lg'>
-          <div className="overflow-x-auto md:overflow-x-auto py-4 text-[#313131] scrollbar-change rounded-md">
+          <div className="overflow-x-auto md:overflow-x-auto p-4 text-[#313131] scrollbar-change rounded-md">
             {/* <TableContainer> */}
-              <Table variant='unstyled' className='py-3'>
+              <Table variant='unstyled' className=' table-bordered'>
                 <Thead className='bg-[#F7FAFC] border-b border-[#e7ecf1]'>
                   <Tr>
                     <Th width={10}>#</Th>
@@ -40,7 +40,7 @@ const ResultManagerTable = ({ tests = []}) => {
                               <div className='flex items-start justify-between text-sm'>
                                   <div className='flex flex-col gap-2'>
                                       <p className="text-xl font-semibold ">
-                                          {test.question}
+                                          {test?.title}
                                       </p>
                                       <div>
                                           Mon Apr 8th, 24 12:00am - Wed Apr 17th, 24 6:00pm
@@ -68,7 +68,6 @@ const ResultManagerTable = ({ tests = []}) => {
                           </Td>
                           <Td className="px-2 py-4 text-sm whitespace-nowrap">
                               <div className="text-[#313131] text-xs flex items-center justify-end gap-2 flex-row">
-                                  
                                   <Link href={'/admin/result-manager/'+test.id} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
                                       Test Results
                                   </Link>

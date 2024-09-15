@@ -67,14 +67,44 @@ export const questions = [
       question: "What is the capital of France?",
       answer: "Paris",
       options: ["New York", "London", "Paris", "Tokyo"],
-      correctAnswer: "Paris"
+      correctAnswer: "Paris",
+      difficulty: "Medium",
+      mark: "3"
     },
     {
       id: 2,
       question: "Who won the Nobel Prize in Literature in 2020?",
       answer: "Jane Austen",
       options: ["Jane Austen", "George Orwell", "Stephen King", "J.K. Rowling"],
-      correctAnswer: "Jane Austen"
+      correctAnswer: "Jane Austen",
+      difficulty: "Easy",
+      mark: "3"
+    }
+]
+
+export const scoredQuestions = [
+    {
+      id: 1,
+      question: "What is the capital of France?",
+      answer: "London",
+      options: ["New York", "London", "Paris", "Tokyo"],
+      correctAnswer: "Paris",
+      difficulty: "Medium",
+      mark: "10",
+      score: "0",
+      isCorrect: false,
+    },
+    {
+      id: 2,
+      question: "Who won the Nobel Prize in Literature in 2020?",
+      answer: "Jane Austen",
+      options: ["Jane Austen", "George Orwell", "Stephen King", "J.K. Rowling"],
+      correctAnswer: "Jane Austen",
+      difficulty: "Easy",
+      mark: "10",
+      score: "10",
+      isCorrect: true,
+
     }
 ]
 
@@ -148,18 +178,18 @@ export const demostudents = [
     name: "John Doe",
     email: "johndoe@example.com",
     password: "password123",
-    date: "Student",
+    date: "24th April, 2024",
     testId: 1,
     marks: 90,
     time_elapsed: '40mins',
-    status: 'active'
+    status: 'completed'
   },
   {
     id: 2,
     name: "Jane Doe",
     email: "janedoe@example.com",
     password: "password456",
-    date: "Student",
+    date: "24th April, 2024",
     testId: 2,
     marks: 80,
     time_elapsed: '35mins',
@@ -167,3 +197,20 @@ export const demostudents = [
   }
 ]
 
+
+export const tests = [
+  {
+    id: 1,
+    title: "Social Studies Test",
+    answer: "Paris",
+    options: ["New York", "London", "Paris", "Tokyo"],
+    correctAnswer: "Paris"
+  },
+  {
+    id: 2,
+    title: "English Language Test",
+    answer: "Jane Austen",
+    options: ["Jane Austen", "George Orwell", "Stephen King", "J.K. Rowling"],
+    correctAnswer: "Jane Austen"
+  }
+]

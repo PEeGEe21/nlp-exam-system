@@ -1,6 +1,7 @@
 "use client"
 import ExamsListTable from '@/app/components/tables/ExamsListTable';
 import QuestionsListTable from '@/app/components/tables/QuestionsListTable'
+import { tests } from '@/app/lib/constants';
 import { ArrowLeft } from 'iconsax-react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
@@ -8,22 +9,6 @@ import React from 'react'
 
 const TestManagement = () => {
   const router = useRouter();
-  const questions = [
-    {
-      id: 1,
-      question: "What is the capital of France?",
-      answer: "Paris",
-      options: ["New York", "London", "Paris", "Tokyo"],
-      correctAnswer: "Paris"
-    },
-    {
-      id: 2,
-      question: "Who won the Nobel Prize in Literature in 2020?",
-      answer: "Jane Austen",
-      options: ["Jane Austen", "George Orwell", "Stephen King", "J.K. Rowling"],
-      correctAnswer: "Jane Austen"
-    }
-  ]
 
   return (
     <>
@@ -46,7 +31,7 @@ const TestManagement = () => {
             </div>
 
             <div className="py-6">
-                <ExamsListTable questions={questions}/>
+                <ExamsListTable tests={tests}/>
             </div>
         </div>
     </>

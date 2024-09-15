@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { PenTool, Trash } from 'iconsax-react';
 import { Pen } from 'lucide-react';
 
-const ExamsListTable = ({ questions = []}) => {
+const ExamsListTable = ({ tests = []}) => {
     return (
         <>
             
@@ -35,7 +35,7 @@ const ExamsListTable = ({ questions = []}) => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[#A19B99] text-[#313131]">
-                                {questions?.map((question, index) => (
+                                {tests?.map((question, index) => (
                                     <tr key={index}>
                                         <td className="px-2 py-4 text-base whitespace-nowrap">
                                             <span className="text-[#313131] text-base">
@@ -46,7 +46,7 @@ const ExamsListTable = ({ questions = []}) => {
                                             <div className='flex items-start justify-between text-sm'>
                                                 <div className='flex flex-col gap-2'>
                                                     <p className="text-xl font-semibold ">
-                                                        {question.question}
+                                                        {question?.title}
                                                     </p>
                                                     <div>
                                                         Mon Apr 8th, 24 12:00am - Wed Apr 17th, 24 6:00pm

@@ -17,9 +17,9 @@ const StudentsResultManagerTable = ({ students = []}) => {
   return (
     <>
         <div className='shadow-lg'>
-          <div className="overflow-x-auto md:overflow-x-auto py-4 text-[#313131] scrollbar-change rounded-md">
+          <div className="overflow-x-auto md:overflow-x-auto p-5 text-[#313131] scrollbar-change rounded-md">
             {/* <TableContainer> */}
-              <Table variant='unstyled' className='py-3'>
+              <Table variant='unstyled' className='py-3 table-bordered'>
                 <Thead className='bg-[#F7FAFC] border-b border-[#e7ecf1]'>
                   <Tr>
                     <Th width={10}>#</Th>
@@ -74,7 +74,7 @@ const StudentsResultManagerTable = ({ students = []}) => {
                           </Td>
                           <Td className="px-2 py-4 text-sm whitespace-nowrap">
                               <div className="text-[#313131] text-xs flex items-center justify-end gap-2 flex-row">
-                                  <Link href={'/admin/result-manager/'+student.id + '/test-details'} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
+                                  <Link href={'/admin/result-manager/1/test-details/' +student.id} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
                                       Test Details
                                   </Link>
                               </div>
