@@ -52,14 +52,11 @@ const CreateExamsForm = () => {
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="title"
                                 type='text'
-                                // value={questionType}
-                                // onChange={handleChange}
+        
                                 onChange={(event) => {
                                     const value = event.target.value;
                                     setQuestionType(value);
-                                    // console.log(questionType)
                                 }}
-                                // defaultValue={null}
                             />
                         </div>
 
@@ -78,14 +75,11 @@ const CreateExamsForm = () => {
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="code"
                                 type='text'
-                                // value={questionType}
-                                // onChange={handleChange}
+                                
                                 onChange={(event) => {
                                     const value = event.target.value;
                                     setQuestionType(value);
-                                    // console.log(questionType)
                                 }}
-                                // defaultValue={null}
                             />
                         </div>
                         <div className="relative flex flex-col w-full md:w-1/2 gap-1 mb-6 ">
@@ -101,12 +95,10 @@ const CreateExamsForm = () => {
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="marks_per_question"
                                 type='number'
-                                // value={questionType}
-                                // onChange={handleChange}
+                               
                                 onChange={(event) => {
                                     const value = event.target.value;
                                     setQuestionType(value);
-                                    // console.log(questionType)
                                 }}
                                 // defaultValue={null}
                             />
