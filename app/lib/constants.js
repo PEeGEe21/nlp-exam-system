@@ -227,3 +227,172 @@ export const tests = [
     correctAnswer: "Jane Austen"
   }
 ]
+
+
+export const mainQuestions = [
+  {
+    id: 1,
+    question: "What is the capital of France?",
+    options: [
+      { id: 1, text: "Berlin" },
+      { id: 2, text: "Madrid" },
+      { id: 3, text: "Paris" }, // correct
+      { id: 4, text: "Lisbon" }
+    ],
+    correctAnswerId: 3
+  },
+  {
+    id: 2,
+    question: "Which planet is known as the Red Planet?",
+    options: [
+      { id: 1, text: "Earth" },
+      { id: 2, text: "Mars" }, // correct
+      { id: 3, text: "Jupiter" },
+      { id: 4, text: "Saturn" }
+    ],
+    correctAnswerId: 2
+  },
+  {
+    id: 3,
+    question: "What is the largest ocean on Earth?",
+    options: [
+      { id: 1, text: "Atlantic Ocean" },
+      { id: 2, text: "Indian Ocean" },
+      { id: 3, text: "Pacific Ocean" }, // correct
+      { id: 4, text: "Arctic Ocean" }
+    ],
+    correctAnswerId: 3
+  },
+  {
+    id: 4,
+    question: "Who wrote 'Romeo and Juliet'?",
+    options: [
+      { id: 1, text: "Mark Twain" },
+      { id: 2, text: "William Shakespeare" }, // correct
+      { id: 3, text: "Charles Dickens" },
+      { id: 4, text: "Jane Austen" }
+    ],
+    correctAnswerId: 2
+  },
+  {
+    id: 5,
+    question: "Which country is home to the kangaroo?",
+    options: [
+      { id: 1, text: "India" },
+      { id: 2, text: "Australia" }, // correct
+      { id: 3, text: "South Africa" },
+      { id: 4, text: "Brazil" }
+    ],
+    correctAnswerId: 2
+  },
+  {
+    id: 6,
+    question: "What is the smallest prime number?",
+    options: [
+      { id: 1, text: "1" },
+      { id: 2, text: "2" }, // correct
+      { id: 3, text: "3" },
+      { id: 4, text: "5" }
+    ],
+    correctAnswerId: 2
+  },
+  {
+    id: 7,
+    question: "What is the chemical symbol for water?",
+    options: [
+      { id: 1, text: "O2" },
+      { id: 2, text: "H2O" }, // correct
+      { id: 3, text: "CO2" },
+      { id: 4, text: "H2" }
+    ],
+    correctAnswerId: 2
+  },
+  {
+    id: 8,
+    question: "Which country hosted the 2016 Summer Olympics?",
+    options: [
+      { id: 1, text: "China" },
+      { id: 2, text: "United Kingdom" },
+      { id: 3, text: "Brazil" }, // correct
+      { id: 4, text: "USA" }
+    ],
+    correctAnswerId: 3
+  },
+  {
+    id: 9,
+    question: "Which element is the most abundant in the Earth's atmosphere?",
+    options: [
+      { id: 1, text: "Oxygen" },
+      { id: 2, text: "Hydrogen" },
+      { id: 3, text: "Nitrogen" }, // correct
+      { id: 4, text: "Carbon Dioxide" }
+    ],
+    correctAnswerId: 3
+  },
+  {
+    id: 10,
+    question: "In which year did World War II end?",
+    options: [
+      { id: 1, text: "1940" },
+      { id: 2, text: "1942" },
+      { id: 3, text: "1945" }, // correct
+      { id: 4, text: "1948" }
+    ],
+    correctAnswerId: 3
+  },
+  {
+    id: 11,
+    question: "What is the square root of 144?",
+    options: [
+      { id: 1, text: "10" },
+      { id: 2, text: "11" },
+      { id: 3, text: "12" }, // correct
+      { id: 4, text: "13" }
+    ],
+    correctAnswerId: 3
+  },
+  {
+    id: 12,
+    question: "Who was the first man to step on the moon?",
+    options: [
+      { id: 1, text: "Yuri Gagarin" },
+      { id: 2, text: "Buzz Aldrin" },
+      { id: 3, text: "Neil Armstrong" }, // correct
+      { id: 4, text: "Michael Collins" }
+    ],
+    correctAnswerId: 3
+  },
+  {
+    id: 13,
+    question: "Which continent is the Sahara Desert located on?",
+    options: [
+      { id: 1, text: "Africa" }, // correct
+      { id: 2, text: "Asia" },
+      { id: 3, text: "Australia" },
+      { id: 4, text: "North America" }
+    ],
+    correctAnswerId: 1
+  },
+  {
+    id: 14,
+    question: "What is the powerhouse of the cell?",
+    options: [
+      { id: 1, text: "Nucleus" },
+      { id: 2, text: "Ribosome" },
+      { id: 3, text: "Mitochondria" }, // correct
+      { id: 4, text: "Cell Membrane" }
+    ],
+    correctAnswerId: 3
+  },
+  {
+    id: 15,
+    question: "Which gas do plants absorb from the atmosphere?",
+    options: [
+      { id: 1, text: "Oxygen" },
+      { id: 2, text: "Hydrogen" },
+      { id: 3, text: "Nitrogen" },
+      { id: 4, text: "Carbon Dioxide" }, // correct
+    ],
+    correctAnswerId: 4
+  }
+];
