@@ -1,12 +1,10 @@
 "use client"
-import { questionDifficulty, questionTypes } from '@/app/lib/constants';
+import { questionDifficulty, questionTypes, questions } from '@/app/lib/constants';
 import { Add, Trash } from 'iconsax-react';
 import React, { useEffect, useState, useMemo } from 'react'
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import { useSearchParams } from 'next/navigation';
-import { questions } from '@/app/lib/constants';
-
 
 const CreateQuestionsForm = () => {
     const [questionType, setQuestionType] = useState("");
