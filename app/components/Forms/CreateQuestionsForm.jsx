@@ -4,26 +4,25 @@ import { Add, Trash } from 'iconsax-react';
 import React, { useEffect, useState, useMemo } from 'react'
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
+import { useSearchParams } from 'next/navigation';
+import { questions } from '@/app/lib/constants';
 
 
-const CreateQuestionsForm = ({ questions, questionToEdit }) => {
+const CreateQuestionsForm = () => {
     const [questionType, setQuestionType] = useState("");
     const [question, setQuestion] = useState("");
     const [qDifficulty, setQDifficulty] = useState(0);
     const [answers, setAnswers] = useState([]);
-
-    const [richTextOptions, setRichTextOptions] = useState(false);
-    const [inputs, setInputs] = useState({
-        title: '',
-        difficultyType: '',
-        question_type: '',
-    });
-
     const [isEditing, setIsEditing] = useState(false);
     
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
+
+    const searchParams = useSearchParams();
+    const id = searchParams.get('id');
     
     useEffect(()=>{
+        const questionToEdit = questions.find(q => q.id === Number(id));
+
         if (questionToEdit) {
             setIsEditing(true);
             setQuestionType(questionToEdit.questionType);
@@ -48,7 +47,7 @@ const CreateQuestionsForm = ({ questions, questionToEdit }) => {
                 },
             ])
             }
-    }, [questionToEdit]);
+    }, [id, questions]);
 
     const updateAnswerContent = (id, newContent) => {
         setAnswers(prevAnswers =>
@@ -109,6 +108,7 @@ const CreateQuestionsForm = ({ questions, questionToEdit }) => {
                                 id="question_type"
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
                                 name="question_type"
+                                required
                                 value={questionType}
                                 onChange={(event) => {
                                     const value = event.target.value;
@@ -135,6 +135,7 @@ const CreateQuestionsForm = ({ questions, questionToEdit }) => {
                             >Question</label>
                             <ReactQuill
                                 theme="snow"
+                                required
                                 value={question}
                                 onChange={(value) => {
                                     setQuestion(value);
@@ -154,6 +155,7 @@ const CreateQuestionsForm = ({ questions, questionToEdit }) => {
                                 id="difficulty_level"
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
                                 name="difficulty_level"
+                                required
                                 value={qDifficulty}
                                 onChange={(event) => {
                                     const value = event.target.value;
@@ -162,7 +164,7 @@ const CreateQuestionsForm = ({ questions, questionToEdit }) => {
                             >
                                 <option value={0}>Select Difficulty Level</option>
                                 {questionDifficulty.map((item) => (
-                                    <option key={item.id} value={item.id}>
+                                    <option key={item.id} value={item.title}>
                                         {item.title}
                                     </option>
                                 ))}

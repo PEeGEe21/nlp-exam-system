@@ -11,7 +11,7 @@ const MainLayout = ({children}) => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
-    const userRole = "student"; 
+    const userRole = "admin"; 
     return (
         <>
             {/* <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} userRole={userRole}/>

@@ -1,10 +1,10 @@
 "use client"
 import QuestionsListTable from '@/app/components/tables/QuestionsListTable'
-import { questions } from '@/app/lib/constants';
 import { ArrowLeft, Filter, FilterSearch, SearchNormal1 } from 'iconsax-react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React from 'react'
+import { questions } from '@/app/lib/constants';
 
 const QuestionBank = () => {
   const router = useRouter();

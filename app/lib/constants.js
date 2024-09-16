@@ -1,8 +1,5 @@
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
-
 export const successtoastOptions = {
   duration: 8000,
   // position: 'top',
@@ -62,24 +59,40 @@ export const counts = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
   51, 52, 53, 54, 55, 56, 57, 58, 59];
 
 export const questions = [
-    {
-      id: 1,
-      question: "What is the capital of France?",
-      answer: "Paris",
-      options: ["New York", "London", "Paris", "Tokyo"],
-      correctAnswer: "Paris",
-      difficulty: "Medium",
-      mark: "3"
-    },
-    {
-      id: 2,
-      question: "Who won the Nobel Prize in Literature in 2020?",
-      answer: "Jane Austen",
-      options: ["Jane Austen", "George Orwell", "Stephen King", "J.K. Rowling"],
-      correctAnswer: "Jane Austen",
-      difficulty: "Easy",
-      mark: "3"
-    }
+  {
+    id: 1,
+    questionType: 1,
+    question: "What is the capital of France?",
+    qDifficulty: "Easy",
+    answers: [
+      { id: 1, content: "Paris", isCorrect: true },
+      { id: 2, content: "London", isCorrect: false },
+      { id: 3, content: "Berlin", isCorrect: false },
+      { id: 4, content: "Madrid", isCorrect: false }
+    ]
+  },
+  {
+    id: 2,
+    questionType: 1,
+    question: "The Earth is flat.",
+    qDifficulty: "Easy",
+    answers: [
+      { id: 1, content: "True", isCorrect: false },
+      { id: 2, content: "False", isCorrect: true }
+    ]
+  },
+  {
+    id: 3,
+    questionType: 1,
+    question: "Which planet is known as the Red Planet?",
+    qDifficulty: "Medium",
+    answers: [
+      { id: 1, content: "Mars", isCorrect: true },
+      { id: 2, content: "Jupiter", isCorrect: false },
+      { id: 3, content: "Saturn", isCorrect: false },
+      { id: 4, content: "Venus", isCorrect: false }
+    ]
+  },
 ]
 
 export const scoredQuestions = [

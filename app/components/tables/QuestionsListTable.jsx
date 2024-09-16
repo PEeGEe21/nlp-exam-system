@@ -50,7 +50,7 @@ const QuestionsListTable = ({ questions = []}) => {
                                             </div>
 
                                             <div className="bg-[#bac3d0] text-[#000000de] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2 ">
-                                                EASY
+                                                {question.qDifficulty}
                                             </div>
                                         </div>
                                         
@@ -60,7 +60,7 @@ const QuestionsListTable = ({ questions = []}) => {
                                             <Link href={'/admin/question-bank/'+question.id} className='rounded-md px-2 py-1 bg-[#1c699f] text-white '>
                                                 Preview
                                             </Link>
-                                            <Link href={'/admin/question-bank/'+question.id} className='flex items-center rounded-md bg-[#acb7ca] border border-[#93a1bb] text-black px-2 py-1 '>
+                                            <Link href={`/admin/question-bank/create?id=${question.id}`} className='flex items-center rounded-md bg-[#acb7ca] border border-[#93a1bb] text-black px-2 py-1 '>
                                                 <Pen size={12}/>
                                                 Edit
                                             </Link>

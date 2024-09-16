@@ -10,28 +10,13 @@ import { Switch } from "@chakra-ui/switch"
 // const Quill = dynamic(() => import('react-quill'), { ssr: false })
 
 const CreateExamsForm = () => {
-    const [answers, setAnswers] = useState([]);
-    const [richTextOptions, setRichTextOptions] = useState(false);
-    const [description, setDescription] = useState("");
-    const [questionType, setQuestionType] = useState("");
-    const [inputs, setInputs] = useState({
-        title: '',
-        difficultyType: '',
-        question_type: '',
-      });
-    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
+    const [examTitle, setExamTitle] = useState("");
+    const [examCode, setExamCode] = useState("");
+    const [questionMark, setQuestionMark] = useState(0);
+    const [examDescription, setExamDescription] = useState("");
+    const [startDateTime, setStartDateTime] = useState('');
 
-    
-    // const handleChange = (e) => {
-    //     setInputs((prev) => {
-    //       return { ...prev, [e.target.name]: e.target.value };
-    //     });
-    //     console.log(inputs, 'inputs')
-    //   };
-    const handleChange = (e) => {
-        setQuestionType(e.target.value)
-        console.log(questionType, 'inputs')
-    };
+    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
 
   return (
     <>
@@ -43,86 +28,74 @@ const CreateExamsForm = () => {
                             <label
                                 htmlFor="type"
                                 className="text-lg mb-1 font-medium"
-                            >
-                                Title
-                            </label>
-
+                            >Title</label>
                             <input
                                 id="title"
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="title"
                                 type='text'
-        
+                                required   
                                 onChange={(event) => {
                                     const value = event.target.value;
-                                    setQuestionType(value);
+                                    setExamTitle(value);
                                 }}
                             />
                         </div>
-
                     </div>
+
                     <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
                         <div className="relative flex flex-col w-full md:w-1/2 gap-1 mb-6 ">
                             <label
                                 htmlFor="code"
                                 className="text-lg mb-1 font-medium"
-                            >
-                                Code
-                            </label>
-
+                            >Code</label>
                             <input
                                 id="code"
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="code"
                                 type='text'
-                                
+                                required
                                 onChange={(event) => {
                                     const value = event.target.value;
-                                    setQuestionType(value);
+                                    setExamCode(value);
                                 }}
                             />
                         </div>
+
                         <div className="relative flex flex-col w-full md:w-1/2 gap-1 mb-6 ">
                             <label
                                 htmlFor="marks_per_question"
                                 className="text-lg mb-1 font-medium"
-                            >
-                                Marks per question
-                            </label>
-
+                            >Marks per question</label>
                             <input
                                 id="marks_per_question"
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="marks_per_question"
                                 type='number'
-                               
+                                required                            
                                 onChange={(event) => {
                                     const value = event.target.value;
-                                    setQuestionType(value);
+                                    setQuestionMark(value);
                                 }}
-                                // defaultValue={null}
                             />
                         </div>
-
                     </div>
 
                     <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
-
                         <div className="relative flex flex-col w-full gap-1 mb-6">
                             <label
                                 htmlFor="instruction"
                                 className="text-lg mb-1 font-medium"
-                            >
-                                Instruction
-                            </label>
+                            >Instruction</label>
                             <ReactQuill
                                 theme="snow"
-                                value={description}
-                                onChange={setDescription}
+                                required
+                                onChange={(value) => {
+                                    setExamDescription(value);
+                                }}
                                 className="border border-[#464849] h-auto min-h-72"
                             />
                         </div>
-
                     </div>
 
                     <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
@@ -130,72 +103,53 @@ const CreateExamsForm = () => {
                             <label
                                 htmlFor="start_date_time"
                                 className="text-lg mb-1 font-medium"
-                            >
-                                Start Date and Time
-                            </label>
-
+                            >Start Date and Time</label>
                             <input
                                 id="start_date_time"
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="start_date_time"
                                 type='datetime-local'
-                                // value={questionType}
-                                // onChange={handleChange}
                                 onChange={(event) => {
                                     const value = event.target.value;
-                                    setQuestionType(value);
-                                    // console.log(questionType)
+                                    setStartDateTime(value);
+                                    console.log("time to start exam is " + startDateTime)
                                 }}
-                                // defaultValue={null}
                             />
                         </div>
                         <div className="relative flex flex-col w-full md:w-1/2 gap-1 mb-6 ">
                             <label
                                 htmlFor="end_date_time"
                                 className="text-lg mb-1 font-medium"
-                            >
-                                End Date and Time
-                            </label>
-
+                            >End Date and Time</label>
                             <input
                                 id="end_date_time"
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="end_date_time"
                                 type='datetime-local'
-                                // value={questionType}
-                                // onChange={handleChange}
                                 onChange={(event) => {
                                     const value = event.target.value;
-                                    setQuestionType(value);
-                                    // console.log(questionType)
+                                    // setQuestionType(value);
                                 }}
-                                // defaultValue={null}
                             />
                         </div>
-
                     </div>
 
                     <div>
                         <label
                             className="text-lg mb-2 font-medium"
-                        >
-                            Duration
+                        >Duration
                         </label>
                         <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
                             <div className="relative flex flex-col w-full md:w-1/2 gap-1 mb-6 ">
                                 <label
                                     htmlFor="duration_hours"
                                     className="text-sm mb-1 font-medium"
-                                >
-                                    Hours
-                                </label>
-
+                                >Hours</label>
                                 <select
                                     id="duration_hours"
                                     className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
                                     name="duration_hours"
                                     defaultValue={0}
-                                    // onChange={handleChange}
                                 >
                                     {counts.map((item, index) => (
                                         <option key={index} value={item}>
@@ -208,10 +162,7 @@ const CreateExamsForm = () => {
                                 <label
                                     htmlFor="duration_minutes"
                                     className="text-sm mb-1 font-medium"
-                                >
-                                    Minutes
-                                </label>
-
+                                >Minutes</label>
                                 <select
                                     id="duration_minutes"
                                     className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
@@ -226,7 +177,6 @@ const CreateExamsForm = () => {
                                     ))}
                                 </select>
                             </div>
-
                         </div>
                     </div>
 
@@ -240,7 +190,6 @@ const CreateExamsForm = () => {
                             </label>
                             <div className=''>
                                 <Switch size='lg' id='random_questions'/>
-
                             </div>
                         </div>
                         <div className="relative flex flex-col w-full gap-1 mb-6 ">
