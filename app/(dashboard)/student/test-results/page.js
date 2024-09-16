@@ -1,26 +1,10 @@
 'use client'
 import ResultManagerTable from '@/app/components/tables/ResultManagerTable'
 import ResultManagerStudentTable from '@/app/components/tables/students/ResultManagerTable'
+import { tests } from '@/app/lib/constants'
 import React from 'react'
 
 const ResultManager = () => {
-  const tests = [
-    {
-      id: 1,
-      question: "What is the capital of France?",
-      answer: "Paris",
-      options: ["New York", "London", "Paris", "Tokyo"],
-      correctAnswer: "Paris"
-    },
-    {
-      id: 2,
-      question: "Who won the Nobel Prize in Literature in 2020?",
-      answer: "Jane Austen",
-      options: ["Jane Austen", "George Orwell", "Stephen King", "J.K. Rowling"],
-      correctAnswer: "Jane Austen"
-    }
-  ]
-
   return (
     <div>
         <div>

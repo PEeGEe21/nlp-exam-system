@@ -42,7 +42,7 @@ const ResultManagerStudentTable = ({ tests = []}) => {
                           <Td className="px-2 py-4 whitespace-nowrap">
                               <div className='flex items-start justify-between text-sm'>
                                   <p>
-                                      {test.question}
+                                      {test.title}
                                   </p>
                               </div>
                           </Td>

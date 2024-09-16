@@ -135,7 +135,7 @@ const StudentTestDetail = () => {
                                                                         </td>
                                                                         <td className='w-[30%]'>
                                                                             <span className={`text-white font-bold text-base size-[30px] border border-black flex items-center justify-center ${_itx.isCorrect ? 'bg-[#179301]' : 'bg-[#fa1301]'}`}>
-                                                                                <b className="item2 rd ng-binding part">{_itx.score}</b>
+                                                                                <b className="item2 part">{_itx.score}</b>
                                                                             </span>
                                                                         </td>
                                                                     </tr>
