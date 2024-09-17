@@ -213,21 +213,46 @@ export const demostudents = [
 
 export const tests = [
   {
-    id: 1,
-    title: "Social Studies Test",
-    answer: "Paris",
-    options: ["New York", "London", "Paris", "Tokyo"],
-    correctAnswer: "Paris"
+      id: 1,
+      title: "Introduction to React",
+      code: "REACT101",
+      questionMark: 50,
+      description: "A basic introduction to React and its core concepts.",
+      startDateTime: { date: "2024-09-20", time: "09:00" },
+      endDateTime: { date: "2024-09-20", time: "12:00" },
+      duration: { hour: 3, min: 0 }
   },
   {
-    id: 2,
-    title: "English Language Test",
-    answer: "Jane Austen",
-    options: ["Jane Austen", "George Orwell", "Stephen King", "J.K. Rowling"],
-    correctAnswer: "Jane Austen"
+      id: 2,
+      title: "Advanced JavaScript",
+      code: "JS202",
+      questionMark: 70,
+      description: "Deep dive into advanced JavaScript topics including closures, promises, and async/await.",
+      startDateTime: { date: "2024-10-05", time: "14:00" },
+      endDateTime: { date: "2024-10-05", time: "15:00" },
+      duration: { hour: 3, min: 0 }
+  },
+  {
+      id: 3,
+      title: "Database Management",
+      code: "DB301",
+      questionMark: 40,
+      description: "Understanding relational databases, SQL queries, and database design principles.",
+      startDateTime: { date: "2024-11-01", time: "10:00" },
+      endDateTime: { date: "2024-11-01", time: "13:00" },
+      duration: { hour: 3, min: 0 }
+  },
+  {
+      id: 4,
+      title: "Introduction to Python",
+      code: "PYTHON101",
+      questionMark: 60,
+      description: "An introduction to Python programming including syntax, data structures, and basic algorithms.",
+      startDateTime: { date: "2024-12-15", time: "08:00" },
+      endDateTime: { date: "2024-12-15", time: "11:00" },
+      duration: { hour: 3, min: 0 }
   }
-]
-
+];
 
 export const mainQuestions = [
   {

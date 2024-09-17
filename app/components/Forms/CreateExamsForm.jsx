@@ -1,22 +1,75 @@
 "use client"
-import { counts, questionDifficulty, questionTypes } from '@/app/lib/constants';
+import { counts, tests } from '@/app/lib/constants';
 import { Add, Trash } from 'iconsax-react';
 import React, { useEffect, useState, useMemo } from 'react'
-// import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import { Switch } from "@chakra-ui/switch"
-
-// const Quill = dynamic(() => import('react-quill'), { ssr: false })
+import { useSearchParams } from 'next/navigation';
 
 const CreateExamsForm = () => {
     const [examTitle, setExamTitle] = useState("");
     const [examCode, setExamCode] = useState("");
     const [questionMark, setQuestionMark] = useState(0);
     const [examDescription, setExamDescription] = useState("");
-    const [startDateTime, setStartDateTime] = useState('');
+    const [startDateTime, setStartDateTime] = useState({
+        date: '',
+        time: ''
+    });
+    const [endDateTime, setEndDateTime] = useState({
+        date: '',
+        time: ''
+    });
+    const [examDurationHr, setExamDurationHr] = useState(0);
+    const [examDurationMin, setExamDurationMin] = useState(0);
+    const [isEditing, setIsEditing] = useState(false);
 
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
+
+    const searchParams = useSearchParams();
+    const id = searchParams.get('id');
+
+    useEffect(()=>{
+        const testToEdit = tests.find(t => t.id === Number(id));
+
+        if (testToEdit) {
+            setIsEditing(true);
+            setExamTitle(testToEdit.title);
+            setExamCode(testToEdit.code);
+            setQuestionMark(testToEdit.questionMark);
+            setExamDescription(testToEdit.description);
+            setStartDateTime(testToEdit.startDateTime)
+            setEndDateTime(testToEdit.endDateTime)
+            setExamDurationHr(testToEdit.duration.hour)
+            setExamDurationMin(testToEdit.duration.min)
+          } else {
+            setIsEditing(false);
+            setExamTitle("");
+            setExamCode("");
+            setQuestionMark(0);
+            setExamDescription("");
+            setStartDateTime({
+                date: '',
+                time: ''
+            });
+            setEndDateTime({
+                date: '',
+                time: ''
+            });
+            setExamDurationHr(0)
+            setExamDurationMin(0)
+            }
+    }, [id, tests]);
+
+    const handleSubmit = () => {
+        if (isEditing) {
+          // Call API to update the question
+          console.log("Updating question:");
+        } else {
+          // Call API to create a new question
+          console.log("Creating question:");
+        }
+      };
 
   return (
     <>
@@ -34,7 +87,8 @@ const CreateExamsForm = () => {
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="title"
                                 type='text'
-                                required   
+                                required
+                                value={examTitle}
                                 onChange={(event) => {
                                     const value = event.target.value;
                                     setExamTitle(value);
@@ -55,6 +109,7 @@ const CreateExamsForm = () => {
                                 name="code"
                                 type='text'
                                 required
+                                value={examCode}
                                 onChange={(event) => {
                                     const value = event.target.value;
                                     setExamCode(value);
@@ -72,7 +127,8 @@ const CreateExamsForm = () => {
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="marks_per_question"
                                 type='number'
-                                required                            
+                                required
+                                value={questionMark}                       
                                 onChange={(event) => {
                                     const value = event.target.value;
                                     setQuestionMark(value);
@@ -90,6 +146,7 @@ const CreateExamsForm = () => {
                             <ReactQuill
                                 theme="snow"
                                 required
+                                value={examDescription}
                                 onChange={(value) => {
                                     setExamDescription(value);
                                 }}
@@ -109,10 +166,13 @@ const CreateExamsForm = () => {
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="start_date_time"
                                 type='datetime-local'
+                                value={`${startDateTime.date}T${startDateTime.time}`}
                                 onChange={(event) => {
-                                    const value = event.target.value;
-                                    setStartDateTime(value);
-                                    console.log("time to start exam is " + startDateTime)
+                                    const [date, time] = event.target.value.split('T');
+                                    setStartDateTime({
+                                        date,
+                                        time
+                                    });
                                 }}
                             />
                         </div>
@@ -126,9 +186,13 @@ const CreateExamsForm = () => {
                                 className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                 name="end_date_time"
                                 type='datetime-local'
+                                value={`${endDateTime.date}T${endDateTime.time}`}
                                 onChange={(event) => {
-                                    const value = event.target.value;
-                                    // setQuestionType(value);
+                                    const [date, time] = event.target.value.split('T');
+                                    setEndDateTime({
+                                        date,
+                                        time
+                                    });
                                 }}
                             />
                         </div>
@@ -150,6 +214,11 @@ const CreateExamsForm = () => {
                                     className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
                                     name="duration_hours"
                                     defaultValue={0}
+                                    value={examDurationHr}
+                                    onChange={(event) => {
+                                        const value = event.target.value;
+                                        setExamDurationHr(value);
+                                    }}
                                 >
                                     {counts.map((item, index) => (
                                         <option key={index} value={item}>
@@ -168,7 +237,11 @@ const CreateExamsForm = () => {
                                     className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
                                     name="duration_minutes"
                                     defaultValue={0}
-                                    // onChange={handleChange}
+                                    value={examDurationMin}
+                                    onChange={(event) => {
+                                        const value = event.target.value;
+                                        setExamDurationMin(value);
+                                    }}
                                 >
                                     {counts.map((item, index) => (
                                         <option key={index} value={item}>

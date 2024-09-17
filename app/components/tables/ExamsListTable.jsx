@@ -35,7 +35,7 @@ const ExamsListTable = ({ tests = []}) => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[#A19B99] text-[#313131]">
-                                {tests?.map((question, index) => (
+                                {tests?.map((test, index) => (
                                     <tr key={index}>
                                         <td className="px-2 py-4 text-base whitespace-nowrap">
                                             <span className="text-[#313131] text-base">
@@ -46,7 +46,7 @@ const ExamsListTable = ({ tests = []}) => {
                                             <div className='flex items-start justify-between text-sm'>
                                                 <div className='flex flex-col gap-2'>
                                                     <p className="text-xl font-semibold ">
-                                                        {question?.title}
+                                                        {test?.title}
                                                     </p>
                                                     <div>
                                                         Mon Apr 8th, 24 12:00am - Wed Apr 17th, 24 6:00pm
@@ -77,7 +77,7 @@ const ExamsListTable = ({ tests = []}) => {
                                                 <button className='btn p-1 bg-[#1c699f] border border-[#15527c] rounded text-white flex items-center'>
                                                     Publish
                                                 </button>
-                                                <Link href={'/admin/test-management/'+question.id} className='btn p-1 bg-[#acb7ca] border border-[#93a1bb] rounded text-black flex items-center'>
+                                                <Link href={`/admin/test-management/create?id=${test.id}`} className='btn p-1 bg-[#acb7ca] border border-[#93a1bb] rounded text-black flex items-center'>
                                                     <Pen size={12}/>
                                                     Edit
                                                 </Link>
