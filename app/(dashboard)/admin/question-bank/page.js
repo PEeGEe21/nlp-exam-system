@@ -57,15 +57,15 @@ const QuestionBank = () => {
                     name="status"
                     id="status"
                     defaultValue={0}
-                    className="border border-[#3B3939] py-2 px-4 text-sm block rounded-md h-full focus:outline-none bg-[#212121] text-white selection:bg-black"
+                    className="border border-[#3B3939] py-2 px-4 text-sm block rounded-md h-full focus:outline-none bg-transparent text-[#212121] selection:bg-black"
                   >
                     <option value={0}>All Questions</option>
                     <option>My Questions</option>
                   </select>
                   <button
-                    className={` hover:bg-[#303132] hover:text-[#EA6A32] p-2 rounded-md bg-[#303132] text-[#EA6A32]`}
+                    className={` border border-[#303132] hover:text-[#EA6A32] p-2 rounded-md text-[#303132] text-[#EA6A32] h-10 w-10 flex items-center justify-center`}
                   >
-                    <FilterSearch size={24} />
+                    <FilterSearch size={16} />
                   </button>
                 </div>
               </div>

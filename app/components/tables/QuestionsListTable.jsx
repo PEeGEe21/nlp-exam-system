@@ -3,8 +3,33 @@ import EmptyState from '../EmptyState';
 import Link from 'next/link';
 import { Trash } from 'iconsax-react';
 import { Pen } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const QuestionsListTable = ({ questions = []}) => {
+    const deleteQuestion = (id) => {
+        Swal.fire({
+            title: 'Are you sure you want to delete?',
+            text: 'You are about to delete a question!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete',
+            allowOutsideClick: () => !Swal.isLoading(), // Prevent clicking outside modal during loading
+            showLoaderOnConfirm: true,
+            preConfirm: async () => {
+                // delete api function
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                'Deleted!',
+                'The Question has been deleted.',
+                'success'
+                );
+            }
+        });
+    };
     return (
         <>
             <div className='shadow-lg'>
@@ -57,14 +82,14 @@ const QuestionsListTable = ({ questions = []}) => {
                                     </td>
                                     <td className="px-2 py-4 text-sm whitespace-nowrap">
                                         <div className="text-[#313131] text-xs flex items-center justify-end gap-2 pr-3 flex-row">
-                                            <Link href={'/admin/question-bank/'+question.id} className='rounded-md px-2 py-1 bg-[#1c699f] text-white '>
+                                            {/* <Link href={'/admin/question-bank/'+question.id} className='rounded-md px-2 py-1 bg-[#1c699f] text-white '>
                                                 Preview
-                                            </Link>
+                                            </Link> */}
                                             <Link href={`/admin/question-bank/create?id=${question.id}`} className='flex items-center rounded-md bg-[#acb7ca] border border-[#93a1bb] text-black px-2 py-1 '>
                                                 <Pen size={12}/>
                                                 Edit
                                             </Link>
-                                            <button className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
+                                            <button onClick={()=>deleteQuestion(question.id)} className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
                                                 <Trash size={12}/>
                                                 Delete
                                             </button>

@@ -3,8 +3,33 @@ import EmptyState from '../EmptyState';
 import Link from 'next/link';
 import { PenTool, Trash } from 'iconsax-react';
 import { Pen } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const ExamsListTable = ({ tests = []}) => {
+    const deleteTest = (id) => {
+        Swal.fire({
+            title: 'Are you sure you want to delete?',
+            text: 'You are about to delete a test!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete',
+            allowOutsideClick: () => !Swal.isLoading(), // Prevent clicking outside modal during loading
+            showLoaderOnConfirm: true,
+            preConfirm: async () => {
+                // delete api function
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Deleted!',
+                    'The Test has been deleted.',
+                    'success'
+                );
+            }
+        });
+    };
     return (
         <>
             
@@ -81,7 +106,7 @@ const ExamsListTable = ({ tests = []}) => {
                                                     <Pen size={12}/>
                                                     Edit
                                                 </Link>
-                                                <button className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
+                                                <button onClick={()=>deleteTest(question?.id)} className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
                                                     <Trash size={12}/>
                                                     Delete
                                                 </button>

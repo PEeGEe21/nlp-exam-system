@@ -1,6 +1,9 @@
 "use client";
 import CreateExamsForm from '@/app/components/Forms/CreateExamsForm';
 import CreateQuestionsForm from '@/app/components/Forms/CreateQuestionsForm'
+import AddQuestionsToExamsList from '@/app/components/tables/AddQuestionsToExamsList';
+import { questions } from '@/app/lib/constants';
+import { Progress, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, useToast } from "@chakra-ui/react";
 import { ArrowLeft } from 'iconsax-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -27,7 +30,46 @@ const CreateQuestion = () => {
                   </div>
             </div>
 
-            <CreateExamsForm />
+            <div className="py-2 mb-5 rounded-lg">
+                <div className="relative w-full py-4 shadow-box">
+                  <Tabs position="relative" variant="unstyled" isLazy>
+                    <TabList className="whitespace-nowrap gap-3 border-b border-[#3B3939] text-sm">
+                      <Tab
+                        className=" border-[#3B3939] text-[#81878B]"
+                        _hover={{ borderBottomColor: "#FFA178", color: "#FFFFFF", backgroundColor:"#313131" }}
+                        _selected={{ color: "#FFF", backgroundColor:"#313131" }}
+                      >
+                        Exam Details
+                      </Tab>
+                      <Tab 
+                        // onSelect={}
+                        className=" border-[#3B3939] text-[#81878B]"
+                        _hover={{ borderBottomColor: "#FFA178", color: "#FFFFFF", backgroundColor:"#313131" }}
+                        _selected={{ color: "#FFF", backgroundColor:"#313131" }}
+                      >
+                        Add Questions
+                      </Tab>
+                    </TabList>
+                    {/* <TabIndicator
+                      mt="-1.5px"
+                      height="2px"
+                      bg="#FFA178"
+                      borderRadius="1px"
+                    /> */}
+                    <TabPanels>
+                      <TabPanel className="px-0">
+                        <CreateExamsForm />
+                      </TabPanel>
+                      <TabPanel className="px-0">
+                        <div className="py-3">
+                          <AddQuestionsToExamsList questions={questions}/>
+                          {/* <EmptyState /> */}
+                        </div>
+                      </TabPanel>
+                    </TabPanels>
+                  </Tabs>
+                </div>
+              </div>
         </div>
     </>
   )
