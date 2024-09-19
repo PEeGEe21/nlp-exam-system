@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import { questions } from '@/app/lib/constants';
 
 const CreateQuestion = () => {
   const router = useRouter();

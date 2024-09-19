@@ -1,8 +1,8 @@
 "use client"
 import StudentsResultManagerTable from '@/app/components/tables/StudentsResultManagerTable'
 import { ArrowLeft } from 'iconsax-react'
-import React from 'react'
-import { useRouter } from 'next/navigation'
+import React, {useState, useEffect} from 'react'
+import { useRouter, useParams } from 'next/navigation'
 import {
     Table,
     Thead,
@@ -18,6 +18,26 @@ import { demostudents } from '@/app/lib/constants'
 
 const TestResult = () => {
   const router = useRouter();
+  const params = useParams();
+  const { slug: id } = params;
+  
+  const [studentsResult, setStudentsResult] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch('https://jsonplaceholder.typicode.com/studentresult');
+        if (res.ok) {
+          const data = await res.json();
+          setStudentsResult(data);
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err?.message);
+      }
+    };
+
+    fetchData();
+  }, [id]);
 
   return (
     <div className='space-y-5'>
@@ -66,8 +86,6 @@ const TestResult = () => {
                     </div>
                 </div>
             </div>
-
-
             <div>
                 <StudentsResultManagerTable students={demostudents}/>
             </div>

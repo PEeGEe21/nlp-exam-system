@@ -3,11 +3,29 @@ import QuestionsListTable from '@/app/components/tables/QuestionsListTable'
 import { ArrowLeft, Filter, FilterSearch, SearchNormal1 } from 'iconsax-react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { questions } from '@/app/lib/constants';
 
 const QuestionBank = () => {
+  const [question, setQuestions] = useState([])
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch('https://jsonplaceholder.typicode.com/questions');
+        if (res.ok) {
+          const data = await res.json();
+          setQuestions(data);
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err?.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+  
   return (
     <>
         <div>

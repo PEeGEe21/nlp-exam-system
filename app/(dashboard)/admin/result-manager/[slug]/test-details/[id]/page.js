@@ -1,8 +1,8 @@
 "use client"
 
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { ArrowLeft, Check } from 'iconsax-react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import {
     Table,
     Thead,
@@ -20,7 +20,28 @@ import { CloseIcon } from '@/app/components/ui/IconComponent'
 
 const StudentTestDetail = () => {
     const router = useRouter();
+    const params = useParams();
+    const { slug: id } = params;
     const status = "In Progress"
+
+    const [resultDetails, setResultDetails] = useState({})
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await fetch('https://jsonplaceholder.typicode.com/studentresult');
+                if (res.ok) {
+                const data = await res.json();
+                setResultDetails(data);
+                }
+            } catch (err) {
+                console.error('Error fetching data:', err?.message);
+            }
+            };
+
+        fetchData();
+    }, [id]);
+
     return (
         <div>
             <div className='space-y-5'>
