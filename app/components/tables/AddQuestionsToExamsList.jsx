@@ -14,7 +14,7 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions}) => {
         setCurrentQuestion(question);
         const updatedQuestions = questions.map(q => 
             q.id === question_id ? { ...q, is_added: !q.is_added } : q
-          );
+        );
         setQuestions(updatedQuestions);
 
         try {
@@ -39,8 +39,8 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions}) => {
                 toast.error(response.message);
             }
         } catch (err) {
-          console.log(err, 'err');
-          toast.error(err.message);
+            console.log(err, 'err');
+            toast.error(err.message);
         }
     };
     return (

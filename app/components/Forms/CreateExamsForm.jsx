@@ -29,8 +29,6 @@ const CreateExamsForm = ({testToEdit, id}) => {
 
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
 
-    
-
     useEffect(()=>{
 
         if (testToEdit) {

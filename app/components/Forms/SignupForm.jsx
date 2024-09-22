@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react'
+import React, {useState} from 'react'
 import { useForm } from "react-hook-form"
 import {
   Form,
@@ -16,15 +16,44 @@ import SocialLogin from './form-components/SocialsLogin';
 
 const SignupForm = () => {
   const form = useForm()
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const onSubmit = async (data) => {
+    setError('');
+    setSuccess('');
+
+    try {
+      const response = await fetch('http://localhost:3001/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Signup failed. Please try again.');
+      }
+
+      const result = await response.json();
+      setSuccess('Signup successful!');
+      console.log(result);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <>
         <div className="mb-6 pt-6 ">
           <h3 className="text-2xl font-bold text-[#000] text-center">
             Create an Account
           </h3>
-        </div>          
+        </div>
+        <div>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
+          {success && <p className="text-green-500 mt-2">{success}</p>}
+        </div>        
         <Form {...form}>
-        <form className="pt-5">
+        <form className="pt-5" onSubmit={form.handleSubmit(onSubmit)}>
         {/* email field */}
         <FormField
           control={form.control}
@@ -42,6 +71,7 @@ const SignupForm = () => {
             </FormItem>
           )}
         />
+        
         {/* password field */}
         <FormField
           control={form.control}

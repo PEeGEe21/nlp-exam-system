@@ -21,8 +21,10 @@ const CreateQuestion = () => {
 
   useEffect(() => {
     setQuestions(questions);
-  },[])
+  },[id])
+
   console.log(test,'test')
+
   return (
     <>
         <div>
