@@ -2,17 +2,27 @@
 import CreateExamsForm from '@/app/components/Forms/CreateExamsForm';
 import CreateQuestionsForm from '@/app/components/Forms/CreateQuestionsForm'
 import AddQuestionsToExamsList from '@/app/components/tables/AddQuestionsToExamsList';
-import { questions } from '@/app/lib/constants';
+import { questions, tests } from '@/app/lib/constants';
 import { Progress, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, useToast } from "@chakra-ui/react";
 import { ArrowLeft } from 'iconsax-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation';
 
 const CreateQuestion = () => {
+  const [questionsNew, setQuestions] = useState([]);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
 
+  const test = tests.find(t => t.id === Number(id));
+
+  useEffect(() => {
+    setQuestions(questions);
+  },[])
+  console.log(test,'test')
   return (
     <>
         <div>
@@ -58,11 +68,11 @@ const CreateQuestion = () => {
                     /> */}
                     <TabPanels>
                       <TabPanel className="px-0">
-                        <CreateExamsForm />
+                        <CreateExamsForm testToEdit={test} id={id}/>
                       </TabPanel>
                       <TabPanel className="px-0">
                         <div className="py-3">
-                          <AddQuestionsToExamsList questions={questions}/>
+                          <AddQuestionsToExamsList test={test} questions={questionsNew} setQuestions={setQuestions} />
                           {/* <EmptyState /> */}
                         </div>
                       </TabPanel>

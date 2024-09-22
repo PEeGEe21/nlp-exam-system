@@ -4,7 +4,7 @@ import React, {useState} from 'react'
 import Link from 'next/link';
 import A4Animation from '@/app/components/motion/Layout';
 import { signUpTexts } from '@/app/lib/constants';
-import { Eye } from 'iconsax-react';
+import { Eye, EyeSlash } from 'iconsax-react';
 
 const SignupPage = () => {
   const [email, setEmail] = useState("")
@@ -66,7 +66,7 @@ const SignupPage = () => {
                     <div className=" relative rounded-full  items-center w-full">
                         <button type='button' onClick={()=>setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pl-3 flex items-center h-full cursor-pointer">
                             <span className="text-[#BEBDBD] px-3">
-                                <Eye size={22} />
+                            {!showPassword ?<Eye size={22} />: <EyeSlash size={22}/> }
                             </span>
                         </button>
                         <input

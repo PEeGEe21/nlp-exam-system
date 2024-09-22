@@ -10,7 +10,7 @@ import { successtoastOptions } from './constants';
 
 const isWindowDefined = typeof window !== 'undefined';
 const hostUrl = process.env.NEXT_PUBLIC_AUTH_URL;
-const examsUrl = hostUrl + '/exams/';
+const examsUrl = hostUrl + '/tests/';
 const questionsUrl = hostUrl + '/questions/';
 const taskUrl = hostUrl + '/api/tasks/';
 const settingsUrl = hostUrl + '/api/users/';
@@ -44,15 +44,24 @@ export const fetchProjectsByUserId = async (user_id, page) => {
   }
 };
 
-// Tasks
+// Question
+export const addQuestionToExam = async (test_id, question, payload) => {
+  // question.is_added = question.is_added ? false : true;
 
-export const updateTaskPriorityStatus = async (priority, taskId) => {
-  const priorityStatus = priority === 1 ? false : true;
-  const response = await axios.put(
-    `${hostUrl}/api/tasks/${taskId}/update-priority`,
-    { priority: priorityStatus }
-  );
-  return response.data;
+  console.log(test_id, question, payload, 'test_id, question_id, payload')
+  // const response = await axios.post(
+  //   `${hostUrl}/api/tests/add-question-to-test/${test_id}/${question.id}`,
+  //   { payload: payload }
+  // );
+
+  const response = {
+    success: true,
+    data: {
+      is_added: question.is_added,
+    },
+    message: 'Question added successfully.',
+  }
+  return response;
 };
 
 export const getProjectTasks = async (projectId) => {
@@ -75,8 +84,8 @@ export const deleteTask = async (taskId) => {
 
 
 // Tests
-export const questionsFetch = async () => {
-  const response = await _getData('https://jsonplaceholder.typicode.com/todos');
+export const getQuestions = async () => {
+  const response = await _getData(questionsUrl);
   console.log(response);
 };
 
