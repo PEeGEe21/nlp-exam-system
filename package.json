@@ -25,7 +25,7 @@
     "@tanstack/react-query-devtools": "^5.54.1",
     "antd": "^5.20.5",
     "appwrite": "^15.0.0",
-    "axios": "^1.7.2",
+    "axios": "^1.7.7",
     "ckeditor5": "^43.0.0",
     "ckeditor5-premium-features": "^43.0.0",
     "class-variance-authority": "^0.7.0",

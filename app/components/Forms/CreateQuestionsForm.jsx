@@ -5,6 +5,8 @@ import React, { useEffect, useState, useMemo } from 'react'
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import { useSearchParams } from 'next/navigation';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const CreateQuestionsForm = () => {
     const [questionType, setQuestionType] = useState("");
@@ -12,11 +14,14 @@ const CreateQuestionsForm = () => {
     const [qDifficulty, setQDifficulty] = useState(0);
     const [answers, setAnswers] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
 
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
+    const router = useRouter();
     
     useEffect(()=>{
         const questionToEdit = questions.find(q => q.id === Number(id));
@@ -27,53 +32,53 @@ const CreateQuestionsForm = () => {
             setQuestion(questionToEdit.question);
             setQDifficulty(questionToEdit.qDifficulty);
             setAnswers(questionToEdit.answers || []);
-          } else {
+        } else {
             setIsEditing(false);
             setQuestionType("");
             setQuestion("");
             setQDifficulty(0);
             setAnswers([
                 {
-                    id: 1,
+                    fid: 1,
                     content: "",
                     isCorrect: false
                 },
                 {
-                    id: 2,
+                    fid: 2,
                     content: "",
                     isCorrect: false
                 },
             ])
-            }
+        }
     }, [id, questions]);
 
-    const updateAnswerContent = (id, newContent) => {
+    const updateAnswerContent = (fid, newContent) => {
         setAnswers(prevAnswers =>
             prevAnswers.map(answer =>
-                answer.id === id
+                answer.fid === fid
                     ? { ...answer, content: newContent }
                     : answer
             )
         );
     };
 
-    const selectCorrectOption = (id) => {
+    const selectCorrectOption = (fid) => {
         setAnswers(prevAnswers =>
             prevAnswers.map(answer =>
-                answer.id === id
+                answer.fid === fid
                     ? { ...answer, isCorrect: !answer.isCorrect }
                     : { ...answer, isCorrect: false }
             )
         );
     };
 
-    const deleteOption = (id) => {
-        setAnswers(prevAnswers => prevAnswers.filter(answer => answer.id !== id));
+    const deleteOption = (fid) => {
+        setAnswers(prevAnswers => prevAnswers.filter(answer => answer.fid !== fid));
     };
 
     const addOption = () => {
         const newOption = {
-            id: answers.length + 1,
+            fid: answers.length + 1,
             content: "",
         };
         setAnswers((prev) => [...prev, newOption]);
@@ -81,18 +86,39 @@ const CreateQuestionsForm = () => {
         console.log(answers, 'clicked');
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        const data = {
+            userId: 2,
+            difficultyId: qDifficulty,
+            optionTypeId: questionType,
+            question: question,
+            answers: answers
+        }
+
         if (isEditing) {
           // Call API to update the question
-          console.log("Updating question:");
+            console.log("Updating question:");
         } else {
-          // Call API to create a new question
-          console.log("Creating question:");
+            console.log("Creating question: " + question);
+            
+            const jsonData = JSON.stringify(data);
+            try {
+                const response = await axios.post('http://localhost:3001/api/questions/create', data);
+                if (response.data.success){
+                    setError('');
+                    setSuccess('Question added successfully!');
+                    router.push('/admin/question-bank');
+                }
+            } catch (err) {
+                setSuccess('');
+                setError('Failed to add question. Please try again.');
+                console.error(err);
+            }
         }
-      };
+    };
 
     return (
-      <>
+        <>
         <div className="py-6">
             <div className="shadow-md border border-black px-5 py-4 rounded-lg text-gray-900 bg-white">
                 <div>
@@ -137,6 +163,7 @@ const CreateQuestionsForm = () => {
                                 value={question}
                                 onChange={(value) => {
                                     setQuestion(value);
+                                    console.log(question)
                                 }}
                                 className="border border-[#464849] h-auto min-h-72"
                             />
@@ -161,8 +188,8 @@ const CreateQuestionsForm = () => {
                                 }}
                             >
                                 <option value={0}>Select Difficulty Level</option>
-                                {questionDifficulty.map((item) => (
-                                    <option key={item.id} value={item.title}>
+                                {questionDifficulty.map((item, index) => (
+                                    <option key={item.index} value={item.id}>
                                         {item.title}
                                     </option>
                                 ))}
@@ -201,16 +228,16 @@ const CreateQuestionsForm = () => {
                                                             value={answer.content}
                                                             required
                                                             autoComplete="off"
-                                                            onChange={(e) => updateAnswerContent(answer.id, e.target.value)}
+                                                            onChange={(e) => updateAnswerContent(answer.fid, e.target.value)}
                                                         />
                                                     <input
                                                         type="checkbox"
                                                         name="correctOption"
                                                         checked={answer.isCorrect || false}
-                                                        onChange={() => selectCorrectOption(answer.id)}
+                                                        onChange={() => selectCorrectOption(answer.fid)}
                                                     />
                                                     <button
-                                                        onClick={() => deleteOption(answer.id)}
+                                                        onClick={() => deleteOption(answer.fid)}
                                                         disabled={answers.length <= 2}
                                                         className="ml-2 p-2 bg-red-500 text-white rounded cursor-pointer"
                                                     >
@@ -240,14 +267,15 @@ const CreateQuestionsForm = () => {
                         </div>
                     }
                     
-
-                    
-                    
+                </div>
+                <div>
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    {success && <p style={{ color: 'green' }}>{success}</p>}
                 </div>
             </div>
             <div className="flex flex-wrap items-center justify-end w-full gap-3 mt-4">
                 <button
-                    // onClick={handleNext}
+                    onClick={handleSubmit}
                     type={"button"}
                     className="bg-[#008080] disabled:cursor-wait hover:bg-[#008080] min-w-[200px] whitespace-nowrap w-full md:w-auto
                     disabled:opacity-50 rounded-lg 

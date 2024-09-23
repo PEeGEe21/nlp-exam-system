@@ -5,6 +5,8 @@ import Link from 'next/link';
 import A4Animation from '@/app/components/motion/Layout';
 import { signUpTexts } from '@/app/lib/constants';
 import { Eye, EyeSlash } from 'iconsax-react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const SignupPage = () => {
   const [email, setEmail] = useState("")
@@ -12,6 +14,7 @@ const SignupPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const createAccount = async () => {
     const data = {
@@ -19,9 +22,10 @@ const SignupPage = () => {
       password,
     };
     try {
-        const response = await axios.post('https://dummy-endpoint.com/api/signup', data);
+        const response = await axios.post('http://localhost:3001/api/auth/signup', data);
         setSuccess('Account created successfully!');
         setError('');
+        router.push('/auth/login');
     } catch (err) {
         setError('Failed to create account. Please try again.');
         setSuccess('');

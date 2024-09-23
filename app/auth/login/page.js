@@ -5,6 +5,8 @@ import Link from 'next/link';
 import A4Animation from '../../components/motion/Layout';
 import { Eye, EyeSlash } from 'iconsax-react';
 import { signInTexts } from '@/app/lib/constants';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("")
@@ -12,6 +14,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const login = async () => {
     const data = {
@@ -19,16 +22,19 @@ const LoginPage = () => {
       password,
     };
     try {
-        const response = await axios.post('https://dummy-endpoint.com/api/login', data);
-        setSuccess('Login successfully!');
-        setError('');
+        const response = await axios.post('http://localhost:3001/api/auth/login', data);
+        if (response.data.success){
+          setError('');
+          setSuccess('Login successfully!');
+          router.push('/admin/dashboard');
+        }
     } catch (err) {
+        setSuccess('');
         if (err.response && err.response.data) {
           setError('Login failed. Please check your credentials.');
         } else {
           setError('Login failed. Please try again.');
         }
-        setSuccess('');
         console.error(err);
     }
   };
@@ -57,6 +63,10 @@ const LoginPage = () => {
                         className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                         type="email"
                         name="email"
+                        onChange={(e) => {
+                          const value = e.target.value
+                          setEmail(value)
+                        }}
                       />
                     </div>
 
@@ -78,6 +88,10 @@ const LoginPage = () => {
                                 id="password"
                                 className="block min-w-full px-3 pr-10 h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                 autoComplete="off"
+                                onChange={(e) => {
+                                  const value = e.target.value
+                                  setPassword(value)
+                                }}
                               />
                           </div>
                       </div>
