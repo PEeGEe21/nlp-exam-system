@@ -16,6 +16,7 @@ const CreateQuestionsForm = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [questionToEdit, setQuestionToEdit] = useState(null)
     
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
 
@@ -24,33 +25,45 @@ const CreateQuestionsForm = () => {
     const router = useRouter();
     
     useEffect(()=>{
-        const questionToEdit = questions.find(q => q.id === Number(id));
+        const fetchData = async () => {
+            if (id) {
+                try {
+                    const res = await fetch(`http://localhost:3001/api/questions/${id}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        const result = data.question
+                        console.log(result)
 
-        if (questionToEdit) {
-            setIsEditing(true);
-            setQuestionType(questionToEdit.questionType);
-            setQuestion(questionToEdit.question);
-            setQDifficulty(questionToEdit.qDifficulty);
-            setAnswers(questionToEdit.answers || []);
-        } else {
-            setIsEditing(false);
-            setQuestionType("");
-            setQuestion("");
-            setQDifficulty(0);
-            setAnswers([
-                {
-                    fid: 1,
-                    content: "",
-                    isCorrect: false
-                },
-                {
-                    fid: 2,
-                    content: "",
-                    isCorrect: false
-                },
-            ])
-        }
-    }, [id, questions]);
+                        setQuestionToEdit(result);
+                        setIsEditing(true);
+                        setQuestionType(result.optionTypeId);
+                        setQuestion(result.question);
+                        setQDifficulty(result.difficultyId);
+                        setAnswers(result.answers || []);
+                    } else {
+                        throw new Error('Failed to fetch the question');
+                    }
+                } catch (err) {
+                    console.error('Error fetching data:', err?.message);
+                }
+            } else {
+                setIsEditing(false);
+                resetForm();
+            }
+        };
+
+        fetchData();
+    }, [id]);
+
+    const resetForm = () => {
+        setQuestionType("");
+        setQuestion("");
+        setQDifficulty(0);
+        setAnswers([
+            { fid: 1, content: "", isCorrect: false },
+            { fid: 2, content: "", isCorrect: false },
+        ]);
+    };
 
     const updateAnswerContent = (fid, newContent) => {
         setAnswers(prevAnswers =>
@@ -72,8 +85,16 @@ const CreateQuestionsForm = () => {
         );
     };
 
-    const deleteOption = (fid) => {
-        setAnswers(prevAnswers => prevAnswers.filter(answer => answer.fid !== fid));
+    const deleteOption = async (fid, bid) => {
+        try {
+            const response = await axios.delete(`http://localhost:3001/api/questions/delete-answer/${bid}`);
+            if (response.success){
+                console.log("Answer succesfully deleted")
+                setAnswers(prevAnswers => prevAnswers.filter(answer => answer.fid !== fid));
+            }
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     const addOption = () => {
@@ -98,10 +119,24 @@ const CreateQuestionsForm = () => {
         if (isEditing) {
           // Call API to update the question
             console.log("Updating question:");
+
+            try {
+
+                // const response = await axios.put('http://localhost:3001/api/questions/create', data);
+                // if (response.data.success){
+                //     setError('');
+                //     setSuccess('Question added successfully!');
+                //     router.push('/admin/question-bank');
+                // }
+            } catch (err) {
+                setSuccess('');
+                setError('Failed to add question. Please try again.');
+                console.error(err);
+            }
+
         } else {
             console.log("Creating question: " + question);
             
-            const jsonData = JSON.stringify(data);
             try {
                 const response = await axios.post('http://localhost:3001/api/questions/create', data);
                 if (response.data.success){
@@ -237,7 +272,7 @@ const CreateQuestionsForm = () => {
                                                         onChange={() => selectCorrectOption(answer.fid)}
                                                     />
                                                     <button
-                                                        onClick={() => deleteOption(answer.fid)}
+                                                        onClick={() => deleteOption(answer.fid, answer.id)}
                                                         disabled={answers.length <= 2}
                                                         className="ml-2 p-2 bg-red-500 text-white rounded cursor-pointer"
                                                     >

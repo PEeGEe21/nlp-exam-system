@@ -2,10 +2,11 @@ import React from 'react'
 import EmptyState from '../EmptyState';
 import Link from 'next/link';
 import { Trash } from 'iconsax-react';
-import { Pen } from 'lucide-react';
+import { IdCardIcon, Pen } from 'lucide-react';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
-const QuestionsListTable = ({ questions = []}) => {
+const QuestionsListTable = ({ questions = [], setQuestions}) => {
     const deleteQuestion = (id) => {
         Swal.fire({
             title: 'Are you sure you want to delete?',
@@ -18,18 +19,35 @@ const QuestionsListTable = ({ questions = []}) => {
             allowOutsideClick: () => !Swal.isLoading(), // Prevent clicking outside modal during loading
             showLoaderOnConfirm: true,
             preConfirm: async () => {
-                // delete api function
+                try {
+                    const response = await axios.delete(`http://localhost:3001/api/questions/delete/${id}`);
+                    if (response.success){
+                        Swal.fire(
+                            'Deleted!',
+                            'The Question has been deleted.',
+                            'success'
+                        );
+                    } else {
+                        Swal.fire('Error!', 'There was an issue deleting your question.', 'error');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire('Error!', 'There was an issue deleting your question.', 'error');
+                    throw err; 
+                }
             },
         }).then((result) => {
             if (result.isConfirmed) {
+                setQuestions((prevQuestions) => prevQuestions.filter((question) => question.id !== id));
                 Swal.fire(
-                'Deleted!',
-                'The Question has been deleted.',
-                'success'
+                    'Deleted!',
+                    'The Question has been deleted.',
+                    'success'
                 );
             }
         });
     };
+
     return (
         <>
             <div className='shadow-lg'>
@@ -75,7 +93,7 @@ const QuestionsListTable = ({ questions = []}) => {
                                             </div>
 
                                             <div className="bg-[#bac3d0] text-[#000000de] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2 ">
-                                                {question.qDifficulty}
+                                                {question.difficultyId}
                                             </div>
                                         </div>
                                         

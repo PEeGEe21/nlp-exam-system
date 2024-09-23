@@ -4,7 +4,7 @@ import { ArrowLeft, Filter, FilterSearch, SearchNormal1 } from 'iconsax-react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, {useEffect, useState} from 'react'
-// import { questions } from '@/app/lib/constants';
+import { questions } from '@/app/lib/constants';
 
 const QuestionBank = () => {
   const [questions, setQuestions] = useState([])
@@ -89,7 +89,7 @@ const QuestionBank = () => {
               </div>
             </div>
             <div className="py-6">
-                <QuestionsListTable questions={questions}/>
+                <QuestionsListTable questions={questions} setQuestions={setQuestions}/>
             </div>
         </div>
     </>
