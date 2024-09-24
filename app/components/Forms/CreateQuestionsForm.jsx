@@ -131,15 +131,14 @@ const CreateQuestionsForm = ({id}) => {
 
             try {
 
-                // const response = await axios.put('http://localhost:3001/api/questions/create', data);
-                // if (response.data.success){
-                //     setError('');
-                //     setSuccess('Question added successfully!');
-                //     router.push('/admin/question-bank');
-                // }
+                const response = await axios.put(`http://localhost:3001/api/questions/edit/${id}`, data);
+                if (response.data.success){
+                    setError('');
+                    setSuccess('Question updated successfully!');
+                }
             } catch (err) {
                 setSuccess('');
-                setError('Failed to add question. Please try again.');
+                setError('Failed to update question. Please try again.');
                 console.error(err);
             }
 
