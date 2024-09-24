@@ -88,12 +88,12 @@ const QuestionsListTable = ({ questions = [], setQuestions}) => {
                                         <div>
                                             <div>
                                                 <p className="text-base text-[#313131]">
-                                                    {question.question}
+                                                    {question?.questionPlain ? question?.questionPlain : question?.question}
                                                 </p>
                                             </div>
 
                                             <div className="bg-[#bac3d0] text-[#000000de] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2 ">
-                                                {question.difficultyId}
+                                                {question?.difficulty?.title}
                                             </div>
                                         </div>
                                         

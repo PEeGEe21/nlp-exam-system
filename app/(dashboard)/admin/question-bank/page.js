@@ -13,7 +13,7 @@ const QuestionBank = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/questions/');
+        const res = await fetch('http://localhost:3001/api/questions');
         if (res.ok) {
           const result = await res.json();
           setQuestions(result.data);
@@ -83,7 +83,7 @@ const QuestionBank = () => {
                   <button
                     className={` border border-[#303132] hover:text-[#EA6A32] p-2 rounded-md text-[#303132] text-[#EA6A32] h-10 w-10 flex items-center justify-center`}
                   >
-                    <FilterSearch size={16} />
+                    <FilterSearch size={16} className="text-[#303132]"  />
                   </button>
                 </div>
               </div>

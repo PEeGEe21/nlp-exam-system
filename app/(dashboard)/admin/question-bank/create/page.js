@@ -4,11 +4,23 @@ import { ArrowLeft } from 'iconsax-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { questions } from '@/app/lib/constants';
+import { useSearchParams } from 'next/navigation';
 
 const CreateQuestion = () => {
+  const [pageTitle, setPageTitle] = useState("Create");
+
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
+  
+  useEffect(()=>{
+      if(id){
+          setPageTitle('Update');
+      }
+  }, [id]);
+
   const questions = [
     {
       id: 1,
@@ -59,11 +71,11 @@ const CreateQuestion = () => {
                   </button>
 
                   <div className="w-full">
-                    <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">Create Question</h1>
+                    <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">{pageTitle} Question</h1>
                   </div>
                 </div>
 
-            <CreateQuestionsForm questions={questions} />
+            <CreateQuestionsForm id={id} />
         </div>
     </>
   )

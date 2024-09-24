@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-const CreateQuestionsForm = () => {
+const CreateQuestionsForm = ({id}) => {
     const [questionType, setQuestionType] = useState("");
     const [question, setQuestion] = useState("");
     const [qDifficulty, setQDifficulty] = useState(0);
@@ -17,13 +17,11 @@ const CreateQuestionsForm = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [questionToEdit, setQuestionToEdit] = useState(null)
-    
+    const router = useRouter();
+
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
 
-    const searchParams = useSearchParams();
-    const id = searchParams.get('id');
-    const router = useRouter();
-    
+
     useEffect(()=>{
         const fetchData = async () => {
             if (id) {
@@ -224,7 +222,7 @@ const CreateQuestionsForm = () => {
                             >
                                 <option value={0}>Select Difficulty Level</option>
                                 {questionDifficulty.map((item, index) => (
-                                    <option key={item.index} value={item.id}>
+                                    <option key={index} value={item.id}>
                                         {item.title}
                                     </option>
                                 ))}
@@ -248,7 +246,7 @@ const CreateQuestionsForm = () => {
                                     {questionType == 1 ?
                                         <div>
                                             {(answers).map((answer, index)=>(
-                                                <div key={answer.id} className="relative flex flex-row w-full gap-4 mb-6  whitespace-nowrap items-center">
+                                                <div key={index} className="relative flex flex-row w-full gap-4 mb-6  whitespace-nowrap items-center">
                                                     <label
                                                         htmlFor={`name-${index}`}
                                                         className="text-sm mb-1"
@@ -308,7 +306,18 @@ const CreateQuestionsForm = () => {
                     {success && <p style={{ color: 'green' }}>{success}</p>}
                 </div>
             </div>
-            <div className="flex flex-wrap items-center justify-end w-full gap-3 mt-4">
+            <div className="flex flex-wrap items-center justify-between w-full gap-3 mt-4">
+                <button
+                    onClick={() => router.back()}
+                    type={"button"}
+                    className="bg-red-900 disabled:cursor-wait hover:bg-red-900 min-w-[200px] whitespace-nowrap w-full md:w-auto
+                    disabled:opacity-50 rounded-lg 
+                    transition-all duration-75 border-none px-5 
+                    font-medium p-3 text-base text-white block"
+                >
+                    Close
+                </button>
+
                 <button
                     onClick={handleSubmit}
                     type={"button"}
