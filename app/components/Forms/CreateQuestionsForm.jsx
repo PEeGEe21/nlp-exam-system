@@ -58,53 +58,64 @@ const CreateQuestionsForm = ({id}) => {
         setQuestion("");
         setQDifficulty(0);
         setAnswers([
-            { fid: 1, content: "", isCorrect: false },
-            { fid: 2, content: "", isCorrect: false },
+            { id: 1, content: "", isCorrect: false },
+            { id: 2, content: "", isCorrect: false },
         ]);
     };
 
-    const updateAnswerContent = (fid, newContent) => {
+    const updateAnswerContent = (id, newContent) => {
         setAnswers(prevAnswers =>
             prevAnswers.map(answer =>
-                answer.fid === fid
+                answer.id === id
                     ? { ...answer, content: newContent }
                     : answer
             )
         );
     };
 
-    const selectCorrectOption = (fid) => {
+    const selectCorrectOption = (id) => {
         setAnswers(prevAnswers =>
             prevAnswers.map(answer =>
-                answer.fid === fid
+                answer.id === id
                     ? { ...answer, isCorrect: !answer.isCorrect }
                     : { ...answer, isCorrect: false }
             )
         );
     };
 
-    const deleteOption = async (fid, bid) => {
-        try {
-            const response = await axios.delete(`http://localhost:3001/api/questions/delete-answer/${bid}`);
-            if (response.success){
-                console.log("Answer succesfully deleted")
-                setAnswers(prevAnswers => prevAnswers.filter(answer => answer.fid !== fid));
+    const deleteOption = async (id) => {
+        console.log("Deleting option with ID:", id);
+        if (id > 0) {
+            try {
+                console.log("Deleting from db");
+                const response = await axios.delete(`http://localhost:3001/api/questions/delete-answer/${id}`);
+                if (response.status >= 200 && response.status < 300 ) {
+                    console.log("Answer successfully deleted from the database");
+                    setAnswers(prevAnswers => prevAnswers.filter(answer => answer.id !== id));
+                } else {
+                    console.error("Failed to delete answer");
+                }
+            } catch (err) {
+                console.error("Error deleting answer from the database:", err);
             }
-        } catch (err) {
-            console.error(err);
+        } else {
+            setAnswers(prevAnswers => prevAnswers.filter(answer => answer.id !== id));
+            console.log("Answer successfully deleted from local state");
         }
     };
+    
 
     const addOption = () => {
         const newOption = {
-            fid: answers.length + 1,
+            id: -Math.abs(answers.length + 1),
             content: "",
+            isCorrect: false,
         };
+    
         setAnswers((prev) => [...prev, newOption]);
-        console.log('clicked');
-        console.log(answers, 'clicked');
     };
-
+    
+    
     const handleSubmit = async () => {
         const data = {
             userId: 2,
@@ -238,9 +249,6 @@ const CreateQuestionsForm = ({id}) => {
                                         htmlFor="token_name"
                                         className="text-lg mb-1 font-medium"
                                     >Question Options</label>
-                                    {/* <span onClick={()=>(setRichTextOptions(!richTextOptions))} className='text-blue-600 cursor-pointer'>
-                                        rich text
-                                    </span> */}
                                 </div>
                                 <div>
                                     {questionType == 1 ?
@@ -261,16 +269,16 @@ const CreateQuestionsForm = ({id}) => {
                                                             value={answer.content}
                                                             required
                                                             autoComplete="off"
-                                                            onChange={(e) => updateAnswerContent(answer.fid, e.target.value)}
+                                                            onChange={(e) => updateAnswerContent(answer.id, e.target.value)}
                                                         />
                                                     <input
                                                         type="checkbox"
                                                         name="correctOption"
                                                         checked={answer.isCorrect || false}
-                                                        onChange={() => selectCorrectOption(answer.fid)}
+                                                        onChange={() => selectCorrectOption(answer.id)}
                                                     />
                                                     <button
-                                                        onClick={() => deleteOption(answer.fid, answer.id)}
+                                                        onClick={() => deleteOption(answer.id)}
                                                         disabled={answers.length <= 2}
                                                         className="ml-2 p-2 bg-red-500 text-white rounded cursor-pointer"
                                                     >
@@ -299,7 +307,6 @@ const CreateQuestionsForm = ({id}) => {
                             </div>
                         </div>
                     }
-                    
                 </div>
                 <div>
                     {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -326,8 +333,8 @@ const CreateQuestionsForm = ({id}) => {
                     transition-all duration-75 border-none px-5 
                     font-medium p-3 text-base text-white block"
                 >
-                    Submit
-                </button>
+                    {isEditing ? "Update" : "Create"}
+                    </button>
             </div>
         
         </div>
