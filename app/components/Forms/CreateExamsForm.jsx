@@ -7,72 +7,113 @@ import dynamic from "next/dynamic";
 import { Switch } from "@chakra-ui/switch"
 import { useSearchParams } from 'next/navigation';
 import { LoaderIcon } from '../ui/IconComponent';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const CreateExamsForm = ({testToEdit, id}) => {
-    console.log(testToEdit)
     const [isLoading, setIsLoading] = useState(true);
     const [examTitle, setExamTitle] = useState("");
     const [examCode, setExamCode] = useState("");
     const [questionMark, setQuestionMark] = useState(0);
     const [examDescription, setExamDescription] = useState("");
-    const [startDateTime, setStartDateTime] = useState({
-        date: '',
-        time: ''
-    });
-    const [endDateTime, setEndDateTime] = useState({
-        date: '',
-        time: ''
-    });
+    const [startDateTime, setStartDateTime] = useState("2023-09-24T14:30");
+    const [endDateTime, setEndDateTime] = useState("2023-09-24T14:30");
     const [examDurationHr, setExamDurationHr] = useState(0);
     const [examDurationMin, setExamDurationMin] = useState(0);
     const [isEditing, setIsEditing] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const router = useRouter();
 
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
 
     useEffect(()=>{
+        const fetchData = async () => {
+            if (id) {
+                try {
+                    const res = await fetch(`http://localhost:3001/api/questions/${id}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        const result = data.question
+                        console.log(result)
 
-        if (testToEdit) {
-            setIsEditing(true);
-            setExamTitle(testToEdit.title);
-            setExamCode(testToEdit.code);
-            setQuestionMark(testToEdit.questionMark);
-            setExamDescription(testToEdit.description);
-            setStartDateTime(testToEdit.startDateTime)
-            setEndDateTime(testToEdit.endDateTime)
-            setExamDurationHr(testToEdit.duration.hour)
-            setExamDurationMin(testToEdit.duration.min)
-          } else {
-            setIsEditing(false);
-            setExamTitle("");
-            setExamCode("");
-            setQuestionMark(0);
-            setExamDescription("");
-            setStartDateTime({
-                date: '',
-                time: ''
-            });
-            setEndDateTime({
-                date: '',
-                time: ''
-            });
-            setExamDurationHr(0)
-            setExamDurationMin(0)
-        }
+                        setIsEditing(true);
+                        setExamTitle(testToEdit.title);
+                        setExamCode(testToEdit.code);
+                        setQuestionMark(testToEdit.questionMark);
+                        setExamDescription(testToEdit.description);
+                        setStartDateTime(testToEdit.startDateTime)
+                        setEndDateTime(testToEdit.endDateTime)
+                        setExamDurationHr(testToEdit.duration.hour)
+                        setExamDurationMin(testToEdit.duration.min)
+                    } else {
+                        throw new Error('Failed to fetch the question');
+                    }
+                } catch (err) {
+                    console.error('Error fetching data:', err?.message);
+                }
+            } else {
+                setIsEditing(false);
+                resetForm();
+            }
+        };
 
+        fetchData();
         setIsLoading(false);
-    }, [testToEdit, id, tests]);
 
-    const handleSubmit = () => {
+    }, [testToEdit, id]);
+
+    const resetForm = () => {
+        setExamTitle("");
+        setExamCode("");
+        setQuestionMark(0);
+        setExamDescription("");
+        setStartDateTime("2023-09-24T14:30");
+        setEndDateTime("2023-09-24T14:30");
+        setExamDurationHr(0)
+        setExamDurationMin(0)
+    };
+
+    const handleSubmit = async () => {
+        const sDateToSend = new Date(startDateTime);
+        const eDateToSend = new Date(endDateTime);
+
+        const sIsoDate = sDateToSend.toISOString();
+        const eIsoDate = eDateToSend.toISOString();
+
+        const data = {
+            userId: 1,
+            markPerQuestion: questionMark,
+            title: examTitle,
+            code: examCode,
+            durationHours: examDurationHr,
+            durationMinutes: examDurationMin,
+            startDate: sIsoDate,
+            endDate: eIsoDate,
+            instructions: examDescription
+        }
         if (isEditing) {
           // Call API to update the question
-          console.log("Updating question:");
+            console.log("Updating question:");
         } else {
-          // Call API to create a new question
-          console.log("Creating question:");
+            console.log("Creating exam:");
+            
+            try {
+                const response = await axios.post('http://localhost:3001/api/tests/create', data);
+                if (response.data.success){
+                    setError('');
+                    setSuccess('Exam added successfully!');
+                    router.push('/admin/test-management');
+                }
+            } catch (err) {
+                setSuccess('');
+                setError('Failed to add question. Please try again.');
+                console.error(err);
+            }
         }
-      };
+    };
 
-  return (
+    return (
     <>
         {!isLoading ? 
 
@@ -169,13 +210,11 @@ const CreateExamsForm = ({testToEdit, id}) => {
                                     className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                     name="start_date_time"
                                     type='datetime-local'
-                                    value={`${startDateTime.date}T${startDateTime.time}`}
+                                    value={startDateTime}
                                     onChange={(event) => {
-                                        const [date, time] = event.target.value.split('T');
-                                        setStartDateTime({
-                                            date,
-                                            time
-                                        });
+                                        const value = event.target.value;
+                                        setStartDateTime(value);
+                                        console.log(startDateTime)
                                     }}
                                 />
                             </div>
@@ -191,11 +230,8 @@ const CreateExamsForm = ({testToEdit, id}) => {
                                     type='datetime-local'
                                     value={`${endDateTime.date}T${endDateTime.time}`}
                                     onChange={(event) => {
-                                        const [date, time] = event.target.value.split('T');
-                                        setEndDateTime({
-                                            date,
-                                            time
-                                        });
+                                        const value = event.target.value;
+                                        setEndDateTime(value);
                                     }}
                                 />
                             </div>
@@ -304,17 +340,21 @@ const CreateExamsForm = ({testToEdit, id}) => {
 
                         </div>
                     </div>
+                    <div>
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    {success && <p style={{ color: 'green' }}>{success}</p>}
+                </div>
                 </div>
                 <div className="flex flex-wrap items-center justify-end w-full gap-3 mt-4">
                     <button
-                        // onClick={handleNext}
+                        onClick={handleSubmit}
                         type={"button"}
                         className="bg-[#008080] disabled:cursor-wait hover:bg-[#008080] min-w-[200px] whitespace-nowrap w-full md:w-auto
                         disabled:opacity-50 rounded-lg 
                         transition-all duration-75 border-none px-5 
                         font-medium p-3 text-base text-white block"
                     >
-                        Submit
+                        {isEditing ? "Update" : "Create"}
                     </button>
                 </div>
             

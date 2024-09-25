@@ -5,10 +5,28 @@ import { tests } from '@/app/lib/constants';
 import { ArrowLeft } from 'iconsax-react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 
 const TestManagement = () => {
+  const [tests, setTests] = useState([])
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch('http://localhost:3001/api/tests');
+        if (res.ok) {
+          const result = await res.json();
+          setTests(result.data);
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err?.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
         <div>
