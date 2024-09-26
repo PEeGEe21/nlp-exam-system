@@ -16,7 +16,6 @@ const CreateQuestionsForm = ({id}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [questionToEdit, setQuestionToEdit] = useState(null)
     const router = useRouter();
 
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
@@ -32,7 +31,6 @@ const CreateQuestionsForm = ({id}) => {
                         const result = data.question
                         console.log(result)
 
-                        setQuestionToEdit(result);
                         setIsEditing(true);
                         setQuestionType(result.optionTypeId);
                         setQuestion(result.question);

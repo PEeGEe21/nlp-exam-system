@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { PenTool, Trash } from 'iconsax-react';
 import { Pen } from 'lucide-react';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
-const ExamsListTable = ({ tests = []}) => {
+const ExamsListTable = ({ tests = [], setTests}) => {
     const deleteTest = (id) => {
         Swal.fire({
             title: 'Are you sure you want to delete?',
@@ -18,10 +19,26 @@ const ExamsListTable = ({ tests = []}) => {
             allowOutsideClick: () => !Swal.isLoading(), // Prevent clicking outside modal during loading
             showLoaderOnConfirm: true,
             preConfirm: async () => {
-                // delete api function
+                try {
+                    const response = await axios.delete(`http://localhost:3001/api/tests/delete/${id}`);
+                    if (response.success){
+                        Swal.fire(
+                            'Deleted!',
+                            'The Exam has been deleted.',
+                            'success'
+                        );
+                    } else {
+                        Swal.fire('Error!', 'There was an issue deleting your exam.', 'error');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire('Error!', 'There was an issue deleting your exam.', 'error');
+                    throw err; 
+                }
             },
         }).then((result) => {
             if (result.isConfirmed) {
+                setTests((prevTests) => prevTests.filter((test) => test.id !== id));
                 Swal.fire(
                     'Deleted!',
                     'The Test has been deleted.',
@@ -106,7 +123,7 @@ const ExamsListTable = ({ tests = []}) => {
                                                     <Pen size={12}/>
                                                     Edit
                                                 </Link>
-                                                <button onClick={()=>deleteTest(question?.id)} className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
+                                                <button onClick={()=>deleteTest(test.id)} className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
                                                     <Trash size={12}/>
                                                     Delete
                                                 </button>

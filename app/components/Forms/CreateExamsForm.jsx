@@ -31,21 +31,26 @@ const CreateExamsForm = ({testToEdit, id}) => {
         const fetchData = async () => {
             if (id) {
                 try {
-                    const res = await fetch(`http://localhost:3001/api/questions/${id}`);
+                    const res = await fetch(`http://localhost:3001/api/tests/${id}`);
                     if (res.ok) {
                         const data = await res.json();
-                        const result = data.question
+                        const result = data.test
                         console.log(result)
+                        const sDateString = result.startDate;
+                        const sFormattedDate = sDateString.slice(0, 16);
+
+                        const eDateString = result.endDate;
+                        const eFormattedDate = eDateString.slice(0, 16);
 
                         setIsEditing(true);
-                        setExamTitle(testToEdit.title);
-                        setExamCode(testToEdit.code);
-                        setQuestionMark(testToEdit.questionMark);
-                        setExamDescription(testToEdit.description);
-                        setStartDateTime(testToEdit.startDateTime)
-                        setEndDateTime(testToEdit.endDateTime)
-                        setExamDurationHr(testToEdit.duration.hour)
-                        setExamDurationMin(testToEdit.duration.min)
+                        setExamTitle(result.title);
+                        setExamCode(result.code);
+                        setQuestionMark(result.markPerQuestion);
+                        setExamDescription(result.instructions);
+                        setStartDateTime(sFormattedDate)
+                        setEndDateTime(eFormattedDate)
+                        setExamDurationHr(result.durationHours)
+                        setExamDurationMin(result.durationMinutes)
                     } else {
                         throw new Error('Failed to fetch the question');
                     }
@@ -93,8 +98,19 @@ const CreateExamsForm = ({testToEdit, id}) => {
             instructions: examDescription
         }
         if (isEditing) {
-          // Call API to update the question
-            console.log("Updating question:");
+            console.log("Updating exam");
+            try {
+
+                const response = await axios.put(`http://localhost:3001/api/tests/edit/${id}`, data);
+                if (response.data.success){
+                    setError('');
+                    setSuccess('Exam updated successfully!');
+                }
+            } catch (err) {
+                setSuccess('');
+                setError('Failed to update exam. Please try again.');
+                console.error(err);
+            }
         } else {
             console.log("Creating exam:");
             
@@ -107,7 +123,7 @@ const CreateExamsForm = ({testToEdit, id}) => {
                 }
             } catch (err) {
                 setSuccess('');
-                setError('Failed to add question. Please try again.');
+                setError('Failed to add exam. Please try again.');
                 console.error(err);
             }
         }
@@ -228,7 +244,7 @@ const CreateExamsForm = ({testToEdit, id}) => {
                                     className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-10 rounded-md focus:outline-0"
                                     name="end_date_time"
                                     type='datetime-local'
-                                    value={`${endDateTime.date}T${endDateTime.time}`}
+                                    value={endDateTime}
                                     onChange={(event) => {
                                         const value = event.target.value;
                                         setEndDateTime(value);
