@@ -129,7 +129,7 @@ const CreateQuestionsForm = ({id}) => {
 
             try {
 
-                const response = await axios.put(`http://localhost:3001/api/questions/edit/${id}`, data);
+                const response = await axios.patch(`http://localhost:3001/api/questions/edit/${id}`, data);
                 if (response.data.success){
                     setError('');
                     setSuccess('Question updated successfully!');
