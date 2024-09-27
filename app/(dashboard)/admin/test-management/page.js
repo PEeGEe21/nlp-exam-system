@@ -48,7 +48,7 @@ const TestManagement = () => {
             </div>
 
             <div className="py-6">
-                <ExamsListTable tests={tests}/>
+                <ExamsListTable tests={tests} setTests={setTests}/>
             </div>
         </div>
     </>

@@ -17,6 +17,8 @@ const CreateQuestion = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 
+  const isEditing = Boolean(id);
+
   const test = tests.find(t => t.id === Number(id));
 
   useEffect(() => {
@@ -53,6 +55,7 @@ const CreateQuestion = () => {
                       >
                         Exam Details
                       </Tab>
+                      {isEditing && (
                       <Tab 
                         // onSelect={}
                         className=" border-[#3B3939] text-[#81878B]"
@@ -61,6 +64,7 @@ const CreateQuestion = () => {
                       >
                         Add Questions
                       </Tab>
+                      )}
                     </TabList>
                     {/* <TabIndicator
                       mt="-1.5px"
@@ -70,7 +74,7 @@ const CreateQuestion = () => {
                     /> */}
                     <TabPanels>
                       <TabPanel className="px-0">
-                        <CreateExamsForm testToEdit={test} id={id}/>
+                        <CreateExamsForm id={id}/>
                       </TabPanel>
                       <TabPanel className="px-0">
                         <div className="py-3">

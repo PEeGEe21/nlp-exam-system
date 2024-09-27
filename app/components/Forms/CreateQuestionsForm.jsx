@@ -16,7 +16,6 @@ const CreateQuestionsForm = ({id}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [questionToEdit, setQuestionToEdit] = useState(null)
     const router = useRouter();
 
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
@@ -32,7 +31,6 @@ const CreateQuestionsForm = ({id}) => {
                         const result = data.question
                         console.log(result)
 
-                        setQuestionToEdit(result);
                         setIsEditing(true);
                         setQuestionType(result.optionTypeId);
                         setQuestion(result.question);
@@ -131,7 +129,7 @@ const CreateQuestionsForm = ({id}) => {
 
             try {
 
-                const response = await axios.put(`http://localhost:3001/api/questions/edit/${id}`, data);
+                const response = await axios.patch(`http://localhost:3001/api/questions/edit/${id}`, data);
                 if (response.data.success){
                     setError('');
                     setSuccess('Question updated successfully!');
