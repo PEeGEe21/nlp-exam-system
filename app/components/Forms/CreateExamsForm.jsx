@@ -101,7 +101,7 @@ const CreateExamsForm = ({testToEdit, id}) => {
             console.log("Updating exam");
             try {
 
-                const response = await axios.put(`http://localhost:3001/api/tests/edit/${id}`, data);
+                const response = await axios.patch(`http://localhost:3001/api/tests/edit/${id}`, data);
                 if (response.data.success){
                     setError('');
                     setSuccess('Exam updated successfully!');

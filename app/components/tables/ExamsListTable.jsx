@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import EmptyState from '../EmptyState';
 import Link from 'next/link';
 import { PenTool, Trash } from 'iconsax-react';
@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 
 const ExamsListTable = ({ tests = [], setTests}) => {
+
     const deleteTest = (id) => {
         Swal.fire({
             title: 'Are you sure you want to delete?',
@@ -47,6 +48,56 @@ const ExamsListTable = ({ tests = [], setTests}) => {
             }
         });
     };
+
+    const publishTest = (id) => {
+        Swal.fire({
+            title: 'Are you sure you want to publish this test?',
+            text: 'You are about to publish a test!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Publish',
+            allowOutsideClick: () => !Swal.isLoading(), // Prevent clicking outside modal during loading
+            showLoaderOnConfirm: true,
+            preConfirm: async () => {
+                try {
+                    const data = {
+                        isPublished: 1
+                    }
+                    const response = await axios.patch(`http://localhost:3001/api/tests/edit/${id}`, data);
+                    if (response.data.success){
+                        setTests((prevTests) =>
+                            prevTests.map((test) => 
+                                test.id === id ? { ...test, isPublished: 1 } : test
+                            )
+                        );
+                        Swal.fire(
+                            'Published!',
+                            'The Exam has been published.',
+                            'success'
+                        );
+                    } else {
+                        Swal.fire('Error!', 'There was an issue publishing your exam.', 'error');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire('Error!', 'There was an issue publishing your exam.', 'error');
+                    throw err; 
+                }
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Published!',
+                    'The Test has been published.',
+                    'success'
+                );
+            }
+        });
+    };
+
+
     return (
         <>
             
@@ -104,9 +155,15 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                                                         <span className="bg-[#659be0] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
                                                             2mrk(s)/ques
                                                         </span>
-                                                        <span className="bg-[#F1C40F] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
-                                                            Not Published
-                                                        </span>
+                                                        {test.isPublished === 1 ? (
+                                                            <span className="bg-[#4ade80] text-black max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
+                                                                Published
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-[#F1C40F] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
+                                                                Not Published
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 
@@ -116,9 +173,11 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                                         </td>
                                         <td className="px-2 py-4 text-sm whitespace-nowrap">
                                             <div className="text-[#313131] text-xs flex items-center justify-end gap-2 flex-row">
-                                                <button className='btn p-1 bg-[#1c699f] border border-[#15527c] rounded text-white flex items-center'>
+                                            {test.isPublished !== 1 && (
+                                                <button onClick={()=>publishTest(test.id)} className='btn p-1 bg-[#1c699f] border border-[#15527c] rounded text-white flex items-center'>
                                                     Publish
                                                 </button>
+                                            )}
                                                 <Link href={`/admin/test-management/create?id=${test.id}`} className='btn p-1 bg-[#acb7ca] border border-[#93a1bb] rounded text-black flex items-center'>
                                                     <Pen size={12}/>
                                                     Edit

@@ -10,8 +10,7 @@ const Navbar = () => {
   // const { toggle, showMenu } = useContext(MenuContext) || {};
   const showMenu = null;
   return (
-    <>
-      <header>
+      <header className='h-[10%]'>
         <div className='flex justify-between items-center text-[#373636]'>
           <div>
             <Link
@@ -44,8 +43,14 @@ const Navbar = () => {
               </li>
               <li>
                 <Link
-                  className="flex justify-center items-center text-white font-medium bg-[#008080] px-4 h-[50px] rounded-[50px]"
+                  className=""
                   href="/auth/login"
+                >Login</Link>
+              </li>
+              <li>
+                <Link
+                  className="flex justify-center items-center text-white font-medium bg-[#008080] px-4 h-[50px] rounded-[50px]"
+                  href="/auth/signup"
                 >
                   Get Started</Link>
               </li>
@@ -53,7 +58,6 @@ const Navbar = () => {
           </div>
         </div>
       </header>
-    </>
   );
 };
 
