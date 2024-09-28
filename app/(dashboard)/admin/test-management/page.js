@@ -43,15 +43,15 @@ const TestManagement = () => {
     fetchData();
   }, [reloadKey]);
 
-    const filteredAllExams = useMemo(() => {
-      if (searchQuery && tests?.length > 0) {
-        const filtered = tests.filter((launch) =>
-          launch?.title?.toLowerCase()?.includes(searchQuery?.toLowerCase())
-        );
-        return filtered;
-      }
-      return tests;
-    }, [searchQuery, tests]);
+    // const filteredAllExams = useMemo(() => {
+    //   if (searchQuery && tests?.length > 0) {
+    //     const filtered = tests.filter((launch) =>
+    //       launch?.title?.toLowerCase()?.includes(searchQuery?.toLowerCase())
+    //     );
+    //     return filtered;
+    //   }
+    //   return tests;
+    // }, [searchQuery, tests]);
 
   return (
     <>
@@ -109,7 +109,7 @@ const TestManagement = () => {
               </div>
 
             <div className="py-6">
-                <ExamsListTable tests={filteredAllExams} setTests={setTests}/>
+                <ExamsListTable tests={tests} setTests={setTests}/>
             </div>
         </div>
     </>

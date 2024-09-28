@@ -48,24 +48,10 @@ export const fetchProjectsByUserId = async (user_id, page) => {
 
 // Question
 export const addQuestionToExam = async (test_id, question, payload) => {
-  // question.is_added = question.is_added ? false : true;
-
-  console.log(test_id, question, payload, 'test_id, question_id, payload')
   const response = await axios.post(
     `http://localhost:3001/api/tests/add-question-to-test/${test_id}/${question.id}`,
     payload
   );
-
-  // console.log(response)
-  
-  // const response = {
-  //   success: true,
-  //   data: {
-  //     is_added: question.is_added,
-  //   },
-  //   message: 'Question added successfully.',
-  // }
-  // return
   return response;
 };
 

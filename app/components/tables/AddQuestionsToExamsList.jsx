@@ -38,15 +38,20 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) 
             };
 
             question.is_added = !question.is_added;
+
+            
     
             const response = await addQuestionToExam(test.id, question, payload);
-            console.log(response.data.success, response.success, 'heree')
             if (response.data.success) {
+
+                if(!response.data.is_added){
+                    question.question_test_mark = 0;
+                }
                 // question.is_added = response.data.is_added;
                 // const updatedQuestions = await getQuestions();
                 // setQuestions(updatedQuestions);
                 const revertedQuestions = questions.map(q =>
-                    q.id === question_id ? { ...q, is_added: question.is_added } : q
+                    q.id === question_id ? { ...q, is_added: question.is_added, question_test_mark:  question.question_test_mark} : q
                 );
                 setQuestions(revertedQuestions);
                 toast.success(response.data.message);
@@ -64,7 +69,7 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) 
         try {
             const mark = questionMarks[question_id];
           // Make the API request to update the question mark
-          const response = await axios.post(`http://localhost:3001/api/tests/${test.id}/${question_test_id}/mark`, {
+          const response = await axios.post(`http://localhost:3001/api/tests/${test.id}/${question_id}/mark`, {
             mark,
           });
     
@@ -110,7 +115,6 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) 
       };
 
     const toggleIsAddingMark = (questionTestId, currentMark) => {
-        console.log(questionTestId, 'questionTestId')
         setIsAddingMark((prev) => ({
           ...prev,
           [questionTestId]: true,

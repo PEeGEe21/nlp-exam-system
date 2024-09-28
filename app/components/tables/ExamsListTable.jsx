@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+"use client"
+import React, { useMemo, useState } from 'react'
 import EmptyState from '../EmptyState';
 import Link from 'next/link';
 import { PenTool, Trash } from 'iconsax-react';
@@ -108,7 +109,6 @@ const ExamsListTable = ({ tests = [], setTests}) => {
         });
     };
 
-
     return (
         <>
             
@@ -139,72 +139,95 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[#A19B99] text-[#313131]">
-                                {tests?.map((test, index) => (
-                                    <tr key={index}>
-                                        <td className="px-2 py-4 text-base whitespace-nowrap">
-                                            <span className="text-[#313131] text-base">
-                                                {index + 1}
-                                            </span>
-                                        </td>
-                                        <td className="px-2 py-4 whitespace-nowrap">
-                                            <div className='flex items-start justify-between text-sm'>
-                                                <div className='flex flex-col gap-2'>
-                                                    <p className="text-xl font-semibold ">
-                                                        {test?.title}
-                                                    </p>
-                                                    <div>
-                                                        {formatMomentDate(test?.startDate)} - {formatMomentDate(test?.endDate)}
+                                {tests?.map((test, index) => {
+                                    const status = useMemo(() => {
+                                        const now = Date.now();
+                                        const start_date = new Date(test?.startDate);
+                                        const end_date = new Date(test?.endDate);
+                                        
+                                        if (start_date.getTime() <= now && now <= end_date.getTime()) {
+                                            return "In Progress";
+                                        }
+                                
+                                        if (now > end_date.getTime()) {
+                                            return "Ended";
+                                        }
+                                
+                                        return "Upcoming";
+                                    }, [test.startDate, test.endDate]);
 
-                                                        {/* Mon Apr 8th, 24 12:00am - Wed Apr 17th, 24 6:00pm */}
-                                                    </div>
+                                    return(
+                                        <tr key={index}>
+                                            <td className="px-2 py-4 text-base whitespace-nowrap">
+                                                <span className="text-[#313131] text-base">
+                                                    {index + 1}
+                                                </span>
+                                            </td>
+                                            <td className="px-2 py-4 whitespace-nowrap">
+                                                <div className='flex items-start justify-between text-sm'>
+                                                    <div className='flex flex-col gap-2'>
+                                                        <p className="text-xl font-semibold ">
+                                                            {test?.title}
+                                                        </p>
+                                                        <div>
+                                                            {formatMomentDate(test?.startDate)} - {formatMomentDate(test?.endDate)}
 
-                                                    <div className='inline-flex items-center gap-2'>
-                                                        <p><span className='font-medium'>Duration (mins):</span> 180 </p>    
-                                                        <p><span className='font-medium'>Total Ques:</span> {test?.totalQuestions}</p>     
-                                                        <p><span className='font-medium'>Total Marks:</span> {test?.totalMarks}</p>
-                                                    </div>
-                                                 
-                                                    <div className='inline-flex gap-2 items-center '>
-                                                        <span className="bg-[#659be0] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
-                                                            2mrk(s)/ques
-                                                        </span>
-                                                        {test.isPublished === 1 ? (
-                                                            <span className="bg-[#4ade80] text-black max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
-                                                                Published
+                                                            {/* Mon Apr 8th, 24 12:00am - Wed Apr 17th, 24 6:00pm */}
+                                                        </div>
+
+                                                        <div className='inline-flex items-center gap-2'>
+                                                            <p><span className='font-medium'>Duration (mins):</span> 180 </p>    
+                                                            <p><span className='font-medium'>Total Ques:</span> {test?.totalQuestions}</p>     
+                                                            <p><span className='font-medium'>Total Marks:</span> {test?.totalMarks}</p>
+                                                        </div>
+                                                    
+                                                        <div className='inline-flex gap-2 items-center '>
+                                                            <span className="bg-[#659be0] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
+                                                                2mrk(s)/ques
                                                             </span>
-                                                        ) : (
-                                                            <span className="bg-[#F1C40F] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
-                                                                Not Published
+                                                            {test.isPublished === 1 ? (
+                                                                <span className="bg-[#4ade80] text-black max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
+                                                                    Published
+                                                                </span>
+                                                            ) : (
+                                                                <span className="bg-[#F1C40F] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
+                                                                    Not Published
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <div className="mt-2">
+                                                            <span className={`px-2 py-1 rounded text-xs ${status === 'In Progress' ? 'bg-green-500 text-white' : status === 'Ended' ? 'bg-red-500 text-white' : 'bg-yellow-500 text-black'}`}>
+                                                                {status}
                                                             </span>
-                                                        )}
+                                                        </div>
                                                     </div>
+                                                    
+
                                                 </div>
                                                 
+                                            </td>
+                                            <td className="px-2 py-4 text-sm whitespace-nowrap">
+                                                <div className="text-[#313131] text-xs flex items-center justify-end gap-2 flex-row">
+                                                {test.isPublished !== 1 && status === 'Upcoming' && (
+                                                    <button onClick={()=>publishTest(test.id)} className='btn p-1 bg-[#1c699f] border border-[#15527c] rounded text-white flex items-center'>
+                                                        Publish
+                                                    </button>
+                                                )}
+                                                    <Link href={`/admin/test-management/create?id=${test.id}`} className='btn p-1 bg-[#acb7ca] border border-[#93a1bb] rounded text-black flex items-center'>
+                                                        <Pen size={12}/>
+                                                        Edit
+                                                    </Link>
+                                                    <button onClick={()=>deleteTest(test.id)} className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
+                                                        <Trash size={12}/>
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                                
+                                            </td>
 
-                                            </div>
-                                            
-                                        </td>
-                                        <td className="px-2 py-4 text-sm whitespace-nowrap">
-                                            <div className="text-[#313131] text-xs flex items-center justify-end gap-2 flex-row">
-                                            {test.isPublished !== 1 && (
-                                                <button onClick={()=>publishTest(test.id)} className='btn p-1 bg-[#1c699f] border border-[#15527c] rounded text-white flex items-center'>
-                                                    Publish
-                                                </button>
-                                            )}
-                                                <Link href={`/admin/test-management/create?id=${test.id}`} className='btn p-1 bg-[#acb7ca] border border-[#93a1bb] rounded text-black flex items-center'>
-                                                    <Pen size={12}/>
-                                                    Edit
-                                                </Link>
-                                                <button onClick={()=>deleteTest(test.id)} className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
-                                                    <Trash size={12}/>
-                                                    Delete
-                                                </button>
-                                            </div>
-                                            
-                                        </td>
-
-                                    </tr>
-                                ))}
+                                        </tr>
+                                    )
+                                })}
                             </tbody>
                         </table>
                     </div>
