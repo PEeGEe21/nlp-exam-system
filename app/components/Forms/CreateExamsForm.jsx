@@ -35,7 +35,7 @@ const CreateExamsForm = ({testToEdit, id}) => {
                     if (res.ok) {
                         const data = await res.json();
                         const result = data.test
-                        console.log(result)
+                        // console.log(result)
                         const sDateString = result.startDate;
                         const sFormattedDate = sDateString.slice(0, 16);
 

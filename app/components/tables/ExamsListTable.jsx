@@ -5,8 +5,19 @@ import { PenTool, Trash } from 'iconsax-react';
 import { Pen } from 'lucide-react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { formatDate, formatMomentDate } from '@/app/lib/utils';
 
 const ExamsListTable = ({ tests = [], setTests}) => {
+
+    // const filteredAllExams = useMemo(() => {
+    //     if (searchQuery && tests?.length > 0) {
+    //       const filtered = tests.filter((launch) =>
+    //         launch?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
+    //       );
+    //       return filtered;
+    //     }
+    //     return tests;
+    //   }, [searchQuery, tests]);
 
     const deleteTest = (id) => {
         Swal.fire({
@@ -142,13 +153,15 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                                                         {test?.title}
                                                     </p>
                                                     <div>
-                                                        Mon Apr 8th, 24 12:00am - Wed Apr 17th, 24 6:00pm
+                                                        {formatMomentDate(test?.startDate)} - {formatMomentDate(test?.endDate)}
+
+                                                        {/* Mon Apr 8th, 24 12:00am - Wed Apr 17th, 24 6:00pm */}
                                                     </div>
 
                                                     <div className='inline-flex items-center gap-2'>
                                                         <p><span className='font-medium'>Duration (mins):</span> 180 </p>    
-                                                        <p><span className='font-medium'>Total Ques:</span> 31</p>     
-                                                        <p><span className='font-medium'>Total Marks:</span> 100</p>
+                                                        <p><span className='font-medium'>Total Ques:</span> {test?.totalQuestions}</p>     
+                                                        <p><span className='font-medium'>Total Marks:</span> {test?.totalMarks}</p>
                                                     </div>
                                                  
                                                     <div className='inline-flex gap-2 items-center '>

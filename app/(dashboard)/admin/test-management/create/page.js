@@ -13,6 +13,7 @@ import { useSearchParams } from 'next/navigation';
 
 const CreateQuestion = () => {
   const [questionsNew, setQuestions] = useState([]);
+  const [reloadKey, setReloadKey] = useState(0); // State to trigger reload
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
@@ -21,11 +22,29 @@ const CreateQuestion = () => {
 
   const test = tests.find(t => t.id === Number(id));
 
+  const titlehead = id ? 'Edit':'Create';
+  const reload = () => {
+    setReloadKey(prev => prev + 1); // Change state to trigger useEffect
+  };
   useEffect(() => {
-    setQuestions(questions);
-  },[id])
+    const fetchData = async () => {
+      try {
+        // /api/tests/question-assign-index/:testId
+        const res = await fetch('http://localhost:3001/api/tests/question-assign-index/'+id);
+        if (res.ok) {
+          const result = await res.json();
+          setQuestions(result.data);
+          // console.log(questions)
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err?.message);
+      }
+    };
 
-  console.log(test,'test')
+    fetchData();
+
+    // setQuestions(questions);
+  },[id, reloadKey])
 
   return (
     <>
@@ -40,7 +59,7 @@ const CreateQuestion = () => {
                   </button>
 
                   <div className="w-full">
-                    <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">Create Test</h1>
+                    <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">{titlehead} Test</h1>
                   </div>
             </div>
 
@@ -57,7 +76,7 @@ const CreateQuestion = () => {
                       </Tab>
                       {isEditing && (
                       <Tab 
-                        // onSelect={}
+                        onClick={reload}
                         className=" border-[#3B3939] text-[#81878B]"
                         _hover={{ borderBottomColor: "#FFA178", color: "#FFFFFF", backgroundColor:"#313131" }}
                         _selected={{ color: "#FFF", backgroundColor:"#313131" }}
@@ -78,7 +97,7 @@ const CreateQuestion = () => {
                       </TabPanel>
                       <TabPanel className="px-0">
                         <div className="py-3">
-                          <AddQuestionsToExamsList test={test} questions={questionsNew} setQuestions={setQuestions} />
+                          <AddQuestionsToExamsList test={test} questions={questionsNew} setQuestions={setQuestions} reload={reload} />
                           {/* <EmptyState /> */}
                         </div>
                       </TabPanel>

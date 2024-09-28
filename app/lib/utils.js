@@ -2,6 +2,8 @@
 
 import { redirect, useRouter } from 'next/navigation';
 import { clsx } from "clsx"
+import * as dayjs from 'dayjs';
+import moment from 'moment';
 import { twMerge } from "tailwind-merge"
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
@@ -49,18 +51,21 @@ export const addQuestionToExam = async (test_id, question, payload) => {
   // question.is_added = question.is_added ? false : true;
 
   console.log(test_id, question, payload, 'test_id, question_id, payload')
-  // const response = await axios.post(
-  //   `${hostUrl}/api/tests/add-question-to-test/${test_id}/${question.id}`,
-  //   { payload: payload }
-  // );
+  const response = await axios.post(
+    `http://localhost:3001/api/tests/add-question-to-test/${test_id}/${question.id}`,
+    payload
+  );
 
-  const response = {
-    success: true,
-    data: {
-      is_added: question.is_added,
-    },
-    message: 'Question added successfully.',
-  }
+  // console.log(response)
+  
+  // const response = {
+  //   success: true,
+  //   data: {
+  //     is_added: question.is_added,
+  //   },
+  //   message: 'Question added successfully.',
+  // }
+  // return
   return response;
 };
 
@@ -183,6 +188,17 @@ export const ToasterAlert = (message, type) => {
 //   return token;
 // };
 
+export function shortenTitle(title) {
+  if (title.length < 200) {
+    // If the address is too short to be shortened, return it as is
+    return title;
+  }
+
+  const start = title.slice(0, 4);
+  return `${start}...`;
+}
+
+
 export const capitalize = (text) => {
   return text && text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 };
@@ -219,6 +235,14 @@ export const dateFormat = (date) => {
   if (years > 1) return `${years}y `;
   return '';
 };
+
+export const formatMomentDate = (date) =>{
+  const formattedDate = moment(date).format('ddd MMM Do, YYYY hh:mma');
+  return formattedDate;
+}
+
+
+
 
 export const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'short', day: 'numeric' };

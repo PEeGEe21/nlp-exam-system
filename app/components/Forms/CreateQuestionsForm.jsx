@@ -29,7 +29,7 @@ const CreateQuestionsForm = ({id}) => {
                     if (res.ok) {
                         const data = await res.json();
                         const result = data.question
-                        console.log(result)
+                        // console.log(result)
 
                         setIsEditing(true);
                         setQuestionType(result.optionTypeId);

@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
+import { Toaster } from 'react-hot-toast'
 // import Footer from './Footer'
 
 const MainLayout = ({children}) => {
@@ -14,6 +15,7 @@ const MainLayout = ({children}) => {
     const userRole = "admin"; 
     return (
         <>
+        <Toaster/>
             {/* <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} userRole={userRole}/>
             <div className="flex-1 h-full overflow-y-auto scrollbar-change">
                 <main className="main-wrapper">
