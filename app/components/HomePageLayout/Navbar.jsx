@@ -10,53 +10,41 @@ const Navbar = () => {
   // const { toggle, showMenu } = useContext(MenuContext) || {};
   const showMenu = null;
   return (
-      <header className='h-[10%]'>
-        <div className='flex justify-between items-center text-[#373636]'>
-          <div>
-            <Link
-                  href="/"
-                  className="text-xl font-semibold font-heading">
-                    {/* <Image
-                      src="/images/sidebar-img/ankr.png"
-                      width={150}
-                      height={150}
-                      alt="logo"
-                      priority
-                      className="" 
-                    />*/}
-                    EXAM SYSTEM
-            </Link>
-          </div>
-          <div>
-            <ul className="flex justify-between items-center gap-[50px]">
-              <li>
-                <Link
-                  className=""
-                  href="/"
-                >Home</Link>
-              </li>
-              <li>
-                <Link
-                  className=""
-                  href="/"
-                >How it works</Link>
-              </li>
-              <li>
-                <Link
-                  className=""
-                  href="/auth/login"
-                >Login</Link>
-              </li>
-              <li>
-                <Link
-                  className="flex justify-center items-center text-white font-medium bg-[#008080] px-4 h-[50px] rounded-[50px]"
-                  href="/auth/signup"
-                >
-                  Get Started</Link>
-              </li>
-            </ul>
+      <header className='absolute top-0 w-full z-50 '>
+        <div className='max-w-[1400px] mx-auto w-full p-4 '>
+
+          <div className='flex justify-between items-center text-[#373636] '>
+            <div>
+              <Link
+                    href="/"
+                    className="text-xl font-semibold font-heading">
+                      {/* <Image
+                        src="/images/sidebar-img/ankr.png"
+                        width={150}
+                        height={150}
+                        alt="logo"
+                        priority
+                        className="" 
+                      />*/}
+                      EXAM SYSTEM
+              </Link>
+            </div>
+            <div>
+              <div className="inline-flex justify-between items-center text-sm font-medium gap-6 rounded-[12px] bg-white px-4  h-12">
+                  <Link
+                    className="text-[#353535] leading-7 "
+                    href="/auth/login"
+                  >Log in</Link>
+                  <Link
+                    className="flex justify-center items-center text-white font-medium bg-[#008080] h-8 rounded-[.5rem] py-[.375rem] px-[.75rem]"
+                    href="/auth/signup"
+                  >
+                    Sign Up</Link>
+              </div>
+            </div>
           </div>
         </div>
+
       </header>
   );
 };
