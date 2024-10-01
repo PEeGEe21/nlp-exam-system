@@ -109,6 +109,24 @@ const ExamsListTable = ({ tests = [], setTests}) => {
         });
     };
 
+
+    // const status = useMemo(() => {
+    //     const now = Date.now();
+    //     const start_date = new Date(test?.startDate);
+    //     const end_date = new Date(test?.endDate);
+        
+    //     if (start_date.getTime() <= now && now <= end_date.getTime()) {
+    //         return "In Progress";
+    //     }
+
+    //     if (now > end_date.getTime()) {
+    //         return "Ended";
+    //     }
+
+    //     return "Upcoming";
+    // }, [test.startDate, test.endDate]);
+
+
     return (
         <>
             
@@ -140,21 +158,20 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                             </thead>
                             <tbody className="divide-y divide-[#A19B99] text-[#313131]">
                                 {tests?.map((test, index) => {
-                                    const status = useMemo(() => {
-                                        const now = Date.now();
-                                        const start_date = new Date(test?.startDate);
-                                        const end_date = new Date(test?.endDate);
-                                        
+
+                                    const now = Date.now();
+                                    const start_date = new Date(test?.startDate);
+                                    const end_date = new Date(test?.endDate);
+
+                                    const status = (() => {
                                         if (start_date.getTime() <= now && now <= end_date.getTime()) {
                                             return "In Progress";
                                         }
-                                
                                         if (now > end_date.getTime()) {
                                             return "Ended";
                                         }
-                                
                                         return "Upcoming";
-                                    }, [test.startDate, test.endDate]);
+                                    })();
 
                                     return(
                                         <tr key={index}>
