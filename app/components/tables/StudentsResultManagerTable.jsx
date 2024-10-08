@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Table,
   Thead,
@@ -12,8 +12,36 @@ import {
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { PenAdd, Trash } from 'iconsax-react'
+import { calculateCompletionPercentage, DisplayDuration, formatDuration, formatMomentDate } from '@/app/lib/utils'
 
-const StudentsResultManagerTable = ({ students = []}) => {
+const StudentsResultManagerTable = ({ test_id}) => {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      
+      setLoading(true); // Start loading
+      try {
+        const res = await fetch('http://localhost:3001/api/results/test/'+test_id);
+        
+        if (res.ok) {
+          const result = await res.json();
+          setStudents(result.results);
+          // test = result.data.find(t => t.id === Number(id));
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err?.message);
+      } finally {
+        setTimeout(() =>{
+          setLoading(false); // End loading
+        }, 500)
+      }
+    };
+
+    fetchData();
+  }, [test_id]);
+
   return (
     <>
         <div className='shadow-lg'>
@@ -34,7 +62,13 @@ const StudentsResultManagerTable = ({ students = []}) => {
                 </Thead>
                 <Tbody className=' w-full px-4 divide-y divide-[#e7ecf1]'>
 
-                {students?.map((student, index) => (
+                {students.length < 1 && 
+                  <Tr>
+                    <Td colspan={8} alignContent={'center'} className="text-center">No data found</Td>  
+                  </Tr>
+                  }
+
+                {students.length > 0 && students?.map((result, index) => (
                       <Tr key={index} className='px-4 hover:bg-[#F7FAFC]'>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">
@@ -43,38 +77,38 @@ const StudentsResultManagerTable = ({ students = []}) => {
                           </Td>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">
-                                  {student.email}
+                                  {result?.student?.user?.email}
                               </span>
                           </Td>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">
-                              {student.name}
-
+                                {result?.student?.user?.name}
                               </span>
                           </Td>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">
-                              {student.date}
+                                {formatMomentDate(result?.createdAt)}
                               </span>
                           </Td>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">
-                              {student.marks}
+                                {result?.totalScored}
                               </span>
                           </Td>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">
-                              {student.time_elapsed}
+                                {/* {result?.startDate} {result?.endDate} */}
+                                {formatDuration(result?.startDate, result?.endDate)}
                               </span>
                           </Td>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">
-                              {student.status}
+                                {result?.status}
                               </span>
                           </Td>
                           <Td className="px-2 py-4 text-sm whitespace-nowrap">
                               <div className="text-[#313131] text-xs flex items-center justify-end gap-2 flex-row">
-                                  <Link href={'/admin/result-manager/1/test-details/' +student.id} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
+                                  <Link href={'/admin/result-manager/'+ result.id + '/test-details?test='+test_id + '&student='+ result?.student?.id} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
                                       Test Details
                                   </Link>
                               </div>

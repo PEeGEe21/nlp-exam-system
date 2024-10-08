@@ -53,6 +53,7 @@ const MainComponent = () => {
                                         src={'/images/homepage/exam-home.png'} 
                                         // src={'/images/create-test.png'} 
                                         alt='create-test'  
+                                        priority
                                         fill 
                                         className='object-contain object-center w-full h-full rounded-lg' 
                                     />

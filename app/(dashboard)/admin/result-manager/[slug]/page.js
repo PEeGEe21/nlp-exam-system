@@ -15,8 +15,11 @@ import {
     TableContainer,
   } from '@chakra-ui/react'
 import { demostudents } from '@/app/lib/constants'
+import { formatMomentDate, getTotalMinutes } from '@/app/lib/utils'
 
 const TestResult = () => {
+  const [test, setTest] = useState();
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const params = useParams();
   const { slug: id } = params;
@@ -25,19 +28,44 @@ const TestResult = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      
+      setLoading(true); // Start loading
       try {
-        const res = await fetch('https://jsonplaceholder.typicode.com/studentresult');
+        const res = await fetch('http://localhost:3001/api/tests/'+id);
         if (res.ok) {
-          const data = await res.json();
-          setStudentsResult(data);
+          const result = await res.json();
+          setTest(result.test);
+          // test = result.data.find(t => t.id === Number(id));
         }
       } catch (err) {
         console.error('Error fetching data:', err?.message);
+      } finally {
+        setTimeout(() =>{
+          setLoading(false); // End loading
+        }, 500)
       }
     };
 
     fetchData();
   }, [id]);
+
+  console.log(test, 'test');
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await fetch('https://jsonplaceholder.typicode.com/studentresult');
+  //       if (res.ok) {
+  //         const data = await res.json();
+  //         setStudentsResult(data);
+  //       }
+  //     } catch (err) {
+  //       console.error('Error fetching data:', err?.message);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [id]);
 
   return (
     <div className='space-y-5'>
@@ -51,7 +79,7 @@ const TestResult = () => {
                   </button>
 
                 <div className="w-full">
-                    <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">Social Studies Test</h1>
+                    <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">{test?.title}</h1>
                 </div>
             </div>
 
@@ -64,21 +92,21 @@ const TestResult = () => {
                                 <Tbody>
                                     <Tr>
                                         <Td>Title</Td>
-                                        <Td>Social Studies Test</Td>
+                                        <Td>{test?.title}</Td>
                                         <Td>Test Duration(min)	</Td>
-                                        <Td>30</Td>
+                                        <Td>{getTotalMinutes(test?.durationHours, test?.durationMinutes)}</Td>
                                     </Tr>
                                     <Tr>
                                         <Td>Start Date</Td>
-                                        <Td>6-Mar-2024 12:00 PM	</Td>
+                                        <Td>{formatMomentDate(test?.startDate)}</Td>
                                         <Td>End Date</Td>
-                                        <Td>6-Mar-2024 12:00 PM	</Td>
+                                        <Td>{formatMomentDate(test?.endDate)}	</Td>
                                     </Tr>
                                     <Tr>
                                         <Td>Total Questions</Td>
-                                        <Td>1</Td>
+                                        <Td>{test?.totalQuestions}</Td>
                                         <Td>Mark Per Question</Td>
-                                        <Td>100   </Td>
+                                        <Td>{test?.totalMarks}   </Td>
                                     </Tr>
                                 </Tbody>
                             </Table>
@@ -87,7 +115,7 @@ const TestResult = () => {
                 </div>
             </div>
             <div>
-                <StudentsResultManagerTable students={demostudents}/>
+              {test ? <StudentsResultManagerTable test_id={test?.id}/> : ''}
             </div>
     </div>
   )

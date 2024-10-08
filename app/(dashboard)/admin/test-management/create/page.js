@@ -12,6 +12,9 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation';
 
 const CreateQuestion = () => {
+  const [test, setTest] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [questionsNew, setQuestions] = useState([]);
   const [reloadKey, setReloadKey] = useState(0); // State to trigger reload
   const router = useRouter();
@@ -20,12 +23,46 @@ const CreateQuestion = () => {
 
   const isEditing = Boolean(id);
 
-  const test = tests.find(t => t.id === Number(id));
+  // let test = null;
 
   const titlehead = id ? 'Edit':'Create';
   const reload = () => {
     setReloadKey(prev => prev + 1); // Change state to trigger useEffect
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if(id){
+        setLoading(true); // Start loading
+        setSearchQuery('');
+        try {
+          const res = await fetch('http://localhost:3001/api/tests/'+id);
+          if (res.ok) {
+            const result = await res.json();
+                
+            if(result.success){
+                console.log(result)
+                setTest(result.test);
+                console.log(result)
+            } else{
+                toast.error('Test not found')
+                router.push('/admin/result-manager')
+            }
+            // test = result.data.find(t => t.id === Number(id));
+          }
+        } catch (err) {
+          console.error('Error fetching data:', err?.message);
+        } finally {
+          setTimeout(() =>{
+            setLoading(false); // End loading
+          }, 500)
+        }
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -46,6 +83,7 @@ const CreateQuestion = () => {
     // setQuestions(questions);
   },[id, reloadKey])
 
+  // console.log(test, 'test')
   return (
     <>
         <div>

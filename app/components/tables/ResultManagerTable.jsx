@@ -12,8 +12,10 @@ import {
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { PenAdd, Trash } from 'iconsax-react'
+import { formatMomentDate } from '@/app/lib/utils'
 
 const ResultManagerTable = ({ tests = []}) => {
+  console.log(tests)
   return (
     <>
         <div className='shadow-lg'>
@@ -29,7 +31,7 @@ const ResultManagerTable = ({ tests = []}) => {
                 </Thead>
                 <Tbody className=' w-full px-4 divide-y divide-[#e7ecf1]'>
 
-                {tests?.map((test, index) => (
+                  {tests?.map((test, index) => (
                       <Tr key={index} className='px-4 hover:bg-[#F7FAFC]'>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">
@@ -43,22 +45,28 @@ const ResultManagerTable = ({ tests = []}) => {
                                           {test?.title}
                                       </p>
                                       <div>
-                                          Mon Apr 8th, 24 12:00am - Wed Apr 17th, 24 6:00pm
+                                        {formatMomentDate(test?.startDate)} - {formatMomentDate(test?.endDate)}
                                       </div>
 
                                       <div className='inline-flex items-center gap-2'>
                                           <p><span className='font-medium'>Duration (mins):</span> 180 </p>    
-                                          <p><span className='font-medium'>Total Ques:</span> 31</p>     
-                                          <p><span className='font-medium'>Total Marks:</span> 100</p>
+                                          <p><span className='font-medium'>Total Ques:</span> {test?.totalQuestions}</p>     
+                                          <p><span className='font-medium'>Total Marks:</span> {test?.totalMarks}</p>
                                       </div>
                                     
                                       <div className='inline-flex gap-2 items-center '>
                                           <span className="bg-[#659be0] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
                                               2mrk(s)/ques
                                           </span>
-                                          <span className="bg-[#F1C40F] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
-                                              Not Published
-                                          </span>
+                                          {test.isPublished === 1 ? (
+                                              <span className="bg-[#4ade80] text-black max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
+                                                  Published
+                                              </span>
+                                          ) : (
+                                              <span className="bg-[#F1C40F] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
+                                                  Not Published
+                                              </span>
+                                          )}
                                       </div>
                                   </div>
                                   

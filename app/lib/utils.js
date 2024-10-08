@@ -8,6 +8,9 @@ import { twMerge } from "tailwind-merge"
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import { successtoastOptions } from './constants';
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(duration);
 
 
 const isWindowDefined = typeof window !== 'undefined';
@@ -222,12 +225,98 @@ export const dateFormat = (date) => {
   return '';
 };
 
+export function getTotalMinutes(durationHours, durationMinutes) {
+  return durationHours * 60 + durationMinutes;
+}
+
 export const formatMomentDate = (date) =>{
   const formattedDate = moment(date).format('ddd MMM Do, YYYY hh:mma');
   return formattedDate;
 }
 
 
+export function formatDuration(createdDateString, dateString) {
+  const targetDate = new Date(dateString);
+  const now = new Date(createdDateString);
+
+  // Calculate the total difference in milliseconds
+  const totalMilliseconds = targetDate.getTime() - now.getTime();
+
+  // Convert milliseconds to days, hours, and minutes
+  const millisecondsInMinute = 1000 * 60;
+  const millisecondsInHour = millisecondsInMinute * 60;
+  const millisecondsInDay = millisecondsInHour * 24;
+
+  const days = Math.floor(totalMilliseconds / millisecondsInDay);
+  const hours = Math.floor(
+    (totalMilliseconds % millisecondsInDay) / millisecondsInHour
+  );
+  const minutes = Math.floor(
+    (totalMilliseconds % millisecondsInHour) / millisecondsInMinute
+  );
+
+  // Format the result
+  const dayStr = days > 0 ? `${days}d` : "";
+  const hourStr = hours > 0 ? `${hours}h` : "";
+  const minuteStr = minutes > 0 ? `${minutes}m` : "";
+
+  // Combine the parts, filtering out empty strings and joining with commas
+  return [dayStr, hourStr, minuteStr].filter(Boolean).join(", ");
+}
+
+
+
+// function getElapsedTime(startDate, endDate) {
+//   const start = dayjs(startDate);
+//   const end = dayjs(endDate);
+
+//   const elapsedTime = dayjs.duration(end.diff(start));
+
+//   // Get hours, minutes, and seconds
+//   const hours = elapsedTime.hours();
+//   const minutes = elapsedTime.minutes();
+//   const seconds = elapsedTime.seconds();
+
+//   return `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+// }
+
+export function calculateCompletionPercentage(startDate, endDate, perc = false) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const today = new Date();
+
+  // Calculate the total duration between the start and end dates
+  const totalDuration = end.getTime() - start.getTime();
+
+  // Calculate the duration between the start date and today
+  const completedDuration = today.getTime() - start.getTime();
+  if(!perc)
+    return completedDuration;
+  // Calculate the percentage of completion
+  const percentage = (completedDuration / totalDuration) * 100;
+
+  // Cap the percentage between 0% and 100%
+  const cappedPercentage = Math.min(Math.max(percentage, 0), 100);
+
+  return cappedPercentage;
+}
+
+
+
+
+export const DisplayDuration = (startDate, endDate ) =>{
+  const completedDuration = calculateCompletionPercentage(startDate, endDate, false);
+
+  // Convert milliseconds to seconds, minutes, and hours
+  const seconds = Math.floor((completedDuration / 1000) % 60);
+  const minutes = Math.floor((completedDuration / (1000 * 60)) % 60);
+  const hours = Math.floor((completedDuration / (1000 * 60 * 60)) % 24);
+
+  // Display formatted duration (for example, as "HH:mm:ss")
+  const formattedDuration = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+  return <span>{formattedDuration}</span>;
+}
 
 
 export const formatDate = (dateString) => {

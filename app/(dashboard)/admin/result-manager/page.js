@@ -1,26 +1,60 @@
 'use client'
 import ResultManagerTable from '@/app/components/tables/ResultManagerTable'
 import { tests } from '@/app/lib/constants'
+import { useRouter } from 'next/navigation'
 import React, {useState, useEffect} from 'react'
 
 const ResultManager = () => {
-  const [test, setTests] = useState([])
+  const [tests, setTests] = useState([])
+  const [reloadKey, setReloadKey] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const router = useRouter();
+
+  const reload = () => {
+    setReloadKey(prev => prev + 1); // Change state to trigger useEffect
+  };
 
   useEffect(() => {
     const fetchData = async () => {
+      
+      setLoading(true); // Start loading
+      setSearchQuery('');
       try {
-        const res = await fetch('https://jsonplaceholder.typicode.com/tests');
+        const res = await fetch('http://localhost:3001/api/tests');
         if (res.ok) {
-          const data = await res.json();
-          setTests(data);
+          const result = await res.json();
+          console.log(result)
+          setTests(result.data);
         }
       } catch (err) {
         console.error('Error fetching data:', err?.message);
+      } finally {
+        setTimeout(() =>{
+          setLoading(false); // End loading
+        }, 500)
       }
     };
 
     fetchData();
-  }, []);
+  }, [reloadKey]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await fetch('https://jsonplaceholder.typicode.com/tests');
+  //       if (res.ok) {
+  //         const data = await res.json();
+  //         setTests(data);
+  //       }
+  //     } catch (err) {
+  //       console.error('Error fetching data:', err?.message);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   return (
     <div>
