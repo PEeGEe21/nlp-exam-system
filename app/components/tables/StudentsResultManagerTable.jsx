@@ -64,9 +64,9 @@ const StudentsResultManagerTable = ({ test_id}) => {
 
                 {students.length < 1 && 
                   <Tr>
-                    <Td colspan={8} alignContent={'center'} className="text-center">No data found</Td>  
+                    <Td colSpan={8} alignContent={'center'} className="text-center">No data found</Td>  
                   </Tr>
-                  }
+                }
 
                 {students.length > 0 && students?.map((result, index) => (
                       <Tr key={index} className='px-4 hover:bg-[#F7FAFC]'>

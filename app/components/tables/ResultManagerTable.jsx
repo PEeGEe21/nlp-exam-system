@@ -15,7 +15,6 @@ import { PenAdd, Trash } from 'iconsax-react'
 import { formatMomentDate } from '@/app/lib/utils'
 
 const ResultManagerTable = ({ tests = []}) => {
-  console.log(tests)
   return (
     <>
         <div className='shadow-lg'>

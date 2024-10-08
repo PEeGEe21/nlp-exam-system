@@ -49,7 +49,6 @@ const TestResult = () => {
     fetchData();
   }, [id]);
 
-  console.log(test, 'test');
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -84,7 +83,7 @@ const TestResult = () => {
             </div>
 
             
-            <div className='shadow-lg'>
+            {test && <div className='shadow-lg'>
                 <div className="overflow-x-auto md:overflow-x-auto p-4 text-[#313131] scrollbar-change rounded-md">
                     <div>
                         <TableContainer>
@@ -113,7 +112,7 @@ const TestResult = () => {
                         </TableContainer>
                     </div>
                 </div>
-            </div>
+            </div>}
             <div>
               {test ? <StudentsResultManagerTable test_id={test?.id}/> : ''}
             </div>

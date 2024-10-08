@@ -39,7 +39,7 @@ const StudentTestDetail = () => {
     const test_id = searchParams.get('test');
     const student_id = searchParams.get('student');
 
-    console.log(id, test_id, student_id)
+    // console.log(id, test_id, student_id)
     const status = "In Progress"
 
 
@@ -50,12 +50,12 @@ const StudentTestDetail = () => {
             setSearchQuery('');
             try {
               const res = await fetch('http://localhost:3001/api/results/scores/'+id + '/' + test_id + '/' + student_id);
-              console.log(res)
+            //   console.log(res)
               if (res.ok) {
                 const result = await res.json();
                 
                 if(result.success){
-                    console.log(result)
+                    // console.log(result)
                     setTest(result.test);
                     setStudent(result.student);
                     setResult(result.result);
@@ -63,7 +63,7 @@ const StudentTestDetail = () => {
                     setPercentage(result.percentage);
                     setTotalScored(result.totalScored);
                     setTotalMarks(result.totalMarks);
-                    console.log(result)
+                    // console.log(result)
                 } else{
                     toast.error('Test not found')
                     router.push('/result-manager')
@@ -119,7 +119,7 @@ const StudentTestDetail = () => {
                 </div>
 
                 
-                <div className='shadow-lg'>
+               {test &&  <div className='shadow-lg'>
                     <div className="overflow-x-auto md:overflow-x-auto p-4 text-[#313131] scrollbar-change rounded-md">
                         <div>
                             <TableContainer>
@@ -160,8 +160,8 @@ const StudentTestDetail = () => {
                             </TableContainer>
                         </div>
                     </div>
-                </div>
-
+                    </div>
+                }
                 <div>
                     <div className='p-4 shadow-lg'>
                         <h3>Questions and Answers</h3>

@@ -25,7 +25,7 @@ const ResultManager = () => {
         const res = await fetch('http://localhost:3001/api/tests');
         if (res.ok) {
           const result = await res.json();
-          console.log(result)
+          // console.log(result)
           setTests(result.data);
         }
       } catch (err) {

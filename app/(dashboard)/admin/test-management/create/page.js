@@ -41,9 +41,9 @@ const CreateQuestion = () => {
             const result = await res.json();
                 
             if(result.success){
-                console.log(result)
+                // console.log(result)
                 setTest(result.test);
-                console.log(result)
+                // console.log(result)
             } else{
                 toast.error('Test not found')
                 router.push('/admin/result-manager')
