@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import React, {useState, useEffect, useMemo} from 'react'
 
 const TestManagement = () => {
-  const [tests, setTests] = useState([])
+  const [tests, setTests] = useState([]);
   const [reloadKey, setReloadKey] = useState(0); // State to trigger reload
   const [loading, setLoading] = useState(false); // State for loading
   const [searchQuery, setSearchQuery] = useState("");

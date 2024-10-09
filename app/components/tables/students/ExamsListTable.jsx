@@ -14,12 +14,13 @@ import Swal from 'sweetalert2';
 import Link from 'next/link'
 import { PenAdd, Trash } from 'iconsax-react'
 import { useRouter } from 'next/navigation';
+import { formatMomentDate, getTotalMinutes } from '@/app/lib/utils';
 
 const ExamsListTable = ({ tests = []}) => {
 
   const router = useRouter();
   const takeTest = (id) => {
-    router.prefetch('/student/take-test/' + id)
+    router.prefetch('/take-test/' + id)
     Swal.fire({
         title: 'Are you sure?',
         text: 'You are about to start a test!',
@@ -31,8 +32,10 @@ const ExamsListTable = ({ tests = []}) => {
         allowOutsideClick: () => !Swal.isLoading(), // Prevent clicking outside modal during loading
         showLoaderOnConfirm: true,
         preConfirm: async () => {
-            router.push('/take-test/' + id);
-          },
+            // router.push('/take-test/' + id);
+            window.open(`/take-test/${id}`, '_blank');
+
+        },
     }).then((result) => {
       
     });
@@ -50,7 +53,7 @@ const ExamsListTable = ({ tests = []}) => {
                     <Th width={'30%'}>Title</Th>
                     <Th>Start Date</Th>
                     <Th>End Date</Th>
-                    <Th>Duration</Th>
+                    <Th>Duration (Min)</Th>
                     <Th>Total Questions</Th>
                     <Th>Total Marks</Th>
                     <Th>Actions</Th>
@@ -58,7 +61,22 @@ const ExamsListTable = ({ tests = []}) => {
                 </Thead>
                 <Tbody className=' w-full px-4 divide-y divide-[#e7ecf1]'>
 
-                {tests?.map((test, index) => (
+                {tests?.map((test, index) => {
+                    const now = Date.now();
+                    const start_date = new Date(test?.startDate);
+                    const end_date = new Date(test?.endDate);
+
+                    const status = (() => {
+                        if (start_date.getTime() <= now && now <= end_date.getTime()) {
+                            return "In Progress";
+                        }
+                        if (now > end_date.getTime()) {
+                            return "Ended";
+                        }
+                        return "Upcoming";
+                    })();
+
+                    return (
                       <Tr key={index} className='px-4 hover:bg-[#F7FAFC]'>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">
@@ -76,49 +94,52 @@ const ExamsListTable = ({ tests = []}) => {
                           <Td className="px-2 py-4 whitespace-nowrap">
                               <div className='flex items-start justify-between text-sm'>
                                   <div>
-                                      Monday, Apr 17th, 2024
+                                  {formatMomentDate(test?.startDate)}
                                   </div>
                               </div>
                           </Td>
                           <Td className="px-2 py-4 whitespace-nowrap">
                               <div className='flex items-start justify-between text-sm'>
                                   <div>
-                                      Monday, Apr 17th, 2024
+                                  {formatMomentDate(test?.endDate)}
                                   </div>
                               </div>
                           </Td>
                           <Td className="px-2 py-4 whitespace-nowrap">
                               <div className='flex items-start justify-between text-sm'>
                                   <div className=''>
-                                          30
+                                  {getTotalMinutes(test?.durationHours, test?.durationMinutes)}
                                   </div>
                               </div>
                           </Td>
                           <Td className="px-2 py-4 whitespace-nowrap">
                               <div className='flex items-start justify-between text-sm'>
                                   <div className=''>
-                                          40
+                                    {test?.totalQuestions}
                                   </div>
                               </div>
                           </Td>
                           <Td className="px-2 py-4 whitespace-nowrap">
                               <div className='flex items-start justify-between text-sm'>
                                   <div className=''>
-                                      40
+                                    {test?.totalMarks}
                                   </div>
                               </div>
                           </Td>
                           <Td className="px-2 py-4 text-sm whitespace-nowrap">
                               <div className="text-[#313131] text-xs flex items-center justify-center gap-2 flex-row">
-                              {/* href={'/student/test-results/'+test.id +'/test-details'} */}
+                                {/* && status === 'In Progress'  */}
+                                {(test?.totalQuestions > 0 ) ?
                                   <button onClick={()=>takeTest(test?.id)} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
                                       Take Test
                                   </button>
+                                  : <></>
+                                }
                               </div>
                           </Td>
 
                       </Tr>
-                  ))}
+                  )})}
                 </Tbody>
               </Table>
             {/* </TableContainer> */}

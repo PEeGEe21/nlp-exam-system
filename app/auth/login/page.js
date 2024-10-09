@@ -47,7 +47,6 @@ const LoginPage = () => {
         if (response.data.success){
           setError('');
           setSuccess('Login successfully!');
-          toast.success(response.data.message??'Login successfully!');
 
           // router.push('/admin/dashboard');
           let token = response?.data?.access_token;
@@ -59,17 +58,18 @@ const LoginPage = () => {
           localStorage.setItem('access-exam-sysyem', token);
           localStorage.setItem('exam-system-user', JSON.stringify(user));
 
-          if(role === 'student'){
+          // if(role === 'student'){
             setTimeout(() => {
-              push(`/student/test-manager`);
+              handleRedirect(role);
             }, 300);
-          } else if(role === 'admin'){
-            setTimeout(() => {
-              push(`/admin/dashboard`);
-            }, 300);
-          }
+          // } else if(role === 'admin'){
+          //   setTimeout(() => {
+          //     push(`/admin/dashboard`);
+          //   }, 300);
+          // }
           
-          console.log(response.data.success)
+          // console.log(response.data.success)
+          toast.success(response.data.message??'Login successfully!');
 
         } else{
             // setError(true);
@@ -100,6 +100,15 @@ const LoginPage = () => {
         // console.error(error);
     }
   };
+
+  const handleRedirect = (role) => {
+    const routes = {
+        student: '/student/test-manager',
+        admin: '/admin/dashboard',
+    };
+    push(routes[role] || '/auth/login');
+  };
+
 
   return (
     <>

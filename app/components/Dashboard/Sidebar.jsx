@@ -19,9 +19,19 @@ import Image from 'next/image';
 import { Category } from 'react-iconly';
 import { signOut } from 'next-auth/react';
 import './nav.css';
+import toast from 'react-hot-toast';
 
 const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
+  const [isDropdown, setIsDropdown] = useState(true);
+  const [activeDropdowns, setActiveDropdowns] = useState([]);
+
+  const wrapperClasses = classNames(
+    ''
+  );
+
   const pathname = usePathname();
+  const router = useRouter();
+
   // const {
   //   isOpen: projectIsOpen,
   //   onOpen: onProjectOpen,
@@ -29,12 +39,6 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
   // } = useDisclosure();
 
 
-  const [isDropdown, setIsDropdown] = useState(true);
-  const [activeDropdowns, setActiveDropdowns] = useState([]);
-
-  const wrapperClasses = classNames(
-    ''
-  );
 
   // const showDropdown = () => {
   //   setIsDropdown(!isDropdown);
@@ -109,16 +113,16 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
         },
       ]
     },
-    {
-      label: 'Sign Out',
-      href: '#',
-      action: (e) => {
-        e.preventDefault();
-        signOut();
-      },
-      icon: <LogoutCurve size={16} color="#ffffff" />,
-      isDropdownMenu: false,
-    },
+    // {
+    //   label: 'Sign Out',
+    //   href: '#',
+    //   action: (e) => {
+    //     e.preventDefault();
+    //     logout();
+    //   },
+    //   icon: <LogoutCurve size={16} color="#ffffff" />,
+    //   isDropdownMenu: false,
+    // },
   ];
   const studentMenuLinks = [
     {
@@ -134,6 +138,12 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
       isDropdownMenu: false,
     },
   ];
+
+  const logout = () => {
+      localStorage.removeItem('exam-system-user');
+      router.push('/auth/login');
+      toast.success('Successfully logged out')
+  };
 
   return (
     <>
@@ -382,6 +392,34 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
                   ))}
                 </>
               }
+
+              <div onClick={(e)=>(
+                        e.preventDefault(),
+                        logout()
+                      )}
+                      >
+                <div
+                  className={`menu-item w-full font-thin flex items-center px-5 rounded-md transition-colors duration-200 ease-in hover:bg-[#008080] text-white justify-between text-sm hover:border-[#008080] text-left h-10 cursor-pointer`}
+                >
+                  <div className="flex items-center justify-start flex-grow h-full">
+                    <span
+                      className="text-left mr-2 h-full flex items-center"
+                    >
+                      <LogoutCurve size={16} color="#ffffff" />
+                    </span>
+                    <div className=" w-full h-full flex items-center">
+                      <div
+                        className={classNames(
+                          'text-sm font-normal w-full flex-1 flex-grow flex items-center h-full'
+                        )}
+                      >
+                        Sign Out
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </nav>
         </div>

@@ -6,16 +6,28 @@ import { ArrowLeft, ArrowRight, Play } from 'iconsax-react';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
+import { useRouter, useParams } from 'next/navigation'
+import { getTotalMinutes,formattedDateString } from '@/app/lib/utils';
+import { LoaderIcon } from '@/app/components/ui/IconComponent';
+
 
 const TakeTest = () => {
+  const [loading, setLoading] = useState(false);
   const [isWelcomePage, setIsWelcomePage] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [test, setTest] = useState(null);
+  const [user, setUser] = useState(null);
+  const [questions, setQuestions] = useState([]);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [nextDisabled, setNextDisabled] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [prevDisabled, setPrevDisabled] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState({}); // Object to store selected options per question
+
+
+  const params = useParams();
+  const { slug: id } = params;
 
   const handleOptionChange = (questionId, selectedOptionId) => {
     console.log(questionId, selectedOptionId)
@@ -26,15 +38,99 @@ const TakeTest = () => {
     setCurrentQuestionIndex(index);
 };
 
-const test = {
-  id: 1,
-  title: 'Test 1',
-  start_date: '2024-12-01 00:00:00',
-  end_date: '2024-12-01 23:59:59',
-  questions: mainQuestions,
-}
+  useEffect(()=>{
+    const getUser = async ()=>{
+      setLoading(true); // Start loading
+        try{
+            if (localStorage.getItem('exam-system-user')){
+                const data = await JSON.parse(
+                    localStorage.getItem("exam-system-user")
+                );
+                setUser(data)
+                
+            }else{
+                router.push("/auth/login")
+            }
+                
 
-const { days, hours, minutes, seconds } = useCountdown(test?.end_date);
+        }catch(err){}
+    };
+    getUser()
+  }, [])
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if(id){
+        try {
+          const res = await fetch('http://localhost:3001/api/tests/'+id);
+          if (res.ok) {
+            const result = await res.json();
+                
+            if(result.success){
+                setTest(result.test);
+            } else{
+                toast.error('Test not found')
+            }
+            setTimeout(() =>{
+              setLoading(false); // End loading
+            }, 500)
+          }
+        } catch (err) {
+          console.error('Error fetching data:', err?.message);
+        } finally {
+          setTimeout(() =>{
+            setLoading(false); // End loading
+          }, 500)
+        }
+      }
+    };
+
+    fetchData();
+  }, [user, id]);
+
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     if(id){
+//       setLoading(true); // Start loading
+//       try {
+//         const res = await fetch('http://localhost:3001/api/tests/'+id+'/questions');
+//         if (res.ok) {
+//           const result = await res.json();
+              
+//           if(result.success){
+//               setTest(result.test);
+//           } else{
+//               toast.error('Test not found')
+//           }
+//         }
+//       } catch (err) {
+//         console.error('Error fetching data:', err?.message);
+//       } finally {
+//         setTimeout(() =>{
+//           setLoading(false); // End loading
+//         }, 500)
+//       }
+//     }
+//   };
+
+//   fetchData();
+// }, [id]);
+
+// const test = {
+//   id: 1,
+//   title: 'Test 1',
+//   start_date: '2024-12-01 00:00:00',
+//   end_date: '2024-12-01 23:59:59',
+//   questions: mainQuestions,
+// }
+
+const formStart = formattedDateString(test?.startDate);
+const formEnd = formattedDateString(test?.endDate);
+
+const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.endDate);
+
 
   const submitTest = () => {
     console.log('submitted')
@@ -42,12 +138,35 @@ const { days, hours, minutes, seconds } = useCountdown(test?.end_date);
     setHasSubmitted(true);
   }
 
-  const startTest = () => {
-    setTimeout(()=>{
-      // setIsFullscreen(true);
-      setIsWelcomePage(false);
-      toggleFullscreen();
-    })
+  const startTest = async () => {
+    setIsWelcomePage(false);
+    setLoading(true); // Start loading
+    try {
+      const res = await fetch('http://localhost:3001/api/tests/'+id+'/questions');
+      if (res.ok) {
+        const result = await res.json();
+            
+        if(result.success){
+            setQuestions(result.data);
+            console.log(questions, 'questions')
+            setTimeout(()=>{
+              // setIsFullscreen(true);
+              toggleFullscreen();
+            }, 300);
+            setLoading(false); // Start loading
+
+        } else{
+            toast.error('Test not found')
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching data:', err?.message);
+    } finally {
+      setTimeout(() =>{
+        setLoading(false); // End loading
+      }, 500)
+    }
+  
   }
   // Function to toggle fullscreen
   const toggleFullscreen = () => {
@@ -141,11 +260,11 @@ const { days, hours, minutes, seconds } = useCountdown(test?.end_date);
   const buttons = Array.from({ length: 15 }, (_, i) => i + 1); // Creates an array with 15 elements
 
   const handleNext = () => {
-    if (currentQuestionIndex < mainQuestions.length - 1) {
+    if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex((prevStep) => prevStep + 1);
         // setNextDisabled(true);
-        setNextDisabled(currentQuestionIndex + 1 >= mainQuestions.length - 1);
-        setIsFinished(currentQuestionIndex + 1 >= mainQuestions.length - 1);
+        setNextDisabled(currentQuestionIndex + 1 >= questions.length - 1);
+        setIsFinished(currentQuestionIndex + 1 >= questions.length - 1);
         // Enable the "Previous" button
         setPrevDisabled(false);
       }
@@ -166,6 +285,8 @@ const { days, hours, minutes, seconds } = useCountdown(test?.end_date);
         {isWelcomePage && 
           <>
             <div className='w-full max-w-5xl mx-auto p-4 md:px-12 min-h-[400px] max-h-[500px] bg-white h-full'>
+              {!loading ? 
+
                 <div className='flex flex-col h-full gap-5'>
                   <div className="flex items-start justify-between gap-2 h-auto">
                     <Image
@@ -177,10 +298,9 @@ const { days, hours, minutes, seconds } = useCountdown(test?.end_date);
                     />
                     <div>
                       <div>
-                        <p>Udeh Praise</p>
-                        <p>mailpraiseudeh@gmail.com</p>
-                        <p><span>Test title: </span>Udeh Praise</p>
-
+                        <p>{user?.username??''}</p>
+                        <p>{user?.email}</p>
+                        <p><span>Test title: </span>{test?.title}</p>
                       </div>
                     </div>
                   </div>
@@ -192,17 +312,14 @@ const { days, hours, minutes, seconds } = useCountdown(test?.end_date);
                       <div className='flex items-center w-full'>
                         <div className=' justify-between h-full w-2/3 flex flex-col gap-4'>
                           <div>
-
                             <ul className='list-disc list-inside'>
-                              <li>Total Mark: 39</li>
-                              <li>Test Duration (Min): 30</li>
+                              <li>Total Mark: {test?.totalMarks}</li>
+                              <li>Test Duration (Min): {getTotalMinutes(test?.durationHours, test?.durationMinutes)}</li>
                               <li>You can start the test by clicking the start button.</li>
                             </ul>
-
-                            
                           </div>
                             <div>
-                              Duration: 30mins
+                              Duration: {getTotalMinutes(test?.durationHours, test?.durationMinutes)}mins
                             </div>
                           <div>
                             <div>
@@ -243,8 +360,12 @@ const { days, hours, minutes, seconds } = useCountdown(test?.end_date);
                     Go back
                   </button>
                 </div>
+            : <div className='text-center w-full items-center justify-center flex'><LoaderIcon extraClass='text-gray-900'/></div>}
+
             </div>
+
           </>
+          
         }
 
 
@@ -254,139 +375,148 @@ const { days, hours, minutes, seconds } = useCountdown(test?.end_date);
             {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
           </button> */}
 
-
-          <div className='bg-white h-full p-6 flex items-center justify-between shadow-sm rounded-lg'>
-            <div className='space-y-2'>
-              <h1>
-                <span className='font-semibold'>Student Name :</span> Udeh Evidence
-              </h1>
-              <h1>
-                <span className='font-semibold'>Student Email :</span> mailpraiseudeh@gmail.com
-              </h1>
-              <h1>
-                <span className='font-semibold'>Test Title :</span> test title
-              </h1>
-            </div>
-
-            <div>
-                <div className="flex justify-center flex-wrap gap-2.5 md:gap-4">
-                    <div className="text-center">
-                        <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
-                            {days}
-                        </div>
-                        <p className="text-xs text-GreyCloud md:text-sm">Day</p>
-                    </div>
-                    <div className="text-center">
-                        <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
-                            {hours}
-                        </div>
-                        <p className="text-xs text-GreyCloud md:text-sm">Hr</p>
-                    </div>
-                    <div className="text-center">
-                        <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
-                            {minutes}
-                        </div>
-                        <p className="text-xs text-GreyCloud md:text-sm">Min</p>
-                    </div>
-                    <div className="text-center">
-                        <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
-                            {seconds}
-                        </div>
-                        <p className="text-xs text-GreyCloud md:text-sm">Sec</p>
-                    </div>
-                </div> 
-            </div>
-          </div>
-
-          <div className='bg-white h-full p-6 shadow-sm rounded-lg'>
-            <p className='font-semibold'>Test Instrutions</p>
-            <div>
-              <ul>
-                <li>instructions</li>
-              </ul>  
-            </div>
-          </div>
-
-          <div className='flex gap-4'>
-            <div className='w-7/12 bg-white p-6 rounded-lg'>
-
-              
-                <div className=' min-h-96 flex flex-col justify-between h-full'>
-                    
-                    <div>
-                      <div>
-                          <h2 className='font-bold'>
-                            Question  {currentQuestionIndex + 1}
-                          </h2>
-                          <p className='py-3 text-base'>
-                          {mainQuestions[currentQuestionIndex].question}
-                          </p>
-                      </div>
-
-                      <QuestionOptions 
-                        question={mainQuestions[currentQuestionIndex]}
-                        selectedOption={selectedOptions[mainQuestions[currentQuestionIndex].id]} 
-                        onOptionChange={handleOptionChange}                   
-                      />
-
-                    </div>
-
-                    <div className='flex items-center justify-between'>
-                      <button 
-                        onClick={handlePrev}
-                        disabled={prevDisabled}
-                        className='bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
-                                disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
-                                transition-all duration-75 border-none px-5 
-                                font-medium p-3 text-base text-white flex items-center justify-center gap-4 '>
-                                  <ArrowLeft/>
-                        Previous
-                      </button>
-
-                      {isFinished && 
-                        <button 
-                        onClick={exitTest}
-                        className='bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
-                                  disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
-                                  transition-all duration-75 border-none px-5 
-                                  font-medium p-3 text-base text-white flex items-center justify-center gap-4'>
-                          Submit
-                        </button>
-                      }
-
-                    
-                      <button 
-                      onClick={handleNext}
-                      disabled={nextDisabled}
-                      className='bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
-                                disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
-                                transition-all duration-75 border-none px-5 
-                                font-medium p-3 text-base text-white flex items-center justify-center gap-4'>
-                        Next
-                        <ArrowRight/>
-                      </button>
-
-                      
-                    </div>
+          {!loading ? 
+            <>
+              <div className='bg-white h-full p-6 flex items-center justify-between shadow-sm rounded-lg'>
+                <div className='space-y-2'>
+                {user?.username ? 
+                  <h1>
+                    <span className='font-semibold'>Student Name :</span> {user?.username}
+                  </h1>
+                  : ''}
+                  <h1>
+                    <span className='font-semibold'>Student Email :</span> {user?.email}
+                  </h1>
+                  <h1>
+                    <span className='font-semibold'>Test Title :</span> {test?.title}
+                  </h1>
                 </div>
-            </div>  
-            <div className='w-5/12 '>
-              <div className='max-w-sm bg-white w-full h-full ml-auto rounded-lg p-4'>
-                <div className='grid grid-cols-10 gap-1'>
-                  {/* ${_itx.isCorrect ? 'bg-[#179301]' : 'bg-[#fa1301]'} */}
-                  {mainQuestions.map((item, index) => (
-                    <button
-                      key={index}
-                      onClick={()=>handleButtonClick(index)}
-                      className={`text-white font-bold text-base size-[30px] border border-black flex items-center justify-center  ${currentQuestionIndex === index ? 'bg-[#179301]' : 'bg-[#cccccc]'} `}
-                    >
-                      <b className="item2 part">{item?.id}</b>
-                    </button>
-                  ))}
+
+                <div>
+                    <div className="flex justify-center flex-wrap gap-2.5 md:gap-4">
+                        <div className="text-center">
+                            <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
+                                {days}
+                            </div>
+                            <p className="text-xs text-GreyCloud md:text-sm">Day</p>
+                        </div>
+                        <div className="text-center">
+                            <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
+                                {hours}
+                            </div>
+                            <p className="text-xs text-GreyCloud md:text-sm">Hr</p>
+                        </div>
+                        <div className="text-center">
+                            <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
+                                {minutes}
+                            </div>
+                            <p className="text-xs text-GreyCloud md:text-sm">Min</p>
+                        </div>
+                        <div className="text-center">
+                            <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
+                                {seconds}
+                            </div>
+                            <p className="text-xs text-GreyCloud md:text-sm">Sec</p>
+                        </div>
+                    </div> 
                 </div>
               </div>
-            </div>
-          </div>
+
+              <div className='bg-white h-full p-6 shadow-sm rounded-lg'>
+                <p className='font-semibold'>Test Instrutions</p>
+                <div>
+                  <ul>
+                    <li><div  dangerouslySetInnerHTML={{
+                                                    __html: test?.instructions,
+                                                }}>
+                                                  </div></li>
+                  </ul>  
+                </div>
+              </div>
+
+              <div className='flex gap-4'>
+                <div className='w-7/12 bg-white p-6 rounded-lg'>
+
+                  
+                    <div className=' min-h-96 flex flex-col justify-between h-full'>
+                        
+                        <div>
+                          <div>
+                              <h2 className='font-bold'>
+                                Question  {currentQuestionIndex + 1}
+                              </h2>
+                              <p className='py-3 text-base'>
+                              {questions[currentQuestionIndex].questionRelation.question}
+                              </p>
+                          </div>
+
+                          <QuestionOptions 
+                            question={mainQuestions[currentQuestionIndex]}
+                            selectedOption={selectedOptions[mainQuestions[currentQuestionIndex].id]} 
+                            onOptionChange={handleOptionChange}                   
+                          />
+
+                        </div>
+
+                        <div className='flex items-center justify-between'>
+                          <button 
+                            onClick={handlePrev}
+                            disabled={prevDisabled}
+                            className='bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
+                                    disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
+                                    transition-all duration-75 border-none px-5 
+                                    font-medium p-3 text-base text-white flex items-center justify-center gap-4 '>
+                                      <ArrowLeft/>
+                            Previous
+                          </button>
+
+                          {isFinished && 
+                            <button 
+                            onClick={exitTest}
+                            className='bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
+                                      disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
+                                      transition-all duration-75 border-none px-5 
+                                      font-medium p-3 text-base text-white flex items-center justify-center gap-4'>
+                              Submit
+                            </button>
+                          }
+
+                        
+                          <button 
+                          onClick={handleNext}
+                          disabled={nextDisabled}
+                          className='bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
+                                    disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
+                                    transition-all duration-75 border-none px-5 
+                                    font-medium p-3 text-base text-white flex items-center justify-center gap-4'>
+                            Next
+                            <ArrowRight/>
+                          </button>
+
+                          
+                        </div>
+                    </div>
+                </div>  
+                <div className='w-5/12 '>
+                  <div className='max-w-sm bg-white w-full h-full ml-auto rounded-lg p-4'>
+                    <div className='grid grid-cols-10 gap-1'>
+                      {/* ${_itx.isCorrect ? 'bg-[#179301]' : 'bg-[#fa1301]'} */}
+                      {questions.map((item, index) => (
+                        <button
+                          key={index}
+                          onClick={()=>handleButtonClick(index)}
+                          className={`text-white font-bold text-base size-[30px] border border-black flex items-center justify-center  ${currentQuestionIndex === index ? 'bg-[#179301]' : 'bg-[#cccccc]'} `}
+                        >
+                          <b className="item2 part">{index + 1}</b>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+            : <><LoaderIcon/></>}
+
         </div>
       }
     </>

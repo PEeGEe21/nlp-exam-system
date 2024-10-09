@@ -1,9 +1,33 @@
 "use client"
 import ExamsListTable from '@/app/components/tables/students/ExamsListTable'
-import { tests } from '@/app/lib/constants'
-import React from 'react'
+// import { tests } from '@/app/lib/constants'
+import React, {useEffect, useState} from 'react'
 
 const TestManager = () => {
+  const [tests, setTests] = useState([]);
+  const [loading, setLoading] = useState(false); // State for loading
+
+  useEffect(() => {
+    const fetchData = async () => {
+      
+      setLoading(true); // Start loading
+      try {
+        const res = await fetch('http://localhost:3001/api/tests/student');
+        if (res.ok) {
+          const result = await res.json();
+          setTests(result.data);
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err?.message);
+      } finally {
+        setTimeout(() =>{
+          setLoading(false); // End loading
+        }, 500)
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <div>
           <div className="flex flex-row items-center justify-between mb-8">

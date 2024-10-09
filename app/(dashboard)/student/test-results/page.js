@@ -2,7 +2,7 @@
 import ResultManagerTable from '@/app/components/tables/ResultManagerTable'
 import ResultManagerStudentTable from '@/app/components/tables/students/ResultManagerTable'
 import { tests } from '@/app/lib/constants'
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 
 const ResultManager = () => {
   return (

@@ -66,13 +66,17 @@ const CreateQuestion = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // /api/tests/question-assign-index/:testId
-        const res = await fetch('http://localhost:3001/api/tests/question-assign-index/'+id);
-        if (res.ok) {
-          const result = await res.json();
-          setQuestions(result.data);
-          // console.log(questions)
+        if(id){
+
+          // /api/tests/question-assign-index/:testId
+          const res = await fetch('http://localhost:3001/api/tests/question-assign-index/'+id);
+          if (res.ok) {
+            const result = await res.json();
+            setQuestions(result.data);
+            // console.log(questions)
+          }        
         }
+
       } catch (err) {
         console.error('Error fetching data:', err?.message);
       }

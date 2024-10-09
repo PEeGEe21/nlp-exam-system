@@ -33,7 +33,6 @@ const MainLayout = ({children}) => {
                 }else{
                     router.push("/auth/login")
                 }
-                    
     
             }catch(err){}
         };

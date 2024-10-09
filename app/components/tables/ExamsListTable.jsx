@@ -6,7 +6,7 @@ import { PenTool, Trash } from 'iconsax-react';
 import { Pen } from 'lucide-react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { formatDate, formatMomentDate } from '@/app/lib/utils';
+import { formatDate, formatMomentDate, getTotalMinutes } from '@/app/lib/utils';
 
 const ExamsListTable = ({ tests = [], setTests}) => {
 
@@ -193,7 +193,7 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                                                         </div>
 
                                                         <div className='inline-flex items-center gap-2'>
-                                                            <p><span className='font-medium'>Duration (mins):</span> 180 </p>    
+                                                            <p><span className='font-medium'>Duration (mins):</span> {getTotalMinutes(test?.durationHours, test?.durationMinutes)} </p>    
                                                             <p><span className='font-medium'>Total Ques:</span> {test?.totalQuestions}</p>     
                                                             <p><span className='font-medium'>Total Marks:</span> {test?.totalMarks}</p>
                                                         </div>
