@@ -9,10 +9,11 @@ import Swal from 'sweetalert2';
 import { useRouter, useParams } from 'next/navigation'
 import { getTotalMinutes,formattedDateString } from '@/app/lib/utils';
 import { LoaderIcon } from '@/app/components/ui/IconComponent';
+import axios from 'axios';
 
 
 const TakeTest = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isWelcomePage, setIsWelcomePage] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [test, setTest] = useState(null);
@@ -23,24 +24,92 @@ const TakeTest = () => {
   const [nextDisabled, setNextDisabled] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [prevDisabled, setPrevDisabled] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState({}); // Object to store selected options per question
-
-
+  const [selectedOptions, setSelectedOptions] = useState({});
+  const [questionStatus, setQuestionStatus] = useState([]);
   const params = useParams();
   const { slug: id } = params;
 
-  const handleOptionChange = (questionId, selectedOptionId) => {
+  // Effect to initialize question status when questions are loaded
+  useEffect(() => {
+    if (questions.length > 0) {
+      setQuestionStatus(Array(questions.length).fill('Not Attended'));
+    }
+  }, [questions]); // This effect runs when questions are loaded
+
+  useEffect(() => {
+    // Update status to 'Viewed' when a question is navigated to
+    updateQuestionStatus(currentQuestionIndex, 'Viewed');
+  }, [currentQuestionIndex]);
+
+  // const handleOptionChange = (questionId, optionId) => {
+  //   setSelectedOptions((prev) => ({
+  //     ...prev,
+  //     [questionId]: optionId,
+  //   }));
+  //   updateQuestionStatus(currentQuestionIndex, 'Attended');
+  // };
+
+
+
+  // const handleOptionChange = (questionId, answerId) => {
+  //   setSelectedOptions((prevSelectedOptions) => ({
+  //     ...prevSelectedOptions,
+  //     [questionId]: answerId,
+  //   }));
+  // };
+
+  // const handleOptionChange = (questionId, optionId) => {
+  //   setSelectedOptions((prev) => ({
+  //     ...prev,
+  //     [questionId]: optionId,
+  //   }));
+  // };
+
+  const handleOptionChange = (question, questionId, selectedOptionId) => {
     console.log(questionId, selectedOptionId)
-    setSelectedOptions({ ...selectedOptions, [questionId]: selectedOptionId });
+    setSelectedOptions((prevSelectedOptions) => ({
+      ...prevSelectedOptions,
+      [questionId]: selectedOptionId,
+    }));
+
+    console.log(questionId)
+    const questionIndex = questions.findIndex(q => q.id === question.id);
+
+    if (questionIndex !== -1) {
+      console.log(questionIndex, 'questionIndex');
+      updateQuestionStatus(questionIndex, 'Attended'); // Mark question as 'Attended'
+    } else {
+      console.warn("Question with ID", question.id, "not found in the questions array");
+    }
+
+    console.log(selectedOptions, 'selectedOptions')
+  };
+
+
+  const updateQuestionStatus = (index, status) => {
+    setQuestionStatus((prev) => {
+      const updatedStatus = [...prev];
+      // Only update to 'Viewed' if it hasn't been 'Attended' yet
+      if (status === 'Viewed' && updatedStatus[index] === 'Not Attended') {
+        updatedStatus[index] = status;
+      }
+
+      console.log(status, index, 'hereee')
+      if (status === 'Attended') {
+        updatedStatus[index] = 'Attended';
+      console.log(updatedStatus, status, index, 'hereee')
+      }
+      return updatedStatus;
+    });
   };
 
   const handleButtonClick = (index) => {
     setCurrentQuestionIndex(index);
-};
+  };
 
   useEffect(()=>{
     const getUser = async ()=>{
-      setLoading(true); // Start loading
+      // setLoading(true); // Start loading
         try{
             if (localStorage.getItem('exam-system-user')){
                 const data = await JSON.parse(
@@ -132,10 +201,34 @@ const formEnd = formattedDateString(test?.endDate);
 const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.endDate);
 
 
-  const submitTest = () => {
-    console.log('submitted')
-    setIsFullscreen(false);
-    setHasSubmitted(true);
+  const submitTest = async () => {
+
+    if(selectedOptions){
+      // console.log(selectedOptions, 'here')
+      var payload = {}
+      payload.user_id = user.id;
+      payload.answers = JSON.stringify({ selectedOptions });
+
+      const response = await axios.post('http://localhost:3001/api/tests/'+id+'/submit', payload);
+
+      if (response.data.success){
+        if(result.success){
+          Swal.fire('Submitted Successfully', 'Your answers have been submitted successfully','success');
+          setIsFinished(true);
+        } else{
+          toast.error(result.message)
+        }
+      } else {
+        Swal.fire('Error', 'An error occurred while submitting your answers','error');
+      }
+    }
+
+
+
+
+    // console.log('submitted')
+    // setIsFullscreen(false);
+    // setHasSubmitted(true);
   }
 
   const startTest = async () => {
@@ -279,6 +372,10 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
       }
   };
 
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  const hasAttendedLastQuestion = questionStatus[currentQuestionIndex] === 'Attended';
+  const hasViewedLastQuestion = questionStatus[currentQuestionIndex] === 'Viewed';
+
   return (
     <>
         {/* welcome  */}
@@ -339,7 +436,8 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
 
                         <div className=' flex-1 '>
 
-                          <div className='flex align-center justify-center flex-col text-center cursor-pointer' onClick={startTest}>
+                          {test && user ? 
+                          <div className='flex align-center justify-center flex-col text-center cursor-pointer' onClick={startTest} >
                             <span className='flex align-center justify-center w-full'>
                               <span className='bg-[#EEEEF0B8] rounded-full p-3 h-12 w-12 flex justify-center items-center text-[#6457EF]'>
                                 <Play/>
@@ -347,6 +445,8 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                             </span>
                             <p>Start</p>
                           </div>
+
+                            : ""}
 
                           
                           
@@ -445,14 +545,17 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                               <h2 className='font-bold'>
                                 Question  {currentQuestionIndex + 1}
                               </h2>
-                              <p className='py-3 text-base'>
-                              {questions[currentQuestionIndex].questionRelation.question}
-                              </p>
+                              <div className='py-3 text-base' dangerouslySetInnerHTML={{
+                                                    __html: questions[currentQuestionIndex].questionRelation.question,
+                                                }}>
+                                                  </div>
+                                {/* {questions[currentQuestionIndex].questionRelation.question} */}
                           </div>
 
                           <QuestionOptions 
-                            question={mainQuestions[currentQuestionIndex]}
-                            selectedOption={selectedOptions[mainQuestions[currentQuestionIndex].id]} 
+                            question={questions[currentQuestionIndex]}
+                            selectedOption={selectedOptions[questions[currentQuestionIndex].id]} 
+
                             onOptionChange={handleOptionChange}                   
                           />
 
@@ -470,7 +573,7 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                             Previous
                           </button>
 
-                          {isFinished && 
+                          {(isFinished || hasViewedLastQuestion || hasAttendedLastQuestion )&& 
                             <button 
                             onClick={exitTest}
                             className='bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
@@ -501,7 +604,7 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                   <div className='max-w-sm bg-white w-full h-full ml-auto rounded-lg p-4'>
                     <div className='grid grid-cols-10 gap-1'>
                       {/* ${_itx.isCorrect ? 'bg-[#179301]' : 'bg-[#fa1301]'} */}
-                      {questions.map((item, index) => (
+                      {/* {questions.map((item, index) => (
                         <button
                           key={index}
                           onClick={()=>handleButtonClick(index)}
@@ -509,7 +612,26 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                         >
                           <b className="item2 part">{index + 1}</b>
                         </button>
-                      ))}
+                      ))} */}
+                      {questions.map((item, index) => {
+                        console.log(questionStatus[index])
+                        return(
+                        <button
+                          key={index}
+                          onClick={() => handleButtonClick(index)}
+                          className={`text-white font-bold text-base size-[30px] border border-black flex items-center justify-center ${
+                            currentQuestionIndex === index
+                              ? 'bg-[#f893a6]' // Highlight current question
+                              : questionStatus[index] === 'Attended'
+                              ? 'bg-[#179301]' // Orange for attended
+                              : questionStatus[index] === 'Viewed'
+                              ? 'bg-[#ff9214]' // Light gray for viewed
+                              : 'bg-[#41546d]' // Darker gray for not attended
+                          }`}
+                        >
+                          <b className="item2 part">{index + 1}</b>
+                        </button>
+                      )})}
                     </div>
                   </div>
                 </div>
@@ -524,14 +646,42 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
 }
 
 const QuestionOptions = ({ question, selectedOption, onOptionChange }) => {
-  const handleChange = (event) => {
-    console.log(question.id, event.target.value)
-    onOptionChange(question.id, event.target.value); // Update selected option state
-  };
+  // const handleChange = (event) => {
+  //   console.log(question.id, event.target.value)
+  //   onOptionChange(question.id, event.target.value); // Update selected option state
+  // };
 
+  const handleChange = (event) => {
+    console.log(question.questionRelation.id, event.target.value);
+
+    console.log(selectedOption)
+    onOptionChange(question, question.id, event.target.value); // Update selected option state
+  };
   return (
     <ul className='list-none list-inside space-y-3 text-sm'>
-      {question.options.map((option, index) => (
+      {question.questionRelation.answers.map((option) => {
+        // console.log(selectedOption === option.id, selectedOption, option.id)
+        return (
+
+          <li key={option.id} className='w-full'>
+            <label 
+              htmlFor={`question_${question.id}_${option.id}`} 
+              className='w-full block cursor-pointer'
+            >
+              <input 
+                type="radio" 
+                id={`question_${question.id}_${option.id}`} 
+                name={`question_${question.id}`} 
+                value={option.id}
+                checked={selectedOption == option.id} // Ensure the checked state reflects the selected option
+                onChange={handleChange}
+                className='mr-2'
+              />
+              {option.content}
+            </label>
+          </li>
+      )})}
+      {/* {question.questionRelation.answers.map((option, index) => (
         <li key={option.id} className='w-full'>
           <label 
             htmlFor={`question_${question.id}_${option.id}`} 
@@ -542,14 +692,24 @@ const QuestionOptions = ({ question, selectedOption, onOptionChange }) => {
               id={`question_${question.id}_${option.id}`} 
               name={`question_${question.id}`} 
               value={option.id}
-              // checked={selectedOption === option.id} // Set checked based on selected option
-              onChange={handleChange} // Use handleChange function
+              checked={selectedOption === option.id}
+              onChange={handleChange}
               className='mr-2'
             />
-            {option.text}
+
+            // {/* <input 
+            //   type="radio" 
+            //   id={`question_${question.id}_${option.id}`} 
+            //   name={`question_${question.id}`} 
+            //   value={option.id}
+            //   // checked={selectedOption === option.id} // Set checked based on selected option
+            //   onChange={handleChange} // Use handleChange function
+            //   className='mr-2'
+            // /> 
+            {option.content}
           </label>
         </li>
-      ))}
+      ))} */}
     </ul>
   );
 };

@@ -7,9 +7,9 @@ function useCountdown(startDate, endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    console.log('Now:', now);
-    console.log('Start:', start);
-    console.log('End:', end);
+    // console.log('Now:', now);
+    // console.log('Start:', start);
+    // console.log('End:', end);
 
     let difference = 0;
     let timeLeft = {
