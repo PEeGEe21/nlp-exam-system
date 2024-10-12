@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { PenAdd, Trash } from 'iconsax-react'
 import { useRouter } from 'next/navigation';
 import { formatMomentDate, getTotalMinutes } from '@/app/lib/utils';
+import { openTestWindow } from '@/app/lib/windowref';
 
 const ExamsListTable = ({ tests = []}) => {
 
@@ -33,6 +34,7 @@ const ExamsListTable = ({ tests = []}) => {
         showLoaderOnConfirm: true,
         preConfirm: async () => {
             // router.push('/take-test/' + id);
+            // openTestWindow(id)
             window.open(`/take-test/${id}`, '_blank');
 
         },

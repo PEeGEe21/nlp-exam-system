@@ -1,6 +1,6 @@
 'use client';
 
-import { redirect, useRouter } from 'next/navigation';
+// import { redirect, useRouter } from 'next/navigation';
 import { clsx } from "clsx"
 import * as dayjs from 'dayjs';
 import moment from 'moment';
@@ -19,6 +19,8 @@ const examsUrl = hostUrl + '/tests/';
 const questionsUrl = hostUrl + '/questions/';
 const taskUrl = hostUrl + '/api/tasks/';
 const settingsUrl = hostUrl + '/api/users/';
+
+
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs))
@@ -177,13 +179,24 @@ export const ToasterAlert = (message, type) => {
 //   return token;
 // };
 
+export const handleRedirect = (role, push) => {
+// const { push } = useRouter();
+
+  const routes = {
+      student: '/student/test-manager',
+      admin: '/admin/dashboard',
+  };
+  push(routes[role] || '/auth/login');
+};
+
 export function shortenTitle(title) {
-  if (title.length < 200) {
+  // console.log(title?.length)
+  if (title?.length < 20) {
     // If the address is too short to be shortened, return it as is
     return title;
   }
 
-  const start = title.slice(0, 4);
+  const start = title?.slice(0, 14);
   return `${start}...`;
 }
 
@@ -305,6 +318,20 @@ export function calculateCompletionPercentage(startDate, endDate, perc = false) 
 
   return cappedPercentage;
 }
+
+export function calculateDuration(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const today = new Date();
+
+  // Calculate the total duration between the start and end dates
+  const totalDuration = end.getTime() - start.getTime();
+
+  const durationInMinutes = Math.floor(totalDuration / (1000 * 60));
+
+  return durationInMinutes;
+}
+
 
 
 

@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { LoaderIcon } from '@/app/components/ui/IconComponent';
 import toast from 'react-hot-toast';
 import setAuthToken from '@/app/utils/setAuthToken';
+import { handleRedirect } from '@/app/lib/utils';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("")
@@ -60,7 +61,7 @@ const LoginPage = () => {
 
           // if(role === 'student'){
             setTimeout(() => {
-              handleRedirect(role);
+              handleRedirect(role, push);
             }, 300);
           // } else if(role === 'admin'){
           //   setTimeout(() => {
@@ -101,13 +102,6 @@ const LoginPage = () => {
     }
   };
 
-  const handleRedirect = (role) => {
-    const routes = {
-        student: '/student/test-manager',
-        admin: '/admin/dashboard',
-    };
-    push(routes[role] || '/auth/login');
-  };
 
 
   return (

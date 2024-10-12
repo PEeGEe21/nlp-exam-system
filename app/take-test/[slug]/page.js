@@ -7,9 +7,10 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
 import { useRouter, useParams } from 'next/navigation'
-import { getTotalMinutes,formattedDateString } from '@/app/lib/utils';
+import { getTotalMinutes,formattedDateString, calculateDuration } from '@/app/lib/utils';
 import { LoaderIcon } from '@/app/components/ui/IconComponent';
 import axios from 'axios';
+import { closeTestWindow } from '@/app/lib/windowref';
 
 
 const TakeTest = () => {
@@ -26,20 +27,60 @@ const TakeTest = () => {
   const [prevDisabled, setPrevDisabled] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [questionStatus, setQuestionStatus] = useState([]);
+  const [startExamDateTime, setStartExamDateTime] = useState(null);
+  const [endExamDateTime, setEndExamDateTime] = useState(null);
   const params = useParams();
   const { slug: id } = params;
 
+
+  const router = useRouter();
+  useEffect(()=>{
+    const getUser = async ()=>{
+      // setLoading(true); // Start loading
+        try{
+            if (localStorage.getItem('exam-system-user')){
+                const data = await JSON.parse(
+                    localStorage.getItem("exam-system-user")
+                );
+                setUser(data)
+                
+            }else{
+                router.push("/auth/login")
+            }
+                
+
+        }catch(err){}
+    };
+    getUser()
+  }, [])
+
   // Effect to initialize question status when questions are loaded
   useEffect(() => {
-    if (questions.length > 0) {
-      setQuestionStatus(Array(questions.length).fill('Not Attended'));
+    if (questions.length > 0 && questionStatus.length !== questions.length) {
+      setQuestionStatus(prevStatus => {
+        const newStatus = [...prevStatus];
+        for (let i = prevStatus.length; i < questions.length; i++) {
+          newStatus.push('Not Attended');
+        }
+        return newStatus;
+      });
     }
   }, [questions]); // This effect runs when questions are loaded
 
+  const handleViewStatusUpdate = (index) => {
+    if (questionStatus[index] === 'Not Attended') {
+      updateQuestionStatus(index, 'Viewed');
+    }
+  };
+  
   useEffect(() => {
-    // Update status to 'Viewed' when a question is navigated to
-    updateQuestionStatus(currentQuestionIndex, 'Viewed');
+    handleViewStatusUpdate(currentQuestionIndex);
   }, [currentQuestionIndex]);
+
+  // useEffect(() => {
+  //   // Update status to 'Viewed' when a question is navigated to
+  //   updateQuestionStatus(currentQuestionIndex, 'Viewed');
+  // }, [currentQuestionIndex]);
 
   // const handleOptionChange = (questionId, optionId) => {
   //   setSelectedOptions((prev) => ({
@@ -66,7 +107,7 @@ const TakeTest = () => {
   // };
 
   const handleOptionChange = (question, questionId, selectedOptionId) => {
-    console.log(questionId, selectedOptionId)
+    // console.log(questionId, selectedOptionId)
     setSelectedOptions((prevSelectedOptions) => ({
       ...prevSelectedOptions,
       [questionId]: selectedOptionId,
@@ -102,31 +143,6 @@ const TakeTest = () => {
       return updatedStatus;
     });
   };
-
-  const handleButtonClick = (index) => {
-    setCurrentQuestionIndex(index);
-  };
-
-  useEffect(()=>{
-    const getUser = async ()=>{
-      // setLoading(true); // Start loading
-        try{
-            if (localStorage.getItem('exam-system-user')){
-                const data = await JSON.parse(
-                    localStorage.getItem("exam-system-user")
-                );
-                setUser(data)
-                
-            }else{
-                router.push("/auth/login")
-            }
-                
-
-        }catch(err){}
-    };
-    getUser()
-  }, [])
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -202,28 +218,48 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
 
 
   const submitTest = async () => {
-
     if(selectedOptions){
-      // console.log(selectedOptions, 'here')
-      var payload = {}
-      payload.user_id = user.id;
-      payload.answers = JSON.stringify({ selectedOptions });
+      try{
+        // setEndExamDateTime(new Date());
+        // console.log(selectedOptions, 'here')
+        var payload = {}
+        payload.user_id = Number(user.id);
+        payload.answers = JSON.stringify({ selectedOptions });
+        payload.endExamDateTime = new Date();
+        payload.startExamDateTime = startExamDateTime;
 
-      const response = await axios.post('http://localhost:3001/api/tests/'+id+'/submit', payload);
 
-      if (response.data.success){
-        if(result.success){
-          Swal.fire('Submitted Successfully', 'Your answers have been submitted successfully','success');
-          setIsFinished(true);
-        } else{
-          toast.error(result.message)
+        if(payload.startExamDateTime && payload.endExamDateTime){
+          payload.duration = calculateDuration(payload.startExamDateTime, payload.endExamDateTime)
         }
-      } else {
+
+        const response = await axios.post('http://localhost:3001/api/tests/'+id+'/submit', payload);
+
+        if (response.data.success){
+            setHasSubmitted(true);
+
+            Swal.fire('Submitted Successfully', 'Your answers have been submitted successfully','success')
+            .then(() => {
+              // Actions to perform after user clicks "OK" on the success dialog
+              setIsFullscreen(false);
+              finishTest();
+            });
+            // setIsFinished(true);
+            // setIsFullscreen(false);
+
+            // setTimeout(()=>{
+            //   finishTest();
+            // }, 5000)
+
+        } else {
+          Swal.fire('Error', 'An error occurred while submitting your answers','error');
+        }
+  
+      } catch(err){
+        console.error(err)
         Swal.fire('Error', 'An error occurred while submitting your answers','error');
       }
     }
-
-
 
 
     // console.log('submitted')
@@ -245,6 +281,9 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
             setTimeout(()=>{
               // setIsFullscreen(true);
               toggleFullscreen();
+
+              setStartExamDateTime(new Date());
+              
             }, 300);
             setLoading(false); // Start loading
 
@@ -325,13 +364,15 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
           }
           setIsFullscreen(false);
         }
+
+        // finishTest();
       }
     });
   };
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      console.log(event.keyCode == 27, event.key === "Escape", isFullscreen);
+      // console.log(event.keyCode == 27, event.key === "Escape", isFullscreen);
   
       // Ensure fullscreen is truly active and Escape key is pressed
       if((event.key=='Escape'||event.key=='Esc'||event.keyCode==27) && (event.target.nodeName=='BODY') && isFullscreen){
@@ -339,7 +380,7 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
         exitTest(); // Trigger the test submission confirmation
       }
     };
-    console.log(isFullscreen, 'isFullscreen status');
+    // console.log(isFullscreen, 'isFullscreen status');
   
     if (isFullscreen) {
       document.addEventListener("keydown", handleKeyDown);
@@ -362,6 +403,7 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
         setPrevDisabled(false);
       }
   };
+  
   const handlePrev = () => {
     if (currentQuestionIndex > 0) {
         setCurrentQuestionIndex((prevStep) => prevStep - 1);
@@ -372,12 +414,30 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
       }
   };
 
+  const handleButtonClick = (index) => {
+    setCurrentQuestionIndex(index);
+
+    setNextDisabled(index >= questions.length - 1);
+    setPrevDisabled(index <= 0);
+  };
+
+  // In the opened window (e.g., /take-test)
+  const finishTest = () => {
+    // window.close(); // Close the window
+    router.push('/student/test-results'); // Redirect if needed
+  };
+
+
+
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
   const hasAttendedLastQuestion = questionStatus[currentQuestionIndex] === 'Attended';
   const hasViewedLastQuestion = questionStatus[currentQuestionIndex] === 'Viewed';
 
   return (
     <>
+      {hasSubmitted &&
+        <div className={`fixed w-full h-full z-[2] bg-blue-gray-900 bg-opacity-50 backdrop-blur-sm pointer-events-none`}></div>
+      }
         {/* welcome  */}
         {isWelcomePage && 
           <>
@@ -437,26 +497,22 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                         <div className=' flex-1 '>
 
                           {test && user ? 
-                          <div className='flex align-center justify-center flex-col text-center cursor-pointer' onClick={startTest} >
-                            <span className='flex align-center justify-center w-full'>
-                              <span className='bg-[#EEEEF0B8] rounded-full p-3 h-12 w-12 flex justify-center items-center text-[#6457EF]'>
-                                <Play/>
+                            <div className='flex align-center justify-center flex-col text-center cursor-pointer' onClick={startTest} >
+                              <span className='flex align-center justify-center w-full'>
+                                <span className='bg-[#EEEEF0B8] rounded-full p-3 h-12 w-12 flex justify-center items-center text-[#6457EF]'>
+                                  <Play/>
+                                </span>
                               </span>
-                            </span>
-                            <p>Start</p>
-                          </div>
-
+                              <p>Start</p>
+                            </div>
                             : ""}
-
-                          
-                          
                         </div>
                       </div>
                     </div>
                     
                   </div>
 
-                  <button>
+                  <button onClick={finishTest}>
                     Go back
                   </button>
                 </div>
@@ -470,14 +526,14 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
 
 
       {!isWelcomePage && 
-        <div className='w-full flex flex-col gap-4  max-w-7xl mx-auto py-12'>
+        <div className='w-full flex flex-col gap-4  max-w-7xl mx-auto py-12 h-full'>
           {/* <button onClick={toggleFullscreen}>
             {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
           </button> */}
 
           {!loading ? 
             <>
-              <div className='bg-white h-full p-6 flex items-center justify-between shadow-sm rounded-lg'>
+              <div className='bg-white h-full p-6 flex items-center justify-between shadow-sm rounded-lg max-h-32'>
                 <div className='space-y-2'>
                 {user?.username ? 
                   <h1>
@@ -522,16 +578,58 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                 </div>
               </div>
 
-              <div className='bg-white h-full p-6 shadow-sm rounded-lg'>
-                <p className='font-semibold'>Test Instrutions</p>
-                <div>
-                  <ul>
-                    <li><div  dangerouslySetInnerHTML={{
-                                                    __html: test?.instructions,
-                                                }}>
-                                                  </div></li>
-                  </ul>  
+              <div className='bg-white h-full p-6 shadow-sm rounded-lg max-h-[200px]'>
+                <div className='flex items-center justify-between'>
+
+                  <div className='flex-1'>
+                    <p className='font-semibold'>Test Instrutions</p>
+                    <div className=''>
+                      <ul>
+                        <li>
+                          <div dangerouslySetInnerHTML={{
+                                                        __html: test?.instructions,
+                                                    }}>
+                                                      </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className='inline-flex gap-2 flex-1 justify-end'>
+                        <div className='flex flex-col items-center gap-1'>
+                            <span>selected</span>
+                            <button
+                                className={`text-white font-bold text-base size-[30px] border border-black flex items-center justify-center bg-[#f893a6]`}
+                              >
+                            </button>
+                        </div>
+
+                        <div className='flex flex-col items-center gap-1'>
+                          <span>attended</span>
+                          <button
+                            className={`text-white font-bold text-base size-[30px] border border-black flex items-center justify-center bg-[#179301] `}
+                          >
+                          </button>
+                        </div>
+                        
+                        <div className='flex flex-col items-center gap-1'>
+                          <span>viewed</span>
+                          <button
+                            className={`text-white font-bold text-base size-[30px] border border-black flex items-center justify-center bg-[#ff9214]`}
+                          >
+                          </button>
+                        </div>
+
+                        <div className='flex flex-col items-center gap-1'>
+                          <span>not opened</span>
+                          <button
+                              className={`text-white font-bold text-base size-[30px] border border-black flex items-center justify-center bg-[#41546d]`}
+                          >
+                          </button>
+                        </div>
+                  </div>
                 </div>
+
               </div>
 
               <div className='flex gap-4'>
@@ -614,7 +712,7 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                         </button>
                       ))} */}
                       {questions.map((item, index) => {
-                        console.log(questionStatus[index])
+                        // console.log(questionStatus[index])
                         return(
                         <button
                           key={index}
@@ -658,15 +756,15 @@ const QuestionOptions = ({ question, selectedOption, onOptionChange }) => {
     onOptionChange(question, question.id, event.target.value); // Update selected option state
   };
   return (
-    <ul className='list-none list-inside space-y-3 text-sm'>
+    <ul className='list-none list-inside space-y-1 text-sm'>
       {question.questionRelation.answers.map((option) => {
         // console.log(selectedOption === option.id, selectedOption, option.id)
         return (
 
-          <li key={option.id} className='w-full'>
+          <li key={option.id} className='w-full hover:bg-[#ccc]'>
             <label 
               htmlFor={`question_${question.id}_${option.id}`} 
-              className='w-full block cursor-pointer'
+              className='w-full block cursor-pointer  py-2 px-1'
             >
               <input 
                 type="radio" 

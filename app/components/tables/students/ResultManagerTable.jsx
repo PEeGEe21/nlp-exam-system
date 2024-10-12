@@ -12,8 +12,9 @@ import {
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { PenAdd, Trash } from 'iconsax-react'
+import { dateFormat } from '@/app/lib/utils'
 
-const ResultManagerStudentTable = ({ tests = []}) => {
+const ResultManagerStudentTable = ({ results = []}) => {
   return (
     <>
         <div className='shadow-lg'>
@@ -32,7 +33,7 @@ const ResultManagerStudentTable = ({ tests = []}) => {
                 </Thead>
                 <Tbody className=' w-full px-4 divide-y divide-[#e7ecf1]'>
 
-                {tests?.map((test, index) => (
+                {results?.map((result, index) => (
                       <Tr key={index} className='px-4 hover:bg-[#F7FAFC]'>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">
@@ -42,7 +43,7 @@ const ResultManagerStudentTable = ({ tests = []}) => {
                           <Td className="px-2 py-4 whitespace-nowrap">
                               <div className='flex items-start justify-between text-sm'>
                                   <p>
-                                      {test.title}
+                                      {result?.test?.title}
                                   </p>
                               </div>
                           </Td>
@@ -50,7 +51,7 @@ const ResultManagerStudentTable = ({ tests = []}) => {
                           <Td className="px-2 py-4 whitespace-nowrap">
                               <div className='flex items-start justify-between text-sm'>
                                   <div>
-                                      Apr 17th, 2024
+                                      {dateFormat(result.createdAt)}
                                   </div>
                               </div>
                               
@@ -61,8 +62,8 @@ const ResultManagerStudentTable = ({ tests = []}) => {
 
                                       <div className='inline-flex items-center gap-2'>
                                           <p>
-                                            <span className='font-medium'>31</span> / 
-                                            <span className='font-medium'> 100</span> 
+                                            <span className='font-medium'>{result?.totalScored}</span> / 
+                                            <span className='font-medium'> {result?.totalMarks}</span> 
                                           </p>
                                       </div>
                                   </div>
@@ -73,16 +74,19 @@ const ResultManagerStudentTable = ({ tests = []}) => {
                           <Td className="px-2 py-4 whitespace-nowrap">
                               <div className='flex items-start justify-between text-sm'>
                                   <div className=''>
-                                          3 mins
+                                  {result?.duration} min{result?.duration > 1 && result?.duration !== 0 ? 's' : ''}
                                   </div>
                               </div>
                               
                           </Td>
                           <Td className="px-2 py-4 text-sm whitespace-nowrap">
                               <div className="text-[#313131] text-xs flex items-center justify-center gap-2 flex-row">
-                                  <Link href={'/student/test-results/'+test.id +'/test-details'} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
+                                  <Link href={'/student/test-results/'+result.id +'/test-details?test='+ result.testId+ '&student='+ result?.student?.id} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
                                       Details
                                   </Link>
+                                  {/* <Link href={'/admin/result-manager/'+ result.id + '/test-details?test='+test_id + '&student='+ result?.student?.id} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
+                                      Test Details
+                                  </Link> */}
                               </div>
                           </Td>
 

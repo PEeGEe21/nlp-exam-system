@@ -16,11 +16,22 @@ import {
   MenuItem,
 } from '@chakra-ui/react';
 import ToggleButton from '../ToggleButton';
+import { shortenTitle } from '@/app/lib/utils';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
-const Navbar = ({ isOpen, toggleSidebar }) => {
+const Navbar = ({ isOpen, toggleSidebar, user }) => {
   // const contextValue = useContext(DashboardMenuContext) || {};
   // const { toggleDashMenu, showDashMenu } = contextValue;
+  const router = useRouter();
   const isLoadingState = null;
+
+  const logout = () => {
+    localStorage.removeItem('exam-system-user');
+    router.push('/auth/login');
+    toast.success('Successfully logged out')
+};
+
   return (
     <>
       <header className="bg-[#373636] border-b-[0.5px] border-[#737272] z-[999] h-14 ">
@@ -32,11 +43,11 @@ const Navbar = ({ isOpen, toggleSidebar }) => {
               
               <div className="lg:flex lg:items-center lg:w-auto gap-4">
 
-                <div className="flex items-center justify-center">
+                {/* <div className="flex items-center justify-center">
                   <button>
                     <NotificationBing size={30} color="#008080" />
                   </button>
-                </div>
+                </div> */}
                 {isLoadingState ? (
                   <>
                     <span>
@@ -65,7 +76,15 @@ const Navbar = ({ isOpen, toggleSidebar }) => {
                         minWidth="150px"
                         maxWidth="150px"
                       >
-                        <MenuItem
+                        <MenuItem                          
+                          className="bg-transparent hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md "
+                        >
+                          <span className=' text-clip  text-nowrap w-3'>
+                            {shortenTitle(user?.email)}
+                          </span>
+                          
+                        </MenuItem>
+                        {/* <MenuItem
                           icon={<Profile2User size={14} />}
                           
                           className="bg-transparent hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md"
@@ -77,9 +96,10 @@ const Navbar = ({ isOpen, toggleSidebar }) => {
                           className="bg-transparent hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md"
                         >
                           Settings
-                        </MenuItem>
+                        </MenuItem> */}
                         <MenuItem
                           icon={<LogoutCurve size={14} color="red" />}
+                          onClick={logout}
                           className="bg-transparent hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md"
                         >
                           Sign Out

@@ -1,11 +1,12 @@
 "use client"
 import ExamsListTable from '@/app/components/tables/students/ExamsListTable'
+import { LoaderIcon } from '@/app/components/ui/IconComponent';
 // import { tests } from '@/app/lib/constants'
 import React, {useEffect, useState} from 'react'
 
 const TestManager = () => {
   const [tests, setTests] = useState([]);
-  const [loading, setLoading] = useState(false); // State for loading
+  const [loading, setLoading] = useState(true); // State for loading
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,6 +29,7 @@ const TestManager = () => {
 
     fetchData();
   }, []);
+
   return (
     <div>
           <div className="flex flex-row items-center justify-between mb-8">
@@ -39,9 +41,16 @@ const TestManager = () => {
 
           </div>
 
+
+          {
+            !loading ? 
           <div>
             <ExamsListTable tests={tests}/>
           </div>
+          : 
+          <div className='text-center w-full items-center justify-center flex'><LoaderIcon extraClass='text-gray-900'/></div>
+          }
+
     </div>
   )
 }
