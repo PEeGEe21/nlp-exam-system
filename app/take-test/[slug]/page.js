@@ -106,24 +106,34 @@ const TakeTest = () => {
   //   }));
   // };
 
-  const handleOptionChange = (question, questionId, selectedOptionId) => {
+  const handleOptionChange = (question, questionId, selectedValue) => {
     // console.log(questionId, selectedOptionId)
-    setSelectedOptions((prevSelectedOptions) => ({
-      ...prevSelectedOptions,
-      [questionId]: selectedOptionId,
-    }));
 
-    console.log(questionId)
+    if (question.optionAnswerTypeId === 1) {
+      setSelectedOptions((prevSelectedOptions) => ({
+        ...prevSelectedOptions,
+        [questionId]: selectedValue,
+      }));
+    }
+
+    if (question.optionAnswerTypeId === 3) {
+      setSelectedOptions((prevSelectedOptions) => ({
+        ...prevSelectedOptions,
+        [questionId]: selectedValue,
+      }));
+    }
+
+    // console.log(questionId)
     const questionIndex = questions.findIndex(q => q.id === question.id);
 
     if (questionIndex !== -1) {
-      console.log(questionIndex, 'questionIndex');
+      // console.log(questionIndex, 'questionIndex');
       updateQuestionStatus(questionIndex, 'Attended'); // Mark question as 'Attended'
     } else {
-      console.warn("Question with ID", question.id, "not found in the questions array");
+      // console.warn("Question with ID", question.id, "not found in the questions array");
     }
 
-    console.log(selectedOptions, 'selectedOptions')
+    // console.log(selectedOptions, 'selectedOptions')
   };
 
 
@@ -650,12 +660,26 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                                 {/* {questions[currentQuestionIndex].questionRelation.question} */}
                           </div>
 
-                          <QuestionOptions 
-                            question={questions[currentQuestionIndex]}
-                            selectedOption={selectedOptions[questions[currentQuestionIndex].id]} 
+                          {questions[currentQuestionIndex].optionAnswerTypeId === 1 &&
+                            <div>
+                              <QuestionOptions 
+                                question={questions[currentQuestionIndex]}
+                                selectedOption={selectedOptions[questions[currentQuestionIndex].id]} 
 
-                            onOptionChange={handleOptionChange}                   
-                          />
+                                onOptionChange={handleOptionChange}                   
+                              />
+                            </div>
+                          }
+
+                          {questions[currentQuestionIndex].optionAnswerTypeId === 3 &&
+                              <div>
+                              <QuestionTextarea
+                                question={questions[currentQuestionIndex]}
+                                answer={selectedOptions[questions[currentQuestionIndex].id] || ''}
+                                onAnswerChange={handleOptionChange}
+                              />
+                            </div>
+                          }
 
                         </div>
 
@@ -809,6 +833,29 @@ const QuestionOptions = ({ question, selectedOption, onOptionChange }) => {
         </li>
       ))} */}
     </ul>
+  );
+};
+
+const QuestionTextarea = ({ question, answer, onAnswerChange }) => {
+  const handleTextareaChange = (event) => {
+    onAnswerChange(question, question.id, event.target.value); // Update the answer state
+  };
+
+  return (
+    <div className='text-sm'>
+      <label htmlFor={`question_${question.id}`} className='block mb-2'>
+        {question.questionRelation.content}
+      </label>
+      <textarea
+        id={`question_${question.id}`}
+        name={`question_${question.id}`}
+        value={answer}
+        onChange={handleTextareaChange}
+        rows={5}
+        className='w-full p-2 border border-gray-300 rounded'
+        placeholder='Enter your answer here...'
+      />
+    </div>
   );
 };
 

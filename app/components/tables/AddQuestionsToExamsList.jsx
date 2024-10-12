@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Add, Minus, Refresh, SearchNormal1 } from 'iconsax-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { addQuestionToExam, getQuestions, shortenTitle } from '@/app/lib/utils';
+import { addQuestionToExam, getQuestions, shortenTitle, shortenTitle2 } from '@/app/lib/utils';
 
 const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) => {
     const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -210,7 +210,7 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) 
                                             <div>
                                                 <p className="text-base text-[#313131]">
                                                     <b>
-                                                        {shortenTitle(question?.questionPlain ? question?.questionPlain : question?.question)}
+                                                        {shortenTitle2(question?.questionPlain ? question?.questionPlain : question?.question)}
                                                     </b>
                                                 </p>
                                             </div>

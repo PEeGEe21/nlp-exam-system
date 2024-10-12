@@ -200,6 +200,17 @@ export function shortenTitle(title) {
   return `${start}...`;
 }
 
+export function shortenTitle2(title) {
+  // console.log(title?.length)
+  if (title?.length < 300) {
+    // If the address is too short to be shortened, return it as is
+    return title;
+  }
+
+  const start = title?.slice(0, 14);
+  return `${start}...`;
+}
+
 
 export const capitalize = (text) => {
   return text && text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();

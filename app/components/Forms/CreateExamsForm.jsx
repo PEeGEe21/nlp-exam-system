@@ -9,6 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import { LoaderIcon } from '../ui/IconComponent';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
 
 const CreateExamsForm = ({testToEdit, id}) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +22,7 @@ const CreateExamsForm = ({testToEdit, id}) => {
     const [examDurationHr, setExamDurationHr] = useState(0);
     const [examDurationMin, setExamDurationMin] = useState(0);
     const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const router = useRouter();
@@ -80,6 +82,7 @@ const CreateExamsForm = ({testToEdit, id}) => {
     };
 
     const handleSubmit = async () => {
+        setIsSaving(true)
         const sDateToSend = new Date(startDateTime);
         const eDateToSend = new Date(endDateTime);
 
@@ -105,10 +108,26 @@ const CreateExamsForm = ({testToEdit, id}) => {
                 if (response.data.success){
                     setError('');
                     setSuccess('Exam updated successfully!');
+                    Swal.fire( 'Success!', 'Exam updated successfully!', 'success' );
+                }else{
+                    setError('Failed to update exam. Please try again.');
+                    Swal.fire({
+                        title: err?.error ? err?.error : 'Failed to update exam!',
+                        text: 'Please try again.',
+                        icon: 'error',
+                    });
                 }
+                setTimeout(function(){
+                    setIsSaving(false)
+                }, 500);
             } catch (err) {
                 setSuccess('');
                 setError('Failed to update exam. Please try again.');
+                Swal.fire({
+                    title: err?.error ? err?.error : 'Failed to update exam!',
+                    text: 'Please try again.',
+                    icon: 'error',
+                  });
                 console.error(err);
             }
         } else {
@@ -119,12 +138,31 @@ const CreateExamsForm = ({testToEdit, id}) => {
                 if (response.data.success){
                     setError('');
                     setSuccess('Exam added successfully!');
-                    router.push('/admin/test-management');
+                    Swal.fire('Success!', 'Exam added successfully!',  'success').then(function(response){
+                        router.push('/admin/test-management');
+                    })
+                }else{
+                    setError('Failed to update exam. Please try again.');
+                    Swal.fire({
+                        title: err?.error ? err?.error : 'Failed to update exam!',
+                        text: 'Please try again.',
+                        icon: 'error',
+                    });
                 }
+                setTimeout(function(){
+                    setIsSaving(false)
+                }, 500);
             } catch (err) {
                 setSuccess('');
                 setError('Failed to add exam. Please try again.');
+                Swal.fire({
+                    title: err?.error ? err?.error : 'Failed to add exam!',
+                    text: 'Please try again.',
+                    icon: 'error',
+                  });
                 console.error(err);
+                setIsSaving(false)
+
             }
         }
     };
@@ -364,13 +402,25 @@ const CreateExamsForm = ({testToEdit, id}) => {
                 <div className="flex flex-wrap items-center justify-end w-full gap-3 mt-4">
                     <button
                         onClick={handleSubmit}
+                        disabled={isSaving}
+                        aria-disabled={`${isSaving ? 'true' : 'false'}`}
                         type={"button"}
                         className="bg-[#008080] disabled:cursor-wait hover:bg-[#008080] min-w-[200px] whitespace-nowrap w-full md:w-auto
                         disabled:opacity-50 rounded-lg 
                         transition-all duration-75 border-none px-5 
-                        font-medium p-3 text-base text-white block"
+                        font-medium p-3 text-base text-white  flex items-center justify-center gap-2"
                     >
                         {isEditing ? "Update" : "Create"}
+                        {isSaving ? (
+                          <>
+                            <LoaderIcon
+                              extraClass="text-white"
+                              className="animate-spin"
+                            />
+                          </>
+                        ) : (
+                          ''
+                        )}
                     </button>
                 </div>
             

@@ -7,19 +7,45 @@ import dynamic from "next/dynamic";
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { LoaderIcon } from '../ui/IconComponent';
+import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
 
 const CreateQuestionsForm = ({id}) => {
+    const [questionTypes, setQuestionTypes] = useState([]);
+    const [questionDifficulty, setDifficulties] = useState([]);
     const [questionType, setQuestionType] = useState("");
     const [question, setQuestion] = useState("");
     const [qDifficulty, setQDifficulty] = useState(0);
     const [answers, setAnswers] = useState([]);
+    const [hints, setHints] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
     const router = useRouter();
 
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
 
+
+    useEffect(()=>{
+        const fetchData = async () => {
+            try {
+                const res = await fetch(`http://localhost:3001/api/questions/main/initial-data`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setQuestionTypes(data.optionTypes);
+                    setDifficulties(data.difficulties);
+                } else {
+                    throw new Error('Failed to fetch the question');
+                }
+            } catch (err) {
+                console.error('Error fetching data:', err?.message);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     useEffect(()=>{
         const fetchData = async () => {
@@ -36,6 +62,7 @@ const CreateQuestionsForm = ({id}) => {
                         setQuestion(result.question);
                         setQDifficulty(result.difficultyId);
                         setAnswers(result.answers || []);
+                        setHints(result?.hints || []);
                     } else {
                         throw new Error('Failed to fetch the question');
                     }
@@ -59,6 +86,9 @@ const CreateQuestionsForm = ({id}) => {
             { id: 1, content: "", isCorrect: false },
             { id: 2, content: "", isCorrect: false },
         ]);
+        setHints([
+            { id: 1, content: ""},
+        ]);
     };
 
     const updateAnswerContent = (id, newContent) => {
@@ -67,6 +97,16 @@ const CreateQuestionsForm = ({id}) => {
                 answer.id === id
                     ? { ...answer, content: newContent }
                     : answer
+            )
+        );
+    };
+
+    const updateHintContent = (id, newContent) => {
+        setHints(prevHints =>
+            prevHints.map(hint =>
+                hint.id === id
+                    ? { ...hint, content: newContent }
+                    : hint
             )
         );
     };
@@ -101,6 +141,27 @@ const CreateQuestionsForm = ({id}) => {
             console.log("Answer successfully deleted from local state");
         }
     };
+
+    const deleteHint = async (id) => {
+        console.log("Deleting option with ID:", id);
+        if (id > 0) {
+            try {
+                console.log("Deleting from db");
+                const response = await axios.delete(`http://localhost:3001/api/questions/delete-hint/${id}`);
+                if (response.status >= 200 && response.status < 300 ) {
+                    console.log("Answer successfully deleted from the database");
+                    setHints(prevHints => prevHints.filter(hint => hint.id !== id));
+                } else {
+                    console.error("Failed to delete answer");
+                }
+            } catch (err) {
+                console.error("Error deleting answer from the database:", err);
+            }
+        } else {
+            setHints(prevHints => prevHints.filter(hint => hint.id !== id));
+            console.log("Hint successfully deleted from local state");
+        }
+    };
     
 
     const addOption = () => {
@@ -113,14 +174,54 @@ const CreateQuestionsForm = ({id}) => {
         setAnswers((prev) => [...prev, newOption]);
     };
     
+    const addHints= () => {
+        const newHint = {
+            id: -Math.abs(hints.length + 1),
+            content: "",
+            // isCorrect: false,
+        };
+    
+        setHints((prev) => [...prev, newHint]);
+    };
+    
     
     const handleSubmit = async () => {
+        setIsSaving(true)
+        
+        if(!questionType || questionType == ''){
+            setError('Please select a question type.');
+            toast.error('Please select a question type');
+            setIsSaving(false)
+            return;
+        }
+
+        if(!question || question == ''){
+            setError('Please enter a question.');
+            toast.error('Please enter a question.');
+            setIsSaving(false)
+            return;
+        }
+
+        if(!qDifficulty || qDifficulty == ''){
+            setError('Please select a difficulty level.');
+            toast.error('Please select a difficulty level.');
+            setIsSaving(false)
+            return;
+        }
+
         const data = {
             userId: 2,
             difficultyId: qDifficulty,
             optionTypeId: questionType,
             question: question,
-            answers: answers
+        }
+
+        if(questionType == '1'){
+            data.answers = answers??null
+        }
+
+        if(questionType == '3'){
+            data.hints = hints??null
         }
 
         if (isEditing) {
@@ -133,11 +234,28 @@ const CreateQuestionsForm = ({id}) => {
                 if (response.data.success){
                     setError('');
                     setSuccess('Question updated successfully!');
+                    Swal.fire('Question updated successfully!', 'success', 'success')
+                }else{
+                    setError('Failed to update question. Please try again.');
+                    Swal.fire({
+                        title: err?.error ? err?.error : 'Failed to update question!',
+                        text: 'Please try again.',
+                        icon: 'error',
+                    });
                 }
+                setTimeout(function(){
+                    setIsSaving(false)
+                }, 500);
             } catch (err) {
                 setSuccess('');
                 setError('Failed to update question. Please try again.');
+                Swal.fire({
+                    title: err?.error ? err?.error : 'Failed to update question!',
+                    text: 'Please try again.',
+                    icon: 'error',
+                  });
                 console.error(err);
+                setIsSaving(false)
             }
 
         } else {
@@ -148,12 +266,33 @@ const CreateQuestionsForm = ({id}) => {
                 if (response.data.success){
                     setError('');
                     setSuccess('Question added successfully!');
-                    router.push('/admin/question-bank');
+                    Swal.fire('Success!', 'Question added successfully', 'success').then(function(response){
+                        router.push('/admin/question-bank');
+                    })
                 }
+                else{
+                    setError('Failed to add question. Please try again.');
+                    Swal.fire({
+                        title: err?.error ? err?.error : 'Failed to add question!',
+                        text: 'Please try again.',
+                        icon: 'error',
+                    });
+                }
+                setTimeout(function(){
+                    setIsSaving(false)
+                }, 500);
+                
             } catch (err) {
                 setSuccess('');
+                Swal.fire({
+                    title: err?.error ? err?.error : 'Failed to add question!',
+                    text: 'Please try again.',
+                    icon: 'error',
+                  });
                 setError('Failed to add question. Please try again.');
+
                 console.error(err);
+                setIsSaving(false)
             }
         }
     };
@@ -171,7 +310,7 @@ const CreateQuestionsForm = ({id}) => {
                             >Question Type</label>
                             <select
                                 id="question_type"
-                                className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
+                                className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] font-medium border bg-transparent h-12 rounded-md focus:outline-0"
                                 name="question_type"
                                 required
                                 value={questionType}
@@ -180,11 +319,11 @@ const CreateQuestionsForm = ({id}) => {
                                     setQuestionType(value);
                                 }}
                             >
-                                <option value={''}>
+                                <option className='font-medium' value={''}>
                                         select an option
                                 </option>
-                                {questionTypes.map((item, index) => (
-                                    <option key={index} value={item.id}>
+                                {questionTypes?.map((item, index) => (
+                                    <option className='font-medium' key={index} value={item.id}>
                                         {item.title}
                                     </option>
                                 ))}
@@ -219,7 +358,7 @@ const CreateQuestionsForm = ({id}) => {
                             >Difficulty Level</label>
                             <select
                                 id="difficulty_level"
-                                className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
+                                className="block px-2 w-full text-sm text-gray-700 border-[#464849] focus:outline-none font-medium focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0"
                                 name="difficulty_level"
                                 required
                                 value={qDifficulty}
@@ -228,9 +367,9 @@ const CreateQuestionsForm = ({id}) => {
                                     setQDifficulty(value);
                                 }}
                             >
-                                <option value={0}>Select Difficulty Level</option>
-                                {questionDifficulty.map((item, index) => (
-                                    <option key={index} value={item.id}>
+                                <option className='font-medium' value={0}>Select Difficulty Level</option>
+                                {questionDifficulty?.map((item, index) => (
+                                    <option className='font-medium' key={index} value={item.id}>
                                         {item.title}
                                     </option>
                                 ))}
@@ -264,7 +403,7 @@ const CreateQuestionsForm = ({id}) => {
                                                             className="block px-2 w-full text-sm text-gray-800 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent disabled:bg-[#3E3D3C] h-12 rounded-md focus:outline-0"
                                                             name="name"
                                                             value={answer.content}
-                                                            required
+                                                            // required
                                                             autoComplete="off"
                                                             onChange={(e) => updateAnswerContent(answer.id, e.target.value)}
                                                         />
@@ -304,6 +443,68 @@ const CreateQuestionsForm = ({id}) => {
                             </div>
                         </div>
                     }
+                    {(questionType == 3) &&
+                        <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                            <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                                <div className='flex items-center justify-between'>
+                                    <label
+                                        htmlFor="token_name"
+                                        className="text-lg mb-1 font-medium"
+                                    >Question Hints</label>
+                                </div>
+                                <div>
+                                    {questionType == 3 ?
+                                        <div>
+                                            {(hints).map((answer, index)=>(
+                                                <div key={index} className="relative flex flex-row w-full gap-4 mb-6  whitespace-nowrap items-center">
+                                                    <label
+                                                        htmlFor={`name-${index}`}
+                                                        className="text-sm mb-1"
+                                                    >
+                                                        Hint {index+1}
+                                                    </label>
+                                                    <textarea
+                                                            type="text"
+                                                            id={`name-${index}`}
+                                                            className="block p-2 w-full text-sm text-gray-800 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent disabled:bg-[#3E3D3C] rounded-md focus:outline-0 "
+                                                            name="name"
+                                                            value={answer.content}
+                                                            rows={5}
+
+                                                            // required
+                                                            autoComplete="off"
+                                                            onChange={(e) => updateHintContent(answer.id, e.target.value)}
+                                                        />
+                                                    <button
+                                                        onClick={() => deleteHint(answer.id)}
+                                                        disabled={hints.length <= 1}
+                                                        className="ml-2 p-2 bg-red-500 text-white rounded cursor-pointer"
+                                                    >
+                                                        <Trash size={14}/>
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    : ""
+                                    }  
+                                    <div className='flex items-center justify-end w-full'>
+                                        <button
+                                            onClick={addHints}
+                                            type={"button"}
+                                            className="bg-[#008080] disabled:cursor-wait hover:bg-[#008080] min-w-[100px] whitespace-nowrap w-full md:w-auto
+                                            disabled:opacity-50 rounded-lg 
+                                            transition-all duration-75 border-none px-5 
+                                            font-medium p-3 text-white block text-sm inline-flex items-center gap-1"
+                                        >
+                                            <Add size={14}/> Add Hint
+                                        </button>
+                                    </div>
+
+                                </div>
+                                
+                            </div>
+                        </div>
+                    }
                 </div>
                 <div>
                     {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -324,13 +525,25 @@ const CreateQuestionsForm = ({id}) => {
 
                 <button
                     onClick={handleSubmit}
+                    disabled={isSaving}
+                    aria-disabled={`${isSaving ? 'true' : 'false'}`}
                     type={"button"}
                     className="bg-[#008080] disabled:cursor-wait hover:bg-[#008080] min-w-[200px] whitespace-nowrap w-full md:w-auto
                     disabled:opacity-50 rounded-lg 
                     transition-all duration-75 border-none px-5 
-                    font-medium p-3 text-base text-white block"
+                    font-medium p-3 text-base text-white flex items-center justify-center gap-2"
                 >
                     {isEditing ? "Update" : "Create"}
+                    {isSaving ? (
+                          <>
+                            <LoaderIcon
+                              extraClass="text-white"
+                              className="animate-spin"
+                            />
+                          </>
+                        ) : (
+                          ''
+                        )}
                     </button>
             </div>
         

@@ -5,6 +5,7 @@ import { Trash } from 'iconsax-react';
 import { IdCardIcon, Pen } from 'lucide-react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { capitalize } from '@/app/lib/utils';
 
 const QuestionsListTable = ({ questions = [], setQuestions}) => {
     const deleteQuestion = (id) => {
@@ -88,7 +89,7 @@ const QuestionsListTable = ({ questions = [], setQuestions}) => {
                                         <div>
                                             <div>
                                                 <p className="text-base text-[#313131]">
-                                                    {question?.questionPlain ? question?.questionPlain : question?.question}
+                                                    {question?.questionPlain ? capitalize(question?.questionPlain) : question?.question}
                                                 </p>
                                             </div>
 
