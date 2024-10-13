@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Add, Minus, Refresh, SearchNormal1 } from 'iconsax-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { addQuestionToExam, getQuestions, shortenTitle, shortenTitle2 } from '@/app/lib/utils';
+import { addQuestionToExam, getQuestions, hostUrl, shortenTitle, shortenTitle2 } from '@/app/lib/utils';
 
 const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) => {
     const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -69,7 +69,7 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) 
         try {
             const mark = questionMarks[question_id];
           // Make the API request to update the question mark
-          const response = await axios.post(`http://localhost:3001/api/tests/${test.id}/${question_id}/mark`, {
+          const response = await axios.post(hostUrl + `tests/${test.id}/${question_id}/mark`, {
             mark,
           });
     

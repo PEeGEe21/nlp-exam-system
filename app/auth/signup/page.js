@@ -7,6 +7,7 @@ import { signUpTexts } from '@/app/lib/constants';
 import { Eye, EyeSlash } from 'iconsax-react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { hostUrl } from '@/app/lib/utils';
 
 const SignupPage = () => {
   const [email, setEmail] = useState("")
@@ -22,7 +23,7 @@ const SignupPage = () => {
       password,
     };
     try {
-        const response = await axios.post('http://localhost:3001/api/auth/signup', data);
+        const response = await axios.post(hostUrl + 'auth/signup', data);
         setSuccess('Account created successfully!');
         setError('');
         router.push('/auth/login');

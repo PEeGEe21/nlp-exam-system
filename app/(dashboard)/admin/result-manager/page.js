@@ -1,6 +1,7 @@
 'use client'
 import ResultManagerTable from '@/app/components/tables/ResultManagerTable'
 import { tests } from '@/app/lib/constants'
+import { hostUrl } from '@/app/lib/utils'
 import { useRouter } from 'next/navigation'
 import React, {useState, useEffect} from 'react'
 
@@ -22,7 +23,7 @@ const ResultManager = () => {
       setLoading(true); // Start loading
       setSearchQuery('');
       try {
-        const res = await fetch('http://localhost:3001/api/tests');
+        const res = await fetch(hostUrl+'tests');
         if (res.ok) {
           const result = await res.json();
           // console.log(result)

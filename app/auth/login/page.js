@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { LoaderIcon } from '@/app/components/ui/IconComponent';
 import toast from 'react-hot-toast';
 import setAuthToken from '@/app/utils/setAuthToken';
-import { handleRedirect } from '@/app/lib/utils';
+import { handleRedirect, hostUrl } from '@/app/lib/utils';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("")
@@ -43,7 +43,7 @@ const LoginPage = () => {
       password,
     };
     try {
-        const response = await axios.post('http://localhost:3001/api/auth/login', data);
+        const response = await axios.post(hostUrl + 'auth/login', data);
         // console.log(response.data.success)
         if (response.data.success){
           setError('');
@@ -174,7 +174,7 @@ const LoginPage = () => {
                         className="w-full h-11 select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans font-bold text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none flex items-center justify-center"
                         type="button" 
                         disabled={loading}
-                        aria-disabled={`${loading ? 'true' : 'false'}`}
+                        aria-disabled={loading}
                         onClick={login}
                         >
                         {loading ? (

@@ -14,12 +14,13 @@ dayjs.extend(duration);
 
 
 const isWindowDefined = typeof window !== 'undefined';
-const hostUrl = process.env.NEXT_PUBLIC_AUTH_URL;
-const examsUrl = hostUrl + '/tests/';
-const questionsUrl = hostUrl + '/questions/';
-const taskUrl = hostUrl + '/api/tasks/';
-const settingsUrl = hostUrl + '/api/users/';
 
+// export const hostUrl = process.env.NODE_ENV === 'development' ? process.env.NODE_ENV :  process.env.NODE_ENV ;
+// console.log(process.env.NODE_ENV, process.env.NEXT_PUBLIC_AUTH_URL, process.env.NEXT_PUBLIC_LOCAL_AUTH_URL, process.env.NEXT_PUBLIC_AUTH_URL)
+export const hostUrl = process.env.NEXT_PUBLIC_NODE_ENV === 'development' ? process.env.NEXT_PUBLIC_LOCAL_AUTH_URL :  process.env.NEXT_PUBLIC_AUTH_URL ;
+// console.log(process.env.NEXT_PUBLIC_NODE_ENV, hostUrl)
+const examsUrl = hostUrl + 'tests/';
+const questionsUrl = hostUrl + 'questions/';
 
 
 export function cn(...inputs) {
@@ -54,7 +55,7 @@ export const fetchProjectsByUserId = async (user_id, page) => {
 // Question
 export const addQuestionToExam = async (test_id, question, payload) => {
   const response = await axios.post(
-    `http://localhost:3001/api/tests/add-question-to-test/${test_id}/${question.id}`,
+    `${examsUrl}add-question-to-test/${test_id}/${question.id}`,
     payload
   );
   return response;

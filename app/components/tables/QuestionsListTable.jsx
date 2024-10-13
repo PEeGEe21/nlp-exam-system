@@ -5,7 +5,7 @@ import { Trash } from 'iconsax-react';
 import { IdCardIcon, Pen } from 'lucide-react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { capitalize } from '@/app/lib/utils';
+import { capitalize, hostUrl } from '@/app/lib/utils';
 
 const QuestionsListTable = ({ questions = [], setQuestions}) => {
     const deleteQuestion = (id) => {
@@ -21,7 +21,7 @@ const QuestionsListTable = ({ questions = [], setQuestions}) => {
             showLoaderOnConfirm: true,
             preConfirm: async () => {
                 try {
-                    const response = await axios.delete(`http://localhost:3001/api/questions/delete/${id}`);
+                    const response = await axios.delete(hostUrl + `questions/delete/${id}`);
                     if (response.success){
                         Swal.fire(
                             'Deleted!',

@@ -10,6 +10,7 @@ import { LoaderIcon } from '../ui/IconComponent';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
+import { hostUrl } from '@/app/lib/utils';
 
 const CreateExamsForm = ({testToEdit, id}) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -33,7 +34,7 @@ const CreateExamsForm = ({testToEdit, id}) => {
         const fetchData = async () => {
             if (id) {
                 try {
-                    const res = await fetch(`http://localhost:3001/api/tests/${id}`);
+                    const res = await fetch(`${hostUrl}tests/${id}`);
                     if (res.ok) {
                         const data = await res.json();
                         const result = data.test
@@ -104,7 +105,7 @@ const CreateExamsForm = ({testToEdit, id}) => {
             console.log("Updating exam");
             try {
 
-                const response = await axios.patch(`http://localhost:3001/api/tests/edit/${id}`, data);
+                const response = await axios.patch(hostUrl + `tests/edit/${id}`, data);
                 if (response.data.success){
                     setError('');
                     setSuccess('Exam updated successfully!');
@@ -134,7 +135,7 @@ const CreateExamsForm = ({testToEdit, id}) => {
             console.log("Creating exam:");
             
             try {
-                const response = await axios.post('http://localhost:3001/api/tests/create', data);
+                const response = await axios.post(hostUrl + 'tests/create', data);
                 if (response.data.success){
                     setError('');
                     setSuccess('Exam added successfully!');
@@ -403,7 +404,7 @@ const CreateExamsForm = ({testToEdit, id}) => {
                     <button
                         onClick={handleSubmit}
                         disabled={isSaving}
-                        aria-disabled={`${isSaving ? 'true' : 'false'}`}
+                        aria-disabled={isSaving}
                         type={"button"}
                         className="bg-[#008080] disabled:cursor-wait hover:bg-[#008080] min-w-[200px] whitespace-nowrap w-full md:w-auto
                         disabled:opacity-50 rounded-lg 

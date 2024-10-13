@@ -6,7 +6,7 @@ import { PenTool, Trash } from 'iconsax-react';
 import { Pen } from 'lucide-react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { formatDate, formatMomentDate, getTotalMinutes } from '@/app/lib/utils';
+import { formatDate, formatMomentDate, getTotalMinutes, hostUrl } from '@/app/lib/utils';
 
 const ExamsListTable = ({ tests = [], setTests}) => {
 
@@ -33,7 +33,7 @@ const ExamsListTable = ({ tests = [], setTests}) => {
             showLoaderOnConfirm: true,
             preConfirm: async () => {
                 try {
-                    const response = await axios.delete(`http://localhost:3001/api/tests/delete/${id}`);
+                    const response = await axios.delete(hostUrl + `tests/delete/${id}`);
                     if (response.success){
                         Swal.fire(
                             'Deleted!',
@@ -77,7 +77,7 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                     const data = {
                         isPublished: 1
                     }
-                    const response = await axios.patch(`http://localhost:3001/api/tests/edit/${id}`, data);
+                    const response = await axios.patch(hostUrl + `tests/edit/${id}`, data);
                     if (response.data.success){
                         setTests((prevTests) =>
                             prevTests.map((test) => 

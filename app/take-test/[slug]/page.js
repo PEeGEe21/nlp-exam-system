@@ -7,7 +7,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
 import { useRouter, useParams } from 'next/navigation'
-import { getTotalMinutes,formattedDateString, calculateDuration } from '@/app/lib/utils';
+import { getTotalMinutes,formattedDateString, calculateDuration, hostUrl } from '@/app/lib/utils';
 import { LoaderIcon } from '@/app/components/ui/IconComponent';
 import axios from 'axios';
 import { closeTestWindow } from '@/app/lib/windowref';
@@ -158,7 +158,7 @@ const TakeTest = () => {
     const fetchData = async () => {
       if(id){
         try {
-          const res = await fetch('http://localhost:3001/api/tests/'+id);
+          const res = await fetch(hostUrl + 'tests/'+id);
           if (res.ok) {
             const result = await res.json();
                 
@@ -190,7 +190,7 @@ const TakeTest = () => {
 //     if(id){
 //       setLoading(true); // Start loading
 //       try {
-//         const res = await fetch('http://localhost:3001/api/tests/'+id+'/questions');
+//         const res = await fetch(hostUrl + 'tests/'+id+'/questions');
 //         if (res.ok) {
 //           const result = await res.json();
               
@@ -243,7 +243,7 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
           payload.duration = calculateDuration(payload.startExamDateTime, payload.endExamDateTime)
         }
 
-        const response = await axios.post('http://localhost:3001/api/tests/'+id+'/submit', payload);
+        const response = await axios.post(hostUrl + 'tests/'+id+'/submit', payload);
 
         if (response.data.success){
             setHasSubmitted(true);
@@ -281,7 +281,7 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
     setIsWelcomePage(false);
     setLoading(true); // Start loading
     try {
-      const res = await fetch('http://localhost:3001/api/tests/'+id+'/questions');
+      const res = await fetch(hostUrl + 'tests/'+id+'/questions');
       if (res.ok) {
         const result = await res.json();
             

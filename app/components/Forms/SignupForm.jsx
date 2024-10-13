@@ -22,24 +22,6 @@ const SignupForm = () => {
   const onSubmit = (data) => {
     setError('');
     setSuccess('');
-    console.log(data)
-
-    // try {
-    //   const response = await fetch('http://localhost:3001/api/auth/login', {
-    //     method: 'POST',
-    //     body: JSON.stringify(data),
-    //   });
-
-    //   if (!response.ok) {
-    //     throw new Error('Signup failed. Please try again.');
-    //   }
-
-    //   const result = await response.json();
-    //   setSuccess('Signup successful!');
-    //   console.log(result);
-    // } catch (err) {
-    //   setError(err.message);
-    // }
   };
 
   return (

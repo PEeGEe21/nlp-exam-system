@@ -2,6 +2,7 @@
 import ExamsListTable from '@/app/components/tables/ExamsListTable';
 import QuestionsListTable from '@/app/components/tables/QuestionsListTable'
 import { tests } from '@/app/lib/constants';
+import { hostUrl } from '@/app/lib/utils';
 import { ArrowLeft, FilterSearch, Refresh, SearchNormal1 } from 'iconsax-react';
 import { FolderSync } from 'lucide-react';
 import Link from 'next/link'
@@ -26,7 +27,7 @@ const TestManagement = () => {
       setLoading(true); // Start loading
       setSearchQuery('');
       try {
-        const res = await fetch('http://localhost:3001/api/tests');
+        const res = await fetch(hostUrl + 'tests');
         if (res.ok) {
           const result = await res.json();
           setTests(result.data);

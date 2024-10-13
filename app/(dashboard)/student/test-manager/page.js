@@ -1,6 +1,7 @@
 "use client"
 import ExamsListTable from '@/app/components/tables/students/ExamsListTable'
 import { LoaderIcon } from '@/app/components/ui/IconComponent';
+import { hostUrl } from '@/app/lib/utils';
 // import { tests } from '@/app/lib/constants'
 import React, {useEffect, useState} from 'react'
 
@@ -13,7 +14,7 @@ const TestManager = () => {
       
       setLoading(true); // Start loading
       try {
-        const res = await fetch('http://localhost:3001/api/tests/student');
+        const res = await fetch(hostUrl + 'tests/student');
         if (res.ok) {
           const result = await res.json();
           setTests(result.data);

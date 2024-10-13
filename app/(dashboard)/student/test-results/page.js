@@ -2,6 +2,7 @@
 import ResultManagerTable from '@/app/components/tables/ResultManagerTable'
 import ResultManagerStudentTable from '@/app/components/tables/students/ResultManagerTable'
 import { LoaderIcon } from '@/app/components/ui/IconComponent'
+import { hostUrl } from '@/app/lib/utils'
 // import { tests } from '@/app/lib/constants'
 import React, {useEffect, useState} from 'react'
 
@@ -36,7 +37,7 @@ const ResultManager = () => {
       if(user){
         // setLoading(true); // Start loading
         try {
-          const res = await fetch('http://localhost:3001/api/users/' + user?.id + '/results');
+          const res = await fetch(hostUrl + 'users/' + user?.id + '/results');
           if (res.ok) {
             const result = await res.json();
             setResults(result.results);

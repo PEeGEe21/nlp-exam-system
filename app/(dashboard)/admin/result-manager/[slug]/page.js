@@ -15,7 +15,7 @@ import {
     TableContainer,
   } from '@chakra-ui/react'
 import { demostudents } from '@/app/lib/constants'
-import { formatMomentDate, getTotalMinutes } from '@/app/lib/utils'
+import { formatMomentDate, getTotalMinutes, hostUrl } from '@/app/lib/utils'
 
 const TestResult = () => {
   const [test, setTest] = useState();
@@ -31,7 +31,7 @@ const TestResult = () => {
       
       setLoading(true); // Start loading
       try {
-        const res = await fetch('http://localhost:3001/api/tests/'+id);
+        const res = await fetch(hostUrl+'tests/'+id);
         if (res.ok) {
           const result = await res.json();
           setTest(result.test);

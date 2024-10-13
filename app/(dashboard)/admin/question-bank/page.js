@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, {useEffect, useState} from 'react'
 import { questions } from '@/app/lib/constants';
+import { hostUrl } from '@/app/lib/utils';
 
 const QuestionBank = () => {
   const [questions, setQuestions] = useState([])
@@ -13,7 +14,7 @@ const QuestionBank = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/questions');
+        const res = await fetch(hostUrl + 'questions');
         if (res.ok) {
           const result = await res.json();
           setQuestions(result.data);

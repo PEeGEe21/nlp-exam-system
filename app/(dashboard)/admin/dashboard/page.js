@@ -1,5 +1,5 @@
 "use client"
-import { formatDuration, formatMomentDate } from '@/app/lib/utils';
+import { formatDuration, formatMomentDate, hostUrl } from '@/app/lib/utils';
 import {
   Table,
   Thead,
@@ -49,7 +49,7 @@ const Dashboard = () => {
       if(user){
         setLoading(true); // Start loading
         try {
-          const res = await fetch('http://localhost:3001/api/users/dashboard/'+user?.id);
+          const res = await fetch(hostUrl + 'users/dashboard/'+user?.id);
           if (res.ok) {
             const result = await res.json();
             // console.log(result)

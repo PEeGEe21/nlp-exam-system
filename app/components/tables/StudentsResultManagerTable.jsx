@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { PenAdd, Trash } from 'iconsax-react'
-import { calculateCompletionPercentage, DisplayDuration, formatDuration, formatMomentDate } from '@/app/lib/utils'
+import { calculateCompletionPercentage, DisplayDuration, formatDuration, formatMomentDate, hostUrl } from '@/app/lib/utils'
 
 const StudentsResultManagerTable = ({ test_id}) => {
   const [students, setStudents] = useState([]);
@@ -23,7 +23,7 @@ const StudentsResultManagerTable = ({ test_id}) => {
       
       setLoading(true); // Start loading
       try {
-        const res = await fetch('http://localhost:3001/api/results/test/'+test_id);
+        const res = await fetch(hostUrl + 'results/test/'+test_id);
         
         if (res.ok) {
           const result = await res.json();

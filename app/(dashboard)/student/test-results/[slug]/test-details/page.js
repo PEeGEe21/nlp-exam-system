@@ -211,7 +211,7 @@ import { CheckIcon, CrossIcon } from 'lucide-react'
 import { questions, scoredQuestions } from '@/app/lib/constants'
 import { CloseIcon } from '@/app/components/ui/IconComponent'
 import toast from 'react-hot-toast'
-import { formatMomentDate, getTotalMinutes } from '@/app/lib/utils'
+import { formatMomentDate, getTotalMinutes, hostUrl } from '@/app/lib/utils'
 
 const MyTestDetail = () => {
     const [test, setTest] = useState(null);
@@ -242,7 +242,7 @@ const MyTestDetail = () => {
             setLoading(true); // Start loading
             setSearchQuery('');
             try {
-              const res = await fetch('http://localhost:3001/api/results/scores/'+id + '/' + test_id + '/' + student_id);
+              const res = await fetch(hostUrl + 'results/scores/'+id + '/' + test_id + '/' + student_id);
             //   console.log(res)
               if (res.ok) {
                 const result = await res.json();

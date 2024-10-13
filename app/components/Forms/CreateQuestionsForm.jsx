@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { LoaderIcon } from '../ui/IconComponent';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import { hostUrl } from '@/app/lib/utils';
 
 const CreateQuestionsForm = ({id}) => {
     const [questionTypes, setQuestionTypes] = useState([]);
@@ -31,7 +32,7 @@ const CreateQuestionsForm = ({id}) => {
     useEffect(()=>{
         const fetchData = async () => {
             try {
-                const res = await fetch(`http://localhost:3001/api/questions/main/initial-data`);
+                const res = await fetch(hostUrl + `questions/main/initial-data`);
                 if (res.ok) {
                     const data = await res.json();
                     setQuestionTypes(data.optionTypes);
@@ -51,7 +52,7 @@ const CreateQuestionsForm = ({id}) => {
         const fetchData = async () => {
             if (id) {
                 try {
-                    const res = await fetch(`http://localhost:3001/api/questions/${id}`);
+                    const res = await fetch(hostUrl + `questions/${id}`);
                     if (res.ok) {
                         const data = await res.json();
                         const result = data.question
@@ -126,7 +127,7 @@ const CreateQuestionsForm = ({id}) => {
         if (id > 0) {
             try {
                 console.log("Deleting from db");
-                const response = await axios.delete(`http://localhost:3001/api/questions/delete-answer/${id}`);
+                const response = await axios.delete(hostUrl + `questions/delete-answer/${id}`);
                 if (response.status >= 200 && response.status < 300 ) {
                     console.log("Answer successfully deleted from the database");
                     setAnswers(prevAnswers => prevAnswers.filter(answer => answer.id !== id));
@@ -147,7 +148,7 @@ const CreateQuestionsForm = ({id}) => {
         if (id > 0) {
             try {
                 console.log("Deleting from db");
-                const response = await axios.delete(`http://localhost:3001/api/questions/delete-hint/${id}`);
+                const response = await axios.delete(hostUrl + `questions/delete-hint/${id}`);
                 if (response.status >= 200 && response.status < 300 ) {
                     console.log("Answer successfully deleted from the database");
                     setHints(prevHints => prevHints.filter(hint => hint.id !== id));
@@ -230,7 +231,7 @@ const CreateQuestionsForm = ({id}) => {
 
             try {
 
-                const response = await axios.patch(`http://localhost:3001/api/questions/edit/${id}`, data);
+                const response = await axios.patch(hostUrl + `questions/edit/${id}`, data);
                 if (response.data.success){
                     setError('');
                     setSuccess('Question updated successfully!');
@@ -262,7 +263,7 @@ const CreateQuestionsForm = ({id}) => {
             console.log("Creating question: " + question);
             
             try {
-                const response = await axios.post('http://localhost:3001/api/questions/create', data);
+                const response = await axios.post(hostUrl + 'questions/create', data);
                 if (response.data.success){
                     setError('');
                     setSuccess('Question added successfully!');
@@ -526,7 +527,7 @@ const CreateQuestionsForm = ({id}) => {
                 <button
                     onClick={handleSubmit}
                     disabled={isSaving}
-                    aria-disabled={`${isSaving ? 'true' : 'false'}`}
+                    aria-disabled={isSaving}
                     type={"button"}
                     className="bg-[#008080] disabled:cursor-wait hover:bg-[#008080] min-w-[200px] whitespace-nowrap w-full md:w-auto
                     disabled:opacity-50 rounded-lg 

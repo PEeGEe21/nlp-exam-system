@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation';
+import { hostUrl } from '@/app/lib/utils';
 
 const CreateQuestion = () => {
   const [test, setTest] = useState(null);
@@ -36,7 +37,7 @@ const CreateQuestion = () => {
         setLoading(true); // Start loading
         setSearchQuery('');
         try {
-          const res = await fetch('http://localhost:3001/api/tests/'+id);
+          const res = await fetch(hostUrl + 'tests/'+id);
           if (res.ok) {
             const result = await res.json();
                 
@@ -69,7 +70,7 @@ const CreateQuestion = () => {
         if(id){
 
           // /api/tests/question-assign-index/:testId
-          const res = await fetch('http://localhost:3001/api/tests/question-assign-index/'+id);
+          const res = await fetch(hostUrl + 'tests/question-assign-index/'+id);
           if (res.ok) {
             const result = await res.json();
             setQuestions(result.data);
