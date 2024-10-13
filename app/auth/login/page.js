@@ -43,8 +43,8 @@ const LoginPage = () => {
       password,
     };
     try {
+        console.log(hostUrl, 'host url')
         const response = await axios.post(hostUrl + 'auth/login', data);
-        // console.log(response.data.success)
         if (response.data.success){
           setError('');
           setSuccess('Login successfully!');
