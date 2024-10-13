@@ -185,6 +185,11 @@ export const signUpTexts = [
   "Preparing the best testing experience for you...",
 ];
 
+export const signUpAdminTexts = [
+  "Please sign up to start setting exams.",
+  "Preparing the best testing experience for you...",
+];
+
 export const demostudents = [
   {
     id: 1,

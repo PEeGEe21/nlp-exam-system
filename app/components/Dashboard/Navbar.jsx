@@ -79,7 +79,7 @@ const Navbar = ({ isOpen, toggleSidebar, user }) => {
                         <MenuItem                          
                           className="bg-transparent hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md "
                         >
-                          <span className=' text-clip  text-nowrap w-3'>
+                          <span className=' text-clip  text-nowrap overflow-x-hidden'>
                             {shortenTitle(user?.email)}
                           </span>
                           

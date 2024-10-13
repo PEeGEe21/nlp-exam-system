@@ -3,13 +3,13 @@
 import React, {useState} from 'react'
 import Link from 'next/link';
 import A4Animation from '@/app/components/motion/Layout';
-import { signUpTexts } from '@/app/lib/constants';
+import { signUpAdminTexts, signUpTexts } from '@/app/lib/constants';
 import { Eye, EyeSlash } from 'iconsax-react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { hostUrl } from '@/app/lib/utils';
 
-const SignupPage = () => {
+const SignupAdminPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState('');
@@ -23,7 +23,7 @@ const SignupPage = () => {
       password,
     };
     try {
-        const response = await axios.post(hostUrl + 'auth/signup', data);
+        const response = await axios.post(hostUrl + 'auth/admin-signup', data);
         setSuccess('Account created successfully!');
         setError('');
         router.push('/auth/login');
@@ -38,7 +38,7 @@ const SignupPage = () => {
         <div className="">
           <div
             className="grid mt-10 mb-6 text-black">
-              <A4Animation baseText={'Sign Up...'} texts={signUpTexts}/>
+              <A4Animation baseText={'Sign Up As An Admin...'} texts={signUpAdminTexts}/>
           </div>
           <div>
             {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -55,8 +55,8 @@ const SignupPage = () => {
                   id="email"
                   className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                   type="email"
-                  required
                   name="email"
+                  required
                   onChange={(e) => {
                     const value = e.target.value
                     setEmail(value)
@@ -115,4 +115,4 @@ const SignupPage = () => {
   )
 }
 
-export default SignupPage
+export default SignupAdminPage

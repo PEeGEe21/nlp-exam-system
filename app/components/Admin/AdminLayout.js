@@ -17,10 +17,8 @@ const AdminLayout = ({children}) => {
                         localStorage.getItem("exam-system-user")
                     );
                     setUser(data)
-                    
                     setUserId(data.id)
                     setUserRole(data.user_role)
-                    console.log(user, userRole, "userId")
                 }else{
                     router.push("/auth/login")
                 }
