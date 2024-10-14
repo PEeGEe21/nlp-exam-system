@@ -157,7 +157,16 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[#A19B99] text-[#313131]">
-                                {tests?.map((test, index) => {
+                                {tests?.length < 1 &&
+                                    <tr>
+                                        <td colSpan={3} className="px-2 py-4 text-base whitespace-nowrap text-center">
+                                            <span className="text-[#313131] text-base">
+                                                No data found
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                                {tests?.length > 0 && tests?.map((test, index) => {
 
                                     const now = Date.now();
                                     const start_date = new Date(test?.startDate);

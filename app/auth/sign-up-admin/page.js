@@ -4,32 +4,62 @@ import React, {useState} from 'react'
 import Link from 'next/link';
 import A4Animation from '@/app/components/motion/Layout';
 import { signUpAdminTexts, signUpTexts } from '@/app/lib/constants';
+import { LoaderIcon } from '@/app/components/ui/IconComponent';
 import { Eye, EyeSlash } from 'iconsax-react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { hostUrl } from '@/app/lib/utils';
+import toast from 'react-hot-toast';
 
 const SignupAdminPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const createAccount = async () => {
+    if(!email){
+      toast.error('Please enter email');
+      return;
+    }
+
+    if(!password){
+      toast.error('Please enter password');
+      return;
+    }
+    setLoading(true);
+
+
     const data = {
       email,
       password,
     };
     try {
         const response = await axios.post(hostUrl + 'auth/admin-signup', data);
-        setSuccess('Account created successfully!');
-        setError('');
-        router.push('/auth/login');
+        if (response.data.success){
+            toast.success(response.data.message??'Account created successfully!');
+            setSuccess('Account created successfully!');
+            setError('');
+            router.push('/auth/login');
+        } else{
+            let message = '';
+            if (!response.data?.message) {
+              message = 'An error occurred';
+            } else {
+              message = response.data?.message;
+            }
+            toast.error(message);
+        }
+        setLoading(false);
+
     } catch (err) {
         setError('Failed to create account. Please try again.');
         setSuccess('');
+        setLoading(false);
+
         console.error(err);
     }
   };
@@ -93,10 +123,22 @@ const SignupAdminPage = () => {
 
               <div className="pt-6">
                 <button
-                  className="w-full h-[45px] select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans font-bold text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  className="w-full h-[45px] select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans font-bold text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none flex items-center justify-center "
                   type="button"
+                  disabled={loading}
+                  aria-disabled={loading}
                   onClick={createAccount}>
-                  Sign Up
+                    {loading ? (
+                      <>
+                        <LoaderIcon
+                          extraClass="text-white"
+                          className="animate-spin"
+                        />
+                      </>
+                    ) : (
+                      'Sign Up'
+                    )}
+                  
                 </button>
                 <p className="flex justify-center mt-6 font-sans text-sm antialiased font-light leading-normal text-inherit">
                   Already have an account?

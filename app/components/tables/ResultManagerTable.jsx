@@ -30,7 +30,16 @@ const ResultManagerTable = ({ tests = []}) => {
                 </Thead>
                 <Tbody className=' w-full px-4 divide-y divide-[#e7ecf1]'>
 
-                  {tests?.map((test, index) => (
+                  {tests?.length < 1 &&
+                      <Tr>
+                          <Td colSpan={3} className="px-2 py-4 text-base whitespace-nowrap text-center">
+                              <span className="text-[#313131] text-base">
+                                  No data found
+                              </span>
+                          </Td>
+                      </Tr>
+                  }
+                  {tests?.length > 0 && tests?.map((test, index) => (
                       <Tr key={index} className='px-4 hover:bg-[#F7FAFC]'>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">

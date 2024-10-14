@@ -33,7 +33,16 @@ const ResultManagerStudentTable = ({ results = []}) => {
                 </Thead>
                 <Tbody className=' w-full px-4 divide-y divide-[#e7ecf1]'>
 
-                {results?.map((result, index) => (
+                {results?.length < 1 &&
+                    <Tr>
+                        <Td colSpan={6} className="px-2 py-4 text-base whitespace-nowrap text-center">
+                            <span className="text-[#313131] text-base">
+                                No data found
+                            </span>
+                        </Td>
+                    </Tr>
+                }
+                {results?.length > 0  && results?.map((result, index) => (
                       <Tr key={index} className='px-4 hover:bg-[#F7FAFC]'>
                           <Td className="px-2 py-4 text-base whitespace-nowrap">
                               <span className="text-[#313131] text-base">
