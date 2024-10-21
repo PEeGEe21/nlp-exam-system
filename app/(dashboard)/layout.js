@@ -5,9 +5,12 @@ import MainLayout from '../components/Dashboard/MainLayout';
 function layout({ children }) {
   return (
     <>
-       <MainLayout>
-        {children}
-       </MainLayout>
+      {/* <div className="h-screen flex flex-row justify-start bg-[#F3F4F6]"> */}
+        <MainLayout>
+          {children}
+        </MainLayout>
+      {/* </div> */}
+
     </>
 )}
 
