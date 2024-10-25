@@ -4,16 +4,40 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import { handleRedirect } from '@/app/lib/utils'
+import { checkIsDesktopMedia, handleRedirect } from '@/app/lib/utils'
 import { useRouter } from 'next/navigation'
 import { ArrowRight, ArrowRight2, ArrowRight3 } from 'iconsax-react'
 
 const MainComponent = () => {
     const [loading, setLoading] = useState(true)
     const [user, setUser] = useState(null)
+    const [isDesktop, setIsDesktop] = useState(false);
+    const [isMounted, setIsMounted] = useState(false); // Track when component is mounted
+
     // const { toggle, showMenu } = useContext(MenuContext) || {};
     const showMenu = null;
     const { push } = useRouter();
+
+
+    // useEffect(() => {
+    //   const handleResize = () => setIsDesktop(checkMedia.matches);
+    //   checkMedia?.addEventListener(handleResize);
+  
+    //   return () => checkMedia?.removeEventListener(handleResize);
+    // }, []);
+
+    useEffect(() => {
+        setIsMounted(true); // Set to true once component mounts
+
+        const handleResize = (e) => setIsDesktop(e.matches);
+        setIsDesktop(checkIsDesktopMedia.matches); // Set initial value
+
+        // Correct usage of addEventListener
+        checkIsDesktopMedia?.addEventListener('change', handleResize);
+    
+        return () => checkIsDesktopMedia?.removeEventListener('change', handleResize);
+      }, []);
+
 
     useEffect(()=>{
         setLoading(true);
@@ -37,6 +61,7 @@ const MainComponent = () => {
             handleRedirect(role, push);
         }, 300);
     }
+    if (!isMounted) return null; // Prevent render until mounted to avoid mismatch
 
     return (
         <>
@@ -61,7 +86,7 @@ const MainComponent = () => {
             <Footer/> */}
             <div className='bg-bg-200 relative'>
 
-                <Navbar user={user} start={start}/>
+                <Navbar user={user} start={start} isDesktop={isDesktop}/>
 
                 <div className='h-dvh flex items-center max-w-[1400px] mx-auto w-full'>
                     <section className="px-4 text-center pt-4 mt-14 md:mt-0 sm:pt-10 md:pt-14 xl:pt-20 max-w-full mx-auto pb-20 w-full">
@@ -72,18 +97,31 @@ const MainComponent = () => {
                                 </h1>
                                 <div className="relative mt-6 flex flex-col items-center md:items-start justify-center gap-2">
                                     <div className="flex items-center justify-between text-base">
-                                        {!user ? 
-                                            <Link 
-                                                className="bg-[#008080] border border-[#008080] text-[#fff] px-6 py-2 text-base rounded-lg flex items-center gap-2 min-h-[48px]" 
-                                                href="/auth/signup">
-                                                    Get Started <span><ArrowRight size={15} /></span>
-                                                </Link>
-                                            : 
-                                            <button 
-                                                onClick={()=>start(user?.user_role)} 
-                                                className="bg-[#008080] border border-[#008080] text-[#fff] px-6 py-2 text-base rounded-lg flex items-center gap-2 min-h-[48px]">
-                                                    Continue  <span><ArrowRight size={15}/></span>
-                                            </button>
+                                        {isDesktop ?
+                                            (
+                                                !user ? 
+                                                    (
+                                                        <Link 
+                                                            className="bg-[#008080] border border-[#008080] text-[#fff] px-6 py-2 text-base rounded-lg flex items-center gap-2 min-h-[48px]" 
+                                                            href="/auth/signup">
+                                                                Get Started <span><ArrowRight size={15} /></span>
+                                                        </Link>
+                                                    ):( 
+                                                        <button 
+                                                            type="button"
+                                                            onClick={()=>start(user?.user_role)} 
+                                                            className="bg-[#008080] border border-[#008080] text-[#fff] px-6 py-2 text-base rounded-lg flex items-center gap-2 min-h-[48px]">
+                                                                Continue  <span><ArrowRight size={15}/></span>
+                                                        </button>
+                                                    )
+                                                
+                                            ) : ( 
+                                                <button
+                                                    type="button" 
+                                                    className="bg-[#008080] border border-[#008080] text-[#fff] px-6 py-2 text-base rounded-lg flex items-center gap-2 min-h-[48px]">
+                                                        Please Use a Laptop/Desktop
+                                                </button>
+                                            )
                                         }
                                     </div>
                                 </div>

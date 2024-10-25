@@ -405,6 +405,10 @@ export const getRootUrl = (appendPath = '') =>
     ? `${window?.location?.protocol}//${window?.location?.host}/${appendPath}`
     : '';
 
+export const checkIsDesktopMedia = isWindowDefined
+  ? window.matchMedia('(min-width: 992px)')
+  : null;
+  
 export const checkMedia = isWindowDefined
   ? window.matchMedia('(max-width: 767.99px)')
   : null;
