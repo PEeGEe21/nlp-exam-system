@@ -1,11 +1,11 @@
-import RolesTable from '../../../../components/Tables/RolesTable'
+// import RolesTable from '../../../../components/Tables/RolesTable'
 import React from 'react'
 
 const Page = () => {
   return (
     <div>
         <h1 className='font-bold text-2xl'>Roles</h1>
-        <RolesTable/>
+        {/* <RolesTable/> */}
     </div>
   )
 }
