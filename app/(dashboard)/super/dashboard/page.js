@@ -1,6 +1,5 @@
 "use client"
 import { formatDuration, formatMomentDate, hostUrl } from '@/app/lib/utils';
-import { getFullName } from '@/app/utils/common';
 import {
   Table,
   Thead,
@@ -23,6 +22,7 @@ const Dashboard = () => {
   const [tests, setTests] = useState(0);
   const [students, setStudents] = useState(0);
   const [activeTests, setActiveTests] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
   const [results, setResults] = useState([]);
 
   useEffect(()=>{
@@ -50,7 +50,7 @@ const Dashboard = () => {
       if(user){
         setLoading(true); // Start loading
         try {
-          const res = await fetch(hostUrl + 'users/dashboard/'+user?.id);
+          const res = await fetch(hostUrl + 'users/admin-dashboard/'+user?.id);
           if (res.ok) {
             const result = await res.json();
             // console.log(result)
@@ -58,6 +58,7 @@ const Dashboard = () => {
             setTests(result.total_tests);
             setStudents(result.total_students);
             setActiveTests(result.active_tests);
+            setTotalUsers(result.total_users);
             setResults(result.results);
           }
         } catch (err) {
@@ -86,7 +87,7 @@ const Dashboard = () => {
           </div>
 
           <div className='space-y-12'>
-            <div className='grid grid-cols-1 md:grid:cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
+            <div className='grid grid-cols-1 md:grid:cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4'>
               <div className='bg-[#F9FAFC] border border-[#E7E8EA] min-h-[120px] p-4 rounded-md flex items-center justify-start h-full shadow-[0_2px_4px_0_rgba(0,0,0,0.25)] hover:-translate-y-2 transition-all duration-200 ease-in-out cursor-pointer'>
                 <div className='h-full flex items-start justify-center flex-col gap-1'>
 
@@ -129,6 +130,16 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
+              <div className='bg-[#F9FAFC] border border-[#E7E8EA] min-h-[120px] p-4 rounded-md flex items-center justify-start h-full shadow-[0_2px_4px_0_rgba(0,0,0,0.25)] hover:-translate-y-2 transition-all duration-200 ease-in-out cursor-pointer'>
+                <div className='h-full flex items-start justify-center flex-col gap-1'>
+                  <div className='text-sm text-[#71767B] font-medium '>
+                  Total Users
+                  </div>
+                  <div className='text-[#1D2937] text-3xl font-semibold'>
+                    {totalUsers}
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className='bg-[#F9FAFC] border border-[#E7E8EA] shadow-[0_2px_4px_0_rgba(0,0,0,0.25)]'>
@@ -149,6 +160,7 @@ const Dashboard = () => {
                         <Th>Marks</Th>
                         <Th>Time Elapsed</Th>
                         <Th>Status</Th>
+                        <Th>Action</Th>
                       </Tr>
                     </Thead>
                     <Tbody className=' w-full px-4 divide-y divide-[#e7ecf1]'>
@@ -173,7 +185,7 @@ const Dashboard = () => {
                               </Td>
                               <Td className="px-2 py-4 text-base whitespace-nowrap">
                                   <span className="text-[#313131] text-base">
-                                    {getFullName(result?.student?.user?.profile)}
+                                    {result?.student?.user?.name}
                                   </span>
                               </Td>
                               <Td className="px-2 py-4 text-base whitespace-nowrap">
@@ -195,6 +207,13 @@ const Dashboard = () => {
                                   <span className="text-[#313131] text-base">
                                     {result?.status}
                                   </span>
+                              </Td>
+                              <Td className="px-2 py-4 text-sm whitespace-nowrap">
+                                  <div className="text-[#313131] text-xs flex items-center justify-end gap-2 flex-row">
+                                      <Link href={'/admin/result-manager/'+ result.id + '/test-details?test='+result?.testId + '&student='+ result?.student?.id} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
+                                          Test Details
+                                      </Link>
+                                  </div>
                               </Td>
 
                           </Tr>

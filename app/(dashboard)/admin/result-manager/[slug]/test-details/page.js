@@ -19,6 +19,7 @@ import { questions, scoredQuestions } from '@/app/lib/constants'
 import { CloseIcon } from '@/app/components/ui/IconComponent'
 import toast from 'react-hot-toast'
 import { formatMomentDate, getTotalMinutes, hostUrl } from '@/app/lib/utils'
+import { getFullName } from '@/app/utils/common'
 
 const StudentTestDetail = () => {
     const [test, setTest] = useState(null);
@@ -129,7 +130,7 @@ const StudentTestDetail = () => {
                                             <Td>Email</Td>
                                             <Td>{student?.user?.email}</Td>
                                             <Td>Name</Td>
-                                            <Td>{student?.user?.username??'' }</Td>
+                                            <Td>{getFullName(student?.user?.profile)??'' }</Td>
                                         </Tr>
                                         <Tr>
                                             <Td>Title</Td>

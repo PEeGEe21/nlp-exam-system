@@ -58,19 +58,20 @@ const ExamsListTable = ({ tests = []}) => {
                     <Th>Duration (Min)</Th>
                     <Th>Total Questions</Th>
                     <Th>Total Marks</Th>
+                    <Th>Status</Th>
                     <Th>Actions</Th>
                   </Tr>
                 </Thead>
                 <Tbody className=' w-full px-4 divide-y divide-[#e7ecf1]'>
 
                 {tests?.length < 1 &&
-                    <tr>
-                        <td colSpan={8} className="px-2 py-4 text-base whitespace-nowrap text-center">
+                    <Tr>
+                        <Td colSpan={8} className="px-2 py-4 text-base whitespace-nowrap text-center">
                             <span className="text-[#313131] text-base">
                                 No data found
                             </span>
-                        </td>
-                    </tr>
+                        </Td>
+                    </Tr>
                 }
 
                 {tests?.length > 0 && tests?.map((test, index) => {
@@ -135,6 +136,15 @@ const ExamsListTable = ({ tests = []}) => {
                               <div className='flex items-start justify-between text-sm'>
                                   <div className=''>
                                     {test?.totalMarks}
+                                  </div>
+                              </div>
+                          </Td>
+                          <Td className="px-2 py-4 whitespace-nowrap">
+                              <div className='flex items-start justify-between text-sm'>
+                                  <div className=''>
+                                    <span className={`px-2 py-1 rounded text-xs ${status === 'In Progress' ? 'bg-green-500 text-white' : status === 'Ended' ? 'bg-red-500 text-white' : 'bg-yellow-500 text-black'}`}>
+                                          {status}
+                                      </span>
                                   </div>
                               </div>
                           </Td>

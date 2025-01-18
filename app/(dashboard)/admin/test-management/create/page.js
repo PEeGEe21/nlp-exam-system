@@ -102,7 +102,7 @@ const CreateQuestion = () => {
                   </button>
 
                   <div className="w-full">
-                    <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">{titlehead} Test</h1>
+                    <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">{titlehead} {isEditing?test?.title:''}</h1>
                   </div>
             </div>
 

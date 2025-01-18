@@ -408,7 +408,8 @@ const CreateQuestionsForm = ({id}) => {
                                                             autoComplete="off"
                                                             onChange={(e) => updateAnswerContent(answer.id, e.target.value)}
                                                         />
-                                                    <input
+                                                    <input 
+                                                        className='size-8'
                                                         type="checkbox"
                                                         name="correctOption"
                                                         checked={answer.isCorrect || false}

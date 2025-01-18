@@ -186,9 +186,23 @@ export const handleRedirect = (role, push) => {
   const routes = {
       student: '/student/test-manager',
       admin: '/admin/dashboard',
+      super_admin: '/admin/dashboard-main',
   };
   push(routes[role] || '/auth/login');
 };
+
+export function getGeneratedPassword(){
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*';
+  const passwordLength = 12;
+  let password = '';
+
+  for (let i = 0; i < passwordLength; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    password += characters[randomIndex];
+  }
+
+  return password;
+}
 
 export function shortenTitle(title) {
   // console.log(title?.length)

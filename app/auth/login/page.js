@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link';
 import A4Animation from '../../components/motion/Layout';
 import { Eye, EyeSlash } from 'iconsax-react';
@@ -22,6 +22,20 @@ const LoginPage = () => {
   const router = useRouter();
 
   const { push } = useRouter();
+
+  useEffect(()=>{
+    const getUser = async ()=>{
+        try{
+            if (localStorage.getItem('exam-system-user')){
+                const data = await JSON.parse(
+                  localStorage.getItem("exam-system-user")
+                );
+                handleRedirect((data.user_role).toLowerCase(), push)
+            }
+        }catch(err){}
+    };
+    getUser()
+  }, [])
 
   const login = async (e) => {
 
@@ -117,7 +131,7 @@ const LoginPage = () => {
           </div> */}
           <div className="flex flex-col gap-3 text-gray-700 bg-gradient-to-b  from-bg-200  via-bg-100  to-bg-200  border-[0.5px]  border-border-100  shadow-sm  rounded-[2rem] mt-7  sm:mt-8  mx-auto  pt-5  sm:pt-6  sm:pb-9  pb-6   px-8  sm:px-12 text-sm text-text-100">
             <h2 className="font-medium tracking-tight text-center">Start using Our System for yourself or your school</h2>
-              <div>
+              <form>
                   <div className="flex flex-col gap-4">
                     <div className="w-full">
                       <label className="flex mb-2 font-medium" htmlFor='email'>
@@ -172,7 +186,7 @@ const LoginPage = () => {
                     <div className="">
                       <button
                         className="w-full h-11 select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans font-bold text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none flex items-center justify-center"
-                        type="button" 
+                        type="submit" 
                         disabled={loading}
                         aria-disabled={loading}
                         onClick={login}
@@ -199,7 +213,7 @@ const LoginPage = () => {
                     </div>
                   </div>
                   
-              </div>
+              </form>
           </div>
       </div>
     </>

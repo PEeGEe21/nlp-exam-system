@@ -30,7 +30,21 @@ const Navbar = ({ isOpen, toggleSidebar, user }) => {
     localStorage.removeItem('exam-system-user');
     router.push('/auth/login');
     toast.success('Successfully logged out')
-};
+  };
+
+  const roleName =(role_name)=>{
+    switch(role_name){
+      case 'admin':
+        return 'Admin';
+      case 'super_admin':
+        return 'Super Admin';
+      case 'student':
+        return 'Student';
+      default:
+        return 'User';
+    }
+  }
+
 
   return (
     <>
@@ -81,6 +95,14 @@ const Navbar = ({ isOpen, toggleSidebar, user }) => {
                         >
                           <span className=' text-clip  text-nowrap overflow-x-hidden'>
                             {shortenTitle(user?.email)}
+                          </span>
+                          
+                        </MenuItem>
+                        <MenuItem                          
+                          className="bg-transparent hover:bg-card-background transition duration-200 ease-in-out p-2 rounded-md "
+                        >
+                          <span className=' text-clip  text-nowrap overflow-x-hidden capitalize'>
+                            {roleName(user?.user_role)}
                           </span>
                           
                         </MenuItem>

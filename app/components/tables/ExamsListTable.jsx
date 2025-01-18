@@ -6,10 +6,12 @@ import { PenTool, Trash } from 'iconsax-react';
 import { Pen } from 'lucide-react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { Flex, Table } from 'antd';
 import { formatDate, formatMomentDate, getTotalMinutes, hostUrl } from '@/app/lib/utils';
 
 const ExamsListTable = ({ tests = [], setTests}) => {
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10); // Default page size
     // const filteredAllExams = useMemo(() => {
     //     if (searchQuery && tests?.length > 0) {
     //       const filtered = tests.filter((launch) =>
@@ -126,12 +128,154 @@ const ExamsListTable = ({ tests = [], setTests}) => {
     //     return "Upcoming";
     // }, [test.startDate, test.endDate]);
 
+    function getStatus(record){
+        const now = Date.now();
+        const start_date = new Date(record?.startDate);
+        const end_date = new Date(record?.endDate);
+        const status = (() => {
+            if (start_date.getTime() <= now && now <= end_date.getTime()) {
+                return "In Progress";
+            }
+            if (now > end_date.getTime()) {
+                return "Ended";
+            }
+            return "Upcoming";
+        })();
+        return status
+    }
+
+    const columns = [
+        {
+            title: '#',
+            dataIndex: 'key',
+            key:'index',
+            // width: 10,
+            width: '5%',
+            render: (text, record, index) => (
+                <span className="text-[#313131] text-base">{(currentPage - 1) * pageSize + index + 1}</span>
+            ),
+        
+
+        },
+        {
+            key: '2',
+            title: 'Exams',
+            dataIndex: 'exam',
+            width: 50,
+            render: (text, record, index) => {
+                const status = getStatus(record);
+                return (
+                    <div className='flex items-start justify-between text-sm'>
+                        <div className='flex flex-col gap-2'>
+                            <p className="text-xl font-semibold ">
+                                {record?.title}
+                            </p>
+                            <div>
+                                {formatMomentDate(record?.startDate)} - {formatMomentDate(record?.endDate)}
+                            </div>
+
+                            <div className='inline-flex items-center gap-2'>
+                                <p><span className='font-medium'>Duration (mins):</span> {getTotalMinutes(record?.durationHours, record?.durationMinutes)} </p>    
+                                <p><span className='font-medium'>Total Ques:</span> {record?.totalQuestions}</p>     
+                                <p><span className='font-medium'>Total Marks:</span> {record?.totalMarks}</p>
+                            </div>
+                        
+                            <div className='inline-flex gap-2 items-center '>
+                                <span className="bg-[#659be0] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
+                                    {record?.markPerQuestion}mrk(s)/ques
+                                </span>
+                                {record.isPublished === 1 ? (
+                                    <span className="bg-[#4ade80] text-black max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
+                                        Published
+                                    </span>
+                                ) : (
+                                    <span className="bg-[#F1C40F] text-white max-w-fit px-1 py-1 rounded text-xs inline-flex items-center gap-2 ">
+                                        Not Published
+                                    </span>
+                                )}
+                            </div>
+                            <div className="mt-2">
+                                <span className={`px-2 py-1 rounded text-xs ${status === 'In Progress' ? 'bg-green-500 text-white' : status === 'Ended' ? 'bg-red-500 text-white' : 'bg-yellow-500 text-black'}`}>
+                                    {status}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                )
+            },
+        },
+        {
+            title: 'Action',
+            key: '3',
+            width: '20%',
+            render: (_, record) => {
+                const status = getStatus(record);
+                return(
+                    <div className="text-[#313131] text-xs flex items-center justify-end gap-2 flex-row">
+                        {record.isPublished !== 1 && status === 'Upcoming' && (
+                            <button onClick={()=>publishTest(record.id)} className='btn p-1 bg-[#1c699f] border border-[#15527c] rounded text-white flex items-center'>
+                                Publish
+                            </button>
+                        )}
+                        <Link href={`/admin/test-management/create?id=${record.id}`} className='btn p-1 bg-[#acb7ca] border border-[#93a1bb] rounded text-black flex items-center'>
+                            <Pen size={12}/>
+                            Edit
+                        </Link>
+                        <button onClick={()=>deleteTest(record.id)} className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
+                            <Trash size={12}/>
+                            Delete
+                        </button>
+                    </div>
+                )
+            },
+        },
+    ];
+
+    const cancel = (page) => {
+        setCurrentPage(page);
+    };
 
     return (
         <>
             
                 <div className='shadow-lg'>
-                    <div className="overflow-x-auto md:overflow-x-auto px-4 text-white scrollbar-change rounded-md">
+
+                    <Flex gap="middle" vertical>
+                        <Table
+                            scroll={{ x: 'max-content' }}
+                            // rowSelection={rowSelection} 
+                            columns={columns} 
+                            dataSource={tests} 
+                            components={{
+                                body: {
+                                        // cell: EditableCell,
+                                    },
+                                }}
+                            bordered
+                            rowClassName="editable-row"
+                            // pagination={{
+                            //     // pageSize: 50,
+                            //     onChange: (page)=>cancel(page),
+                            //     pageSize: pageSize,
+                            // }}
+                            pagination={{
+                                current: currentPage, // Current page state
+                                pageSize: pageSize, // Page size state
+                                pageSizeOptions: ['10', '20', '50', '100'], // Options for page size
+                                showSizeChanger: true, // Enable the page size changer
+                                onShowSizeChange: (current, size) => {
+                                  setPageSize(size); // Update page size state
+                                  setCurrentPage(1); // Reset to first page
+                                },
+                                onChange: (page) => {
+                                  setCurrentPage(page); // Update current page state
+                                },
+                            }}
+                            rowKey="id"
+                        />
+                    </Flex>
+
+                    {/* <div className="overflow-x-auto md:overflow-x-auto px-4 text-white scrollbar-change rounded-md">
                         <table className="min-w-full leading-normal table-auto overflow-x-auto relative order-table">
                             <thead className="font-normal">
                                 <tr className="text-[#313131]">
@@ -198,7 +342,6 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                                                         <div>
                                                             {formatMomentDate(test?.startDate)} - {formatMomentDate(test?.endDate)}
 
-                                                            {/* Mon Apr 8th, 24 12:00am - Wed Apr 17th, 24 6:00pm */}
                                                         </div>
 
                                                         <div className='inline-flex items-center gap-2'>
@@ -256,7 +399,7 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                                 })}
                             </tbody>
                         </table>
-                    </div>
+                    </div> */}
                 </div>
         </>
     );

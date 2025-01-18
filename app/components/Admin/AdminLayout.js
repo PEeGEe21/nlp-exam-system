@@ -30,7 +30,7 @@ const AdminLayout = ({children}) => {
 
     return (
         <div className='relative'>
-            {!user || (user.user_role !== "admin") ? 
+            {!user || (user.user_role !== "admin" && user.user_role !== "super_admin") ? 
             <>
                 <div 
                 className={`fixed top-0 left-0 h-full w-full bg-black/95 z-40 cursor-auto pointer-events-auto transition-all duration-300 ease-linear`}

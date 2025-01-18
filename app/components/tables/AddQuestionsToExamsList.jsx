@@ -5,6 +5,8 @@ import { Add, Minus, Refresh, SearchNormal1 } from 'iconsax-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { addQuestionToExam, getQuestions, hostUrl, shortenTitle, shortenTitle2 } from '@/app/lib/utils';
+import { Pen } from 'lucide-react';
+import { Flex, Table } from 'antd';
 
 const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) => {
     const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -13,7 +15,10 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) 
     const [questionMarks, setQuestionMarks] = useState({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-  
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10); // Default page size
+
+
     // Function to handle input change
     const handleChange = (e, questionTestId) => {
         setQuestionMarks((prev) => ({
@@ -126,10 +131,111 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) 
           }));
     };
 
+    const columns = [
+        {
+            title: '#',
+            dataIndex: 'key',
+            key:'index',
+            // width: 10,
+            width: '5%',
+            render: (text, record, index) => (
+                <span className="text-[#313131] text-base">{(currentPage - 1) * pageSize + index + 1}</span>
+            ),
+        },
+        {
+            key: '2',
+            title: 'Questions',
+            dataIndex: 'question',
+            width: 50,
+            render: (text, record, index) => (
+                <div>
+                    <div>
+                        <p className="text-base text-[#313131]">
+                            <b>
+                                {shortenTitle2(record?.questionPlain ? record?.questionPlain : record?.question)}
+                            </b>
+                        </p>
+                    </div>
+
+                    <div className="bg-[#bac3d0] text-[#000000de] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2 mt-2 ">
+                        {record?.difficulty?.title}
+                    </div>
+                </div>
+            ),
+        },
+        {
+            title: 'Action',
+            key: '3',
+            width: '20%',
+            render: (_, record) => (
+                <div className="text-[#313131] text-xs flex items-center gap-2 flex-row">
+                    <div>
+
+                        {isAddingMark[record.id]  && record.is_added ? 
+                            <div className='inline-flex' >
+                                <input 
+                                    type="number" 
+                                    className="border border-[#303132]  p-2  text-[#303132] h-8 focus:outline-none" 
+                                    value={questionMarks[record.id] ?? record.question_test_mark}
+                                    onChange={(e) =>
+                                        handleChange(e, record.id)
+                                    }
+                                    disabled={loading}
+
+                                />
+                                <button
+                                    className="px-2 py-1 bg-[#303132] text-white flex items-center h-8"
+                                    onClick={()=>handleSave(record.id, record.question_test_id)}
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    className="px-2 py-1 bg-red-900 text-white flex items-center h-8"
+                                    onClick={() => handleCancel(record.id)}
+                                    >
+                                    Cancel
+                                </button>
+                            </div> :
+                            <button 
+                                onClick={() => toggleIsAddingMark(record.id, record.question_test_mark)}
+                                disabled={!record.is_added} 
+                                className={`px-2 py-1 bg-[#303132] text-white flex items-center justify-center h-8 rounded min-w-20 text-sm ${!record.is_added ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                    { record.question_test_mark??0 } marks
+                            </button>
+                        }
+                    </div>
+                    
+                    <button 
+                        onClick={()=>setQuestionToExam(record, record.id)} className={`rounded px-2 py-1 min-w-20 text-sm ${record.is_added? 'bg-red-900' : 'bg-[#5cb85c] border-[#4cae4c]'} text-white flex items-center justify-center h-8`}>
+                        {record.is_added ? 
+                            <> 
+                                <Minus size={18}/>
+                                    Added
+                            </> 
+                        : <> 
+                                <Add size={16}/>
+                                Add
+                            </>
+                        }
+                    </button>
+                    <Link href={`/admin/question-bank/create?id=${record.id}`}
+                            className={`rounded px-2 py-1 min-w-20 text-sm bg-[#24b6cf] border-[#24b6cf] text-white flex items-center justify-center h-8`}>
+                        <Pen size={12}/>
+                        Edit
+                    </Link>
+                </div>
+            ),
+        },
+    ];
+
+    const cancel = (page) => {
+        setCurrentPage(page);
+    };
+
     return (
         <>
             <div className="flex flex-wrap items-center justify-between gap-3 lg:flex-nowrap">
-                <div className="flex items-center w-full gap-2">
+                <div className="flex items-center w-full gap-2 mb-3">
                   <div className=" relative rounded-full  items-center w-full max-w-[563px] h-10 ">
                     <div className="absolute inset-y-0 left-0 flex items-center h-full pl-1 pointer-events-none">
                       <span className="px-3 text-gray-500">
@@ -162,7 +268,45 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) 
               </div>
 
             <div className='shadow-lg'>
-                <div className="overflow-x-auto md:overflow-x-auto px-4 text-white scrollbar-change rounded-md">
+                
+                <div className="rounded-md">
+                    <Flex gap="middle" vertical>
+                        <Table
+                            scroll={{ x: 'max-content' }}
+                            // rowSelection={rowSelection} 
+                            columns={columns} 
+                            dataSource={filteredAllQuestions} 
+                            components={{
+                                body: {
+                                        // cell: EditableCell,
+                                    },
+                                }}
+                            bordered
+                            rowClassName="editable-row"
+                            // pagination={{
+                            //     // pageSize: 50,
+                            //     onChange: (page)=>cancel(page),
+                            //     pageSize: pageSize,
+                            // }}
+                            pagination={{
+                                current: currentPage, // Current page state
+                                pageSize: pageSize, // Page size state
+                                pageSizeOptions: ['10', '20', '50', '100'], // Options for page size
+                                showSizeChanger: true, // Enable the page size changer
+                                onShowSizeChange: (current, size) => {
+                                  setPageSize(size); // Update page size state
+                                  setCurrentPage(1); // Reset to first page
+                                },
+                                onChange: (page) => {
+                                  setCurrentPage(page); // Update current page state
+                                },
+                            }}
+                            rowKey="id"
+                        />
+                    </Flex>
+                </div>
+
+                {/* <div className="overflow-x-auto md:overflow-x-auto px-4 text-white scrollbar-change rounded-md">
                     <table className="min-w-full leading-normal table-auto overflow-x-auto relative order-table">
                         <thead className="font-normal">
                             <tr className="text-[#313131]">
@@ -258,6 +402,7 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) 
                                                     </button>
                                                 }
                                             </div>
+                                            
                                             <button 
                                                 onClick={()=>setQuestionToExam(question, question.id)} className={`rounded px-2 py-1 min-w-20 text-sm ${question.is_added? 'bg-red-900' : 'bg-[#5cb85c] border-[#4cae4c]'} text-white flex items-center justify-center h-8`}>
                                                 {question.is_added ? 
@@ -271,6 +416,11 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) 
                                                     </>
                                                 }
                                             </button>
+                                            <Link href={`/admin/question-bank/create?id=${question.id}`}
+                                                 className={`rounded px-2 py-1 min-w-20 text-sm bg-[#24b6cf] border-[#24b6cf] text-white flex items-center justify-center h-8`}>
+                                                <Pen size={14}/>
+                                                Edit
+                                            </Link>
                                         </div>
                                         
                                     </td>
@@ -279,7 +429,7 @@ const AddQuestionsToExamsList = ({test, questions = [], setQuestions, reload }) 
                             ))}
                         </tbody>
                     </table>
-                </div>
+                </div> */}
             </div>
         </>
     );

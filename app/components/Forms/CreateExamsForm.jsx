@@ -18,10 +18,15 @@ const CreateExamsForm = ({testToEdit, id}) => {
     const [examCode, setExamCode] = useState("");
     const [questionMark, setQuestionMark] = useState(0);
     const [examDescription, setExamDescription] = useState("");
-    const [startDateTime, setStartDateTime] = useState("2023-09-24T14:30");
-    const [endDateTime, setEndDateTime] = useState("2023-09-24T14:30");
+    const [startDateTime, setStartDateTime] = useState("");
+    const [endDateTime, setEndDateTime] = useState("");
     const [examDurationHr, setExamDurationHr] = useState(0);
     const [examDurationMin, setExamDurationMin] = useState(0);
+    const [shuffleQuestions, setShuffleQuestions] = useState(false);
+    const [shuffleAnswers, setShuffleAnswers] = useState(false);
+    const [allowViewCorrectAnswers, setAllowViewCorrectAnswers] = useState(false);
+    const [publishAutomatically, setPublishAutomatically] = useState(false);
+    const [showHints, setShowHints] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState('');
@@ -54,6 +59,11 @@ const CreateExamsForm = ({testToEdit, id}) => {
                         setEndDateTime(eFormattedDate)
                         setExamDurationHr(result.durationHours)
                         setExamDurationMin(result.durationMinutes)
+                        setShuffleQuestions(result.shuffle==1?true:false)
+                        setShuffleAnswers(result.shuffleAnswer==1?true:false)
+                        setPublishAutomatically(result.autoPublish==1?true:false)
+                        setShowHints(result.showHints==1?true:false)
+                        setAllowViewCorrectAnswers(result.viewCorrectAnswer==1?true:false)
                     } else {
                         throw new Error('Failed to fetch the question');
                     }
@@ -76,13 +86,21 @@ const CreateExamsForm = ({testToEdit, id}) => {
         setExamCode("");
         setQuestionMark(0);
         setExamDescription("");
-        setStartDateTime("2023-09-24T14:30");
-        setEndDateTime("2023-09-24T14:30");
+        setStartDateTime("");
+        setEndDateTime("");
         setExamDurationHr(0)
         setExamDurationMin(0)
+        setShuffleQuestions(false)
+        setShuffleAnswers(false)
+        setPublishAutomatically(false)
+        setShowHints(false)
+        setAllowViewCorrectAnswers(false)
     };
 
     const handleSubmit = async () => {
+
+        // console.log(shuffleQuestions, 'shuffle')
+        // return;
         setIsSaving(true)
         const sDateToSend = new Date(startDateTime);
         const eDateToSend = new Date(endDateTime);
@@ -97,9 +115,16 @@ const CreateExamsForm = ({testToEdit, id}) => {
             code: examCode,
             durationHours: examDurationHr,
             durationMinutes: examDurationMin,
-            startDate: sIsoDate,
-            endDate: eIsoDate,
-            instructions: examDescription
+            startDate: startDateTime,
+            endDate: endDateTime,
+            // startDate: sIsoDate,
+            // endDate: eIsoDate,
+            instructions: examDescription,
+            shuffleAnswer: shuffleAnswers?1:0,
+            shuffle: shuffleQuestions?1:0,
+            viewCorrectAnswer: allowViewCorrectAnswers?1:0,
+            autoPublish: publishAutomatically?1:0,
+            showHints: showHints?1:0,
         }
         if (isEditing) {
             console.log("Updating exam");
@@ -347,8 +372,8 @@ const CreateExamsForm = ({testToEdit, id}) => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-5 ">
-                            <div className="relative flex flex-col w-full gap-1 mb-6 ">
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 w-full gap-5 ">
+                            {/* <div className="relative flex flex-col w-full gap-1 mb-6 ">
                                 <label
                                     htmlFor="random_questions"
                                     className="text-lg mb-1 font-medium"
@@ -356,7 +381,11 @@ const CreateExamsForm = ({testToEdit, id}) => {
                                     Shuffle Questions
                                 </label>
                                 <div className=''>
-                                    <Switch size='lg' id='random_questions'/>
+                                    <Switch 
+                                        isChecked={shuffleQuestions}
+                                        size='lg' 
+                                        id='random_questions' 
+                                        onChange={()=>{setShuffleQuestions(!shuffleQuestions)}}/>
                                 </div>
                             </div>
                             <div className="relative flex flex-col w-full gap-1 mb-6 ">
@@ -367,7 +396,11 @@ const CreateExamsForm = ({testToEdit, id}) => {
                                     Shuffle Answer
                                 </label>
                                 <div className=''>
-                                    <Switch size='lg' id='shuffle_answers'/>
+                                    <Switch 
+                                        isChecked={shuffleAnswers}
+                                        size='lg' 
+                                        id='shuffle_answers'
+                                        onChange={()=>{setShuffleAnswers(!shuffleAnswers)}}/>
                                 </div>
                             </div>
                             <div className="relative flex flex-col w-full gap-1 mb-6 ">
@@ -378,7 +411,11 @@ const CreateExamsForm = ({testToEdit, id}) => {
                                     Allow to view correct answers
                                 </label>
                                 <div>
-                                    <Switch size='lg' id='view_correct_answers'/>
+                                    <Switch 
+                                        isChecked={allowViewCorrectAnswers}
+                                        size='lg' 
+                                        id='view_correct_answers' 
+                                        onChange={()=>{setAllowViewCorrectAnswers(!allowViewCorrectAnswers)}}/>
                                 </div>
                             </div>
                             <div className="relative flex flex-col w-full gap-1 mb-6 ">
@@ -389,7 +426,26 @@ const CreateExamsForm = ({testToEdit, id}) => {
                                     Publish Result Automatically
                                 </label>
                                 <div>
-                                    <Switch size='lg' id='auto_publish_result'/>
+                                    <Switch 
+                                        isChecked={publishAutomatically}
+                                        size='lg' 
+                                        id='auto_publish_result' 
+                                        onChange={()=>{setPublishAutomatically(!publishAutomatically)}}/>
+                                </div>
+                            </div> */}
+                            <div className="relative flex flex-col w-full gap-1 mb-6 ">
+                                <label
+                                    htmlFor="show_hints"
+                                    className="text-lg mb-1 font-medium"
+                                >
+                                    Show Hints During Exam
+                                </label>
+                                <div>
+                                    <Switch 
+                                        isChecked={showHints}
+                                        size='lg' 
+                                        id='show_hints' 
+                                        onChange={()=>{setShowHints(!showHints)}}/>
                                 </div>
                             </div>
 

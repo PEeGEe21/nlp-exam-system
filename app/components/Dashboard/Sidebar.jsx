@@ -13,7 +13,8 @@ Book1,
 ArrowDown2,
 ArrowRight2,
 Speaker,
-Microphone} from 'iconsax-react';
+Microphone,
+Profile2User} from 'iconsax-react';
 import { useDisclosure } from '@chakra-ui/react';
 import Image from 'next/image';
 import { Category } from 'react-iconly';
@@ -57,12 +58,21 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
       href: '/admin/dashboard',
       icon: <Category size={16} color="#ffffff" />,
       isDropdownMenu: false,
+      rolesPermitted: ['admin']
+    },
+    {
+      label: 'Dashboard',
+      href: '/admin/dashboard-main',
+      icon: <Category size={16} color="#ffffff" />,
+      isDropdownMenu: false,
+      rolesPermitted: ['super_admin']
     },
     {
       label: 'Question Bank',
       href: '/admin/question-bank',
       icon: <MessageQuestion size={16} color="#ffffff" />,
       isDropdownMenu: true,
+      rolesPermitted: ['super_admin', 'admin'],
       action: (e, index) => {
         e.preventDefault();
         showDropdown(index);
@@ -87,12 +97,14 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
       href: '/admin/result-manager',
       icon: <Aave size={16} color="#ffffff" />,
       isDropdownMenu: false,
+      rolesPermitted: ['super_admin'],
     },
 
     {
       label: 'Test Management',
       href: '/admin/test-management',
       icon: <Book1 size={16} color="#ffffff"/>,
+      rolesPermitted: ['super_admin', 'admin'],
       isDropdownMenu: false,
       action: (e, index) => {
         e.preventDefault();
@@ -113,6 +125,45 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
         },
       ]
     },
+    {
+      label: 'Test Manager',
+      href: '/student/test-manager',
+      icon: <Book1 size={16} color="#ffffff"/>,
+      isDropdownMenu: false,
+      rolesPermitted: ['student'],
+    },
+    {
+      label: 'Test Results',
+      href: '/student/test-results',
+      icon: <Microphone size={16} color="#ffffff"/>,
+      rolesPermitted: ['student'],
+      isDropdownMenu: false,
+    },
+    {
+      label: 'Users',
+      href: '/admin/users',
+      icon: <Profile2User size={16} color="#ffffff"/>,
+      isDropdownMenu: true,
+      action: (e, index) => {
+        e.preventDefault();
+        showDropdown(index);
+      },
+      rolesPermitted: ['super_admin'],
+      submenu: [
+        {
+          label: 'Users',
+          href: '/admin/users',
+          icon: <Category size={16} />,
+          isDropdownMenu: false,
+        },
+        {
+          label: 'Students',
+          href: '/admin/users/students',
+          icon: <Category size={16} />,
+          isDropdownMenu: false,
+        }
+      ]
+    },
     // {
     //   label: 'Sign Out',
     //   href: '#',
@@ -125,19 +176,15 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
     // },
   ];
   const studentMenuLinks = [
-    {
-      label: 'Test Manager',
-      href: '/student/test-manager',
-      icon: <Book1 size={16} color="#ffffff"/>,
-      isDropdownMenu: false,
-    },
-    {
-      label: 'Test Results',
-      href: '/student/test-results',
-      icon: <Microphone size={16} color="#ffffff"/>,
-      isDropdownMenu: false,
-    },
+
   ];
+
+  const filteredMenuLinks = menuLinks.filter(menuItem => 
+    menuItem.rolesPermitted.some(role =>userRole == role)
+  );
+  // const filteredMenuLinks = menuLinks.filter(menuItem => 
+  //   menuItem.rolesPermitted.some(role => user_roles.includes(role))
+  // );
 
   const logout = () => {
       localStorage.removeItem('exam-system-user');
@@ -183,7 +230,7 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
 
           <nav className="mt-6 md:mt-3 grow px-2">
             <div className="flex flex-col flex-wrap space-y-2">
-              {userRole === 'student' ? 
+              {/* {userRole === 'student' ? 
                 <>
                   {studentMenuLinks.map((menuItem, index) => (
                       (menuItem.isDropdownMenu ? 
@@ -290,8 +337,8 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
                   ))}
                 </>
               : 
-                <>
-                  {menuLinks.map((menuItem, index) => (
+                <> */}
+                  {filteredMenuLinks.map((menuItem, index) => (
                       (menuItem.isDropdownMenu ? 
 
                         <div onClick={(e) => menuItem?.action(e, index)} key={menuItem.label}>
@@ -394,8 +441,8 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
                         </Link>
                       )
                   ))}
-                </>
-              }
+                {/* </>
+              } */}
 
               <div onClick={(e)=>(
                         e.preventDefault(),

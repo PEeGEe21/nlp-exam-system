@@ -1,0 +1,21 @@
+import React from 'react'
+import UsersTable from '../../../components/tables/UsersTable'
+
+const Page = () => {
+  return (
+    <div>
+        <div>
+          <div className="flex flex-row items-center justify-between mb-8">
+              <div className="flex flex-row items-center justify-start gap-8">
+                <div className="w-full">
+                  <h1 className=" whitespace-nowrap text-2xl font-medium lg:text-4xl">Users</h1>
+                </div>
+              </div>
+          </div>
+          <UsersTable/>
+        </div>
+    </div>
+  )
+}
+
+export default Page

@@ -18,6 +18,22 @@ export const successtoastOptions = {
   },
 };
 
+export const successOptions = {
+  style: {
+    border: '1px solid #255625',
+    padding: '16px',
+    color: '#ffffff',
+    boxShadow: 'none',
+    fontSize: '14px',
+    background: 'green'
+  },
+  iconTheme: {
+      primary: '#398439',
+      secondary: '#FFF',
+  },
+}
+
+
 export const questionTypes = [
   {
       description: "An option type where you can choose on in the list of options", 

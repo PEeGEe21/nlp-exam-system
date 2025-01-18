@@ -6,24 +6,32 @@ import { useRouter } from 'next/navigation';
 import React, {useEffect, useState} from 'react'
 import { questions } from '@/app/lib/constants';
 import { hostUrl } from '@/app/lib/utils';
+import { 
+  Button, 
+} from 'antd';
 
 const QuestionBank = () => {
   const [questions, setQuestions] = useState([])
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch(hostUrl + 'questions');
-        if (res.ok) {
-          const result = await res.json();
-          setQuestions(result.data);
-        }
-      } catch (err) {
-        console.error('Error fetching data:', err?.message);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(hostUrl + 'questions');
+      if (res.ok) {
+        const result = await res.json();
+        setQuestions(result.data);
+        setTimeout(() => {
+            setLoading(false);
+        }, 1000);
       }
-    };
+    } catch (err) {
+      console.error('Error fetching data:', err?.message);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
   
@@ -72,6 +80,9 @@ const QuestionBank = () => {
                 </div>
 
                 <div className="flex items-center justify-end gap-2">
+                  <Button type="primary" onClick={fetchData} loading={loading}>
+                      Reload
+                  </Button>
                   <select
                     name="status"
                     id="status"

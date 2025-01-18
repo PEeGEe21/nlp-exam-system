@@ -472,7 +472,7 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                     </div>
                   </div>
                   <div className='h-full items-end justify-end'>
-                    INSTRUCTIONS
+                    <div><b>INSTRUCTIONS</b></div>
                     <hr />
 
                     <div>
@@ -495,10 +495,6 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                             <ul className='list-decimal list-inside'>
                               <li>Read all instructions carefully.
                               </li>
-                              <li>Maintain silence and raise your hand to call the attention of the invigilator(s).
-                              </li>
-                              <li>Chatting with classmates and borrowing in the examination hall are NOT allowed under any circumstances.
-                              </li>
                             </ul>
                           </div>
                           
@@ -507,11 +503,11 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                         <div className=' flex-1 '>
 
                           {test && user ? 
-                            <div className='flex align-center justify-center flex-col text-center cursor-pointer' onClick={startTest} >
+                            <div className='flex align-center justify-center flex-col text-center cursor-pointer'>
                               <span className='flex align-center justify-center w-full'>
-                                <span className='bg-[#EEEEF0B8] rounded-full p-3 h-12 w-12 flex justify-center items-center text-[#6457EF]'>
-                                  <Play/>
-                                </span>
+                                <button  type="button" onClick={startTest}  className='bg-[#6457EF] rounded-full p-3 h-12 w-12 flex justify-center items-center text-[#EEEEF0B8] animate-pulse'>
+                                  <Play variant='Bulk' color='#fff'/>
+                                </button>
                               </span>
                               <p>Start</p>
                             </div>
@@ -522,9 +518,12 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                     
                   </div>
 
-                  <button onClick={finishTest}>
-                    Go back
-                  </button>
+                  <div className='w-full flex items-center justify-center'>
+
+                    <button onClick={finishTest} className='bg-red-500 text-white px-3 py-2 text-sm flex items-center gap-1'>
+                      <ArrowLeft size={17} /> Go back
+                    </button>
+                  </div>
                 </div>
             : <div className='text-center w-full items-center justify-center flex'><LoaderIcon extraClass='text-gray-900'/></div>}
 
@@ -659,8 +658,24 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                                                   </div>
                                 {/* {questions[currentQuestionIndex].questionRelation.question} */}
                           </div>
+                          {test?.showHints == 1 && questions[currentQuestionIndex].questionRelation.optionTypeId === 3 ? 
+                            <>
+                              <div className='mb-3'> 
+                                <h5 className='text-[14px] underline'>Hints</h5>
+                                <div>
+                                  <ul className=' list-inside list-disc text-xs'>
+                                      {questions[currentQuestionIndex].questionRelation?.hints && questions[currentQuestionIndex]?.questionRelation?.hints.map((hint, index)=>(
+                                          <li key={index}>
+                                              {hint.content}
+                                          </li>
+                                      ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            </> 
+                          : ''}
 
-                          {questions[currentQuestionIndex].optionAnswerTypeId === 1 &&
+                          {questions[currentQuestionIndex].questionRelation.optionTypeId === 1 &&
                             <div>
                               <QuestionOptions 
                                 question={questions[currentQuestionIndex]}
@@ -671,7 +686,7 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                             </div>
                           }
 
-                          {questions[currentQuestionIndex].optionAnswerTypeId === 3 &&
+                          {questions[currentQuestionIndex].questionRelation.optionTypeId === 3 &&
                               <div>
                               <QuestionTextarea
                                 question={questions[currentQuestionIndex]}
@@ -852,7 +867,7 @@ const QuestionTextarea = ({ question, answer, onAnswerChange }) => {
         value={answer}
         onChange={handleTextareaChange}
         rows={5}
-        className='w-full p-2 border border-gray-300 rounded'
+        className='w-full p-2 border border-gray-300 rounded focus:border-gray-700 focus:outline-none'
         placeholder='Enter your answer here...'
       />
     </div>

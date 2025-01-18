@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import EmptyState from '../EmptyState';
 import Link from 'next/link';
 import { Trash } from 'iconsax-react';
@@ -6,8 +6,12 @@ import { IdCardIcon, Pen } from 'lucide-react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { capitalize, hostUrl } from '@/app/lib/utils';
+import { Flex, Table } from 'antd';
 
 const QuestionsListTable = ({ questions = [], setQuestions}) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10); // Default page size
+
     const deleteQuestion = (id) => {
         Swal.fire({
             title: 'Are you sure you want to delete?',
@@ -49,10 +53,100 @@ const QuestionsListTable = ({ questions = [], setQuestions}) => {
         });
     };
 
+    const columns = [
+        {
+            title: '#',
+            dataIndex: 'key',
+            key:'index',
+            // width: 10,
+            width: '5%',
+            render: (text, record, index) => (
+                <a>{(currentPage - 1) * pageSize + index + 1}</a>
+            ),
+        
+
+        },
+        {
+            key: '2',
+            title: 'Questions',
+            dataIndex: 'question',
+            width: 50,
+            render: (text, record, index) => (
+                <div>
+                    <div>
+                        <p className="text-base text-[#313131]">
+                            {record?.questionPlain ? capitalize(record?.questionPlain) : record?.question}
+                        </p>
+                    </div>
+
+                    <div className="bg-[#bac3d0] text-[#000000de] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2 ">
+                        {record?.difficulty?.title}
+                    </div>
+                </div>
+            ),
+        },
+        {
+            title: 'Action',
+            key: '3',
+            width: '20%',
+            render: (_, record) => (
+                <div className="text-[#313131] text-xs flex items-center justify-end gap-2 pr-3 flex-row">
+                    <Link href={`/admin/question-bank/create?id=${record.id}`} className='flex items-center rounded-md bg-[#acb7ca] border border-[#93a1bb] text-black px-2 py-1 '>
+                        <Pen size={12}/>
+                        Edit
+                    </Link>
+                    <button onClick={()=>deleteQuestion(record.id)} className='btn p-1 bg-[#e7505a] border border-[#e7505a] rounded text-white font-medium flex items-center'>
+                        <Trash size={12}/>
+                        Delete
+                    </button>
+                </div>
+            ),
+        },
+    ];
+
+    const cancel = (page) => {
+        setCurrentPage(page);
+    };
+
     return (
         <>
             <div className='shadow-lg'>
-                <div className="overflow-x-auto md:overflow-x-auto px-4 text-white scrollbar-change rounded-md">
+                <Flex gap="middle" vertical>
+                    <Table
+                        scroll={{ x: 'max-content' }}
+                        // rowSelection={rowSelection} 
+                        columns={columns} 
+                        dataSource={questions} 
+                        components={{
+                            body: {
+                                    // cell: EditableCell,
+                                },
+                            }}
+                        bordered
+                        rowClassName="editable-row"
+                        // pagination={{
+                        //     // pageSize: 50,
+                        //     onChange: (page)=>cancel(page),
+                        //     pageSize: pageSize,
+                        // }}
+                        pagination={{
+                            current: currentPage, // Current page state
+                            pageSize: pageSize, // Page size state
+                            pageSizeOptions: ['10', '20', '50', '100'], // Options for page size
+                            showSizeChanger: true, // Enable the page size changer
+                            onShowSizeChange: (current, size) => {
+                                setPageSize(size); // Update page size state
+                                setCurrentPage(1); // Reset to first page
+                            },
+                            onChange: (page) => {
+                                setCurrentPage(page); // Update current page state
+                            },
+                        }}
+                        rowKey="id"
+                    />
+                </Flex>
+
+                {/* <div className="overflow-x-auto md:overflow-x-auto px-4 text-white scrollbar-change rounded-md">
                     <table className="min-w-full leading-normal table-auto overflow-x-auto relative order-table">
                         <thead className="font-normal">
                             <tr className="text-[#313131]">
@@ -110,9 +204,7 @@ const QuestionsListTable = ({ questions = [], setQuestions}) => {
                                     </td>
                                     <td className="px-2 py-4 text-sm whitespace-nowrap">
                                         <div className="text-[#313131] text-xs flex items-center justify-end gap-2 pr-3 flex-row">
-                                            {/* <Link href={'/admin/question-bank/'+question.id} className='rounded-md px-2 py-1 bg-[#1c699f] text-white '>
-                                                Preview
-                                            </Link> */}
+                                            
                                             <Link href={`/admin/question-bank/create?id=${question.id}`} className='flex items-center rounded-md bg-[#acb7ca] border border-[#93a1bb] text-black px-2 py-1 '>
                                                 <Pen size={12}/>
                                                 Edit
@@ -129,7 +221,7 @@ const QuestionsListTable = ({ questions = [], setQuestions}) => {
                             ))}
                         </tbody>
                     </table>
-                </div>
+                </div> */}
             </div>
         </>
     );
