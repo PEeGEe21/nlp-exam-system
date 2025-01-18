@@ -36,8 +36,8 @@ const EditUserForm = ({
   const [isGenerating, setIsGenerating] = useState(false);
   const router = useRouter();
   const [inputs, setInputs] = useState({
-    fname: currentUser?.profile?.firstname??'',
-    lname: currentUser?.profile?.lastname??'',
+    fname: currentUser?.profile?.firstname??currentUser?.firstname??'',
+    lname: currentUser?.profile?.lastname??currentUser?.lastname??'',
     username: currentUser?.username??'',
     email: currentUser?.email??'',
     password: '',

@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { hostUrl } from '@/app/lib/utils';
 
-const CreateQuestionsForm = ({id}) => {
+const CreateQuestionsForm = ({id, user}) => {
     const [questionTypes, setQuestionTypes] = useState([]);
     const [questionDifficulty, setDifficulties] = useState([]);
     const [questionType, setQuestionType] = useState("");
@@ -211,7 +211,7 @@ const CreateQuestionsForm = ({id}) => {
         }
 
         const data = {
-            userId: 2,
+            userId: parseInt(user.id),
             difficultyId: qDifficulty,
             optionTypeId: questionType,
             question: question,

@@ -182,9 +182,10 @@ const Dashboard = () => {
                                   </span>
                               </Td>
                               <Td className="px-2 py-4 text-base whitespace-nowrap">
-                                  <span className="text-[#313131] text-base">
-                                    {result?.totalScored}
-                                  </span>
+                                  <p className="text-[#313131] text-base">
+                                    <span className=''>{result?.totalScored}</span> / 
+                                    <span className=''> {result?.totalMarks}</span> 
+                                  </p>
                               </Td>
                               <Td className="px-2 py-4 text-base whitespace-nowrap">
                                   <span className="text-[#313131] text-base">

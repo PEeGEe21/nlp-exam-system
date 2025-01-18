@@ -212,6 +212,7 @@ import { questions, scoredQuestions } from '@/app/lib/constants'
 import { CloseIcon } from '@/app/components/ui/IconComponent'
 import toast from 'react-hot-toast'
 import { formatMomentDate, getTotalMinutes, hostUrl } from '@/app/lib/utils'
+import { getFullName } from '@/app/utils/common'
 
 const MyTestDetail = () => {
     const [test, setTest] = useState(null);
@@ -305,7 +306,7 @@ const MyTestDetail = () => {
                                             <Td>Email</Td>
                                             <Td>{student?.user?.email}</Td>
                                             <Td>Name</Td>
-                                            <Td>{student?.user?.username??'' }</Td>
+                                            <Td>{getFullName(student?.user?.profile)??student?.username??''}</Td>
                                         </Tr>
                                         <Tr>
                                             <Td>Title</Td>
@@ -323,7 +324,7 @@ const MyTestDetail = () => {
                                             <Td>Attempt Date</Td>
                                             <Td>{formatMomentDate(result?.createdAt)}</Td>
                                             <Td>Mark Per Question</Td>
-                                            <Td>{totalMarks}</Td>
+                                            <Td>{test?.markPerQuestion}</Td>
                                         </Tr>
                                         <Tr>
                                             <Td>Marks / Total Marks	</Td>

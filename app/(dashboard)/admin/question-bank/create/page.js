@@ -10,11 +10,31 @@ import { useSearchParams } from 'next/navigation';
 
 const CreateQuestion = () => {
   const [pageTitle, setPageTitle] = useState("Create");
-
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   
+  useEffect(()=>{
+    setLoading(true);
+    const getUser = async ()=>{
+        // Start loading
+        try{
+            if (localStorage.getItem('exam-system-user')){
+                const data = await JSON.parse(
+                    localStorage.getItem("exam-system-user")
+                );
+                setUser(data)
+            }else{
+                router.push("/auth/login")
+            }
+        }catch(err){}
+    };
+    getUser()
+  }, [])
+  
+
   useEffect(()=>{
       if(id){
           setPageTitle('Update');
@@ -38,7 +58,7 @@ const CreateQuestion = () => {
                   </div>
                 </div>
 
-            <CreateQuestionsForm id={id} />
+            <CreateQuestionsForm id={id} user={user}/>
         </div>
     </>
   )

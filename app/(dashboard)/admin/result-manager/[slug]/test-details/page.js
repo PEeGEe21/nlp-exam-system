@@ -130,7 +130,7 @@ const StudentTestDetail = () => {
                                             <Td>Email</Td>
                                             <Td>{student?.user?.email}</Td>
                                             <Td>Name</Td>
-                                            <Td>{getFullName(student?.user?.profile)??'' }</Td>
+                                            <Td>{getFullName(student?.user?.profile)??student?.username??''}</Td>
                                         </Tr>
                                         <Tr>
                                             <Td>Title</Td>
@@ -148,7 +148,7 @@ const StudentTestDetail = () => {
                                             <Td>Attempt Date</Td>
                                             <Td>{formatMomentDate(result?.createdAt)}</Td>
                                             <Td>Mark Per Question</Td>
-                                            <Td>{totalMarks}</Td>
+                                            <Td>{test?.markPerQuestion}</Td>
                                         </Tr>
                                         <Tr>
                                             <Td>Marks / Total Marks	</Td>
@@ -176,7 +176,7 @@ const StudentTestDetail = () => {
                                         <div className="">
                                             <div className="p-0.5 inline-block text-left q-boxes">
                                                 <div className="">
-                                                    Q{_itx.id}
+                                                    Q{index + 1}
                                                 </div>
                                             </div>
 
@@ -202,14 +202,16 @@ const StudentTestDetail = () => {
                                                                             <span>{_itx.studentAnswer}</span>
                                                                         </td>
                                                                     </tr>
-                                                                    <tr>
-                                                                        <td className='w-[30%]'>
-                                                                            Correct Answer
-                                                                        </td>
-                                                                        <td className='w-[30%]'>
-                                                                            <span className="">{_itx.correctAnswer}</span>
-                                                                        </td>
-                                                                    </tr>
+                                                                    {_itx?.question?.optionTypeId !== 3 ? 
+                                                                        <tr>
+                                                                            <td className='w-[30%]'>
+                                                                                Correct Answer
+                                                                            </td>
+                                                                            <td className='w-[30%]'>
+                                                                                <span className="">{_itx.correctAnswer}</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                    : ''}
                                                                     <tr>
                                                                         <td className='w-[30%]'>
                                                                             Mark Obtained
@@ -234,6 +236,35 @@ const StudentTestDetail = () => {
 
                                                                         </td>
                                                                     </tr>
+
+                                                                    {_itx?.question?.hints && _itx?.question?.optionTypeId === 3 ? 
+                                                                        <tr>
+                                                                            <td className='w-[30%]'>
+                                                                                Question Hints
+                                                                            </td>
+                                                                            <td className='w-[30%]'>
+                                                                                <div>
+                                                                                    <ul className=' list-inside list-disc'>
+                                                                                        {_itx?.question?.hints && _itx?.question?.hints.map((hint, index)=>(
+                                                                                            <li key={index}>
+                                                                                                {hint.content}
+                                                                                            </li>
+                                                                                        ))}
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    : ''}
+                                                                    {_itx?.question?.answer_explanation ? 
+                                                                        <tr>
+                                                                            <td className='w-[30%]'>
+                                                                                Answer Explanation
+                                                                            </td>
+                                                                            <td className='w-[30%]'>
+                                                                                <span className="">{_itx?.question?.answer_explanation}</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                    : ''}
 
                                                                 </tbody>
                                                             </table>

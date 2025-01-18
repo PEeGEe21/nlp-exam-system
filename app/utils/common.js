@@ -3,8 +3,10 @@ import { handleRedirect } from "../lib/utils";
 
 
 export const getFullName = (user) =>{  
-    let fullname = (user?.firstname??'') + ' ' + (user?.lastname??'');
-    return fullname
+    // let fullname = (user?.firstname??'') + ' ' + (user?.lastname??'');
+    const fullname = `${user?.firstname || ''} ${user?.lastname || ''}`.trim();
+
+    return fullname || null
 }
 
 

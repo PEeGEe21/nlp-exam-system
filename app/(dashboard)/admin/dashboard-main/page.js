@@ -126,9 +126,10 @@ const Dashboard = () => {
         dataIndex: 'marks',
         width: '5%',
         render: (text, record, index) => (
-            <span className="text-[#313131]">
-              {record?.totalScored}
-            </span>
+          <p className="text-[#313131]">
+            <span className=''>{record?.totalScored}</span> / 
+            <span className=''> {record?.totalMarks}</span> 
+          </p>
         ),
     },
     {

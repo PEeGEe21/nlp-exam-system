@@ -8,8 +8,9 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import { Flex, Table } from 'antd';
 import { formatDate, formatMomentDate, getTotalMinutes, hostUrl } from '@/app/lib/utils';
+import { getFullName } from '@/app/utils/common';
 
-const ExamsListTable = ({ tests = [], setTests}) => {
+const ExamsListTable = ({ tests = [], setTests, user}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10); // Default page size
     // const filteredAllExams = useMemo(() => {
@@ -111,6 +112,54 @@ const ExamsListTable = ({ tests = [], setTests}) => {
         });
     };
 
+    const unPublishTest = (id) => {
+        Swal.fire({
+            title: 'Are you sure you want to unpublish this test?',
+            text: 'You are about to unpublish a test!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'UnPublish',
+            allowOutsideClick: () => !Swal.isLoading(), // Prevent clicking outside modal during loading
+            showLoaderOnConfirm: true,
+            preConfirm: async () => {
+                try {
+                    const data = {
+                        isPublished: 0
+                    }
+                    const response = await axios.patch(hostUrl + `tests/edit/${id}`, data);
+                    if (response.data.success){
+                        setTests((prevTests) =>
+                            prevTests.map((test) => 
+                                test.id === id ? { ...test, isPublished: 0 } : test
+                            )
+                        );
+                        Swal.fire(
+                            'UnPublished!',
+                            'The Exam has been published.',
+                            'success'
+                        );
+                    } else {
+                        Swal.fire('Error!', 'There was an issue unpublishing your exam.', 'error');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire('Error!', 'There was an issue unpublishing your exam.', 'error');
+                    throw err; 
+                }
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'UnPublished!',
+                    'The Test has been unpublished.',
+                    'success'
+                );
+            }
+        });
+    };
+
 
     // const status = useMemo(() => {
     //     const now = Date.now();
@@ -154,7 +203,6 @@ const ExamsListTable = ({ tests = [], setTests}) => {
             render: (text, record, index) => (
                 <span className="text-[#313131] text-base">{(currentPage - 1) * pageSize + index + 1}</span>
             ),
-        
 
         },
         {
@@ -173,6 +221,12 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                             <div>
                                 {formatMomentDate(record?.startDate)} - {formatMomentDate(record?.endDate)}
                             </div>
+
+                            {user?.user_role == 'super_admin'? 
+                                <div>
+                                    Created by: {getFullName(record?.user)??record?.user?.username}
+                                </div>
+                            : ''}
 
                             <div className='inline-flex items-center gap-2'>
                                 <p><span className='font-medium'>Duration (mins):</span> {getTotalMinutes(record?.durationHours, record?.durationMinutes)} </p>    
@@ -212,9 +266,14 @@ const ExamsListTable = ({ tests = [], setTests}) => {
                 const status = getStatus(record);
                 return(
                     <div className="text-[#313131] text-xs flex items-center justify-end gap-2 flex-row">
-                        {record.isPublished !== 1 && status === 'Upcoming' && (
+                        {(record.isPublished !== 1 || status === 'Upcoming') && (user?.user_role == 'super_admin') && (
                             <button onClick={()=>publishTest(record.id)} className='btn p-1 bg-[#1c699f] border border-[#15527c] rounded text-white flex items-center'>
                                 Publish
+                            </button>
+                        )}
+                        {(record.isPublished == 1 ) && (user?.user_role == 'super_admin') && (
+                            <button onClick={()=>unPublishTest(record.id)} className='btn p-1 bg-[#F1C40F] border border-[#15527c] rounded text-white flex items-center'>
+                                UnPublish
                             </button>
                         )}
                         <Link href={`/admin/test-management/create?id=${record.id}`} className='btn p-1 bg-[#acb7ca] border border-[#93a1bb] rounded text-black flex items-center'>

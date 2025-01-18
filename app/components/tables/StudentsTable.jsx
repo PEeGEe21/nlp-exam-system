@@ -28,9 +28,10 @@ import { Recycle } from '@carbon/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { handleRedirect, hostUrl } from '@/app/lib/utils';
 import EditUserModal from '../Modals/user/EditUserModal';
+import { Paper } from 'react-iconly';
 
 
-const UsersTable = () => {
+const StudentsTable = () => {
     const [dataSource, setDataSource] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -59,10 +60,10 @@ const UsersTable = () => {
     const fetchData = async () => {
         try {
             setIsLoading(true);
-            const res = await fetch(hostUrl + 'users');
+            const res = await fetch(hostUrl + 'users/students');
             if (res.ok) {
-            const result = await res.json();
-            setDataSource(result.users);
+                const result = await res.json();
+                setDataSource(result.students);
             // setRoles(result.roles);
             }
         } catch (err) {
@@ -81,17 +82,17 @@ const UsersTable = () => {
             id: 1,
             key: 'student',
             name: 'Student'
-        },
-        {
-            id: 2,
-            key: 'admin',
-            name: 'Admin'
-        },
-        {
-            id: 3,
-            key: 'super_admin',
-            name: 'Super Admin'
         }
+        // {
+        //     id: 2,
+        //     key: 'admin',
+        //     name: 'Admin'
+        // },
+        // {
+        //     id: 3,
+        //     key: 'super_admin',
+        //     name: 'Super Admin'
+        // }
     ]
 
     const cancel = (page) => {
@@ -171,7 +172,7 @@ const UsersTable = () => {
             title: 'Username',
             dataIndex: 'username',
             render: (text, record, index) => (
-                <span className="text-[#313131]">{record?.username}</span>
+                <span className="text-[#313131]">{record?.user?.username}</span>
             ),
         },
         {
@@ -179,7 +180,7 @@ const UsersTable = () => {
             title: 'Email',
             dataIndex: 'email',
             render: (text, record, index) => (
-                <span className="text-[#313131]">{record?.email}</span>
+                <span className="text-[#313131]">{record?.user?.email}</span>
             ),
         },
         {
@@ -187,7 +188,7 @@ const UsersTable = () => {
             title: 'First Name',
             dataIndex: 'firstname',
             render: (text, record, index) => (
-                <span className="text-[#313131]">{record?.profile?.firstname}</span>
+                <span className="text-[#313131]">{record?.user?.firstname}</span>
             ),
         },
         {
@@ -195,65 +196,34 @@ const UsersTable = () => {
             title: 'Last Name',
             dataIndex: 'lastname',
             render: (text, record, index) => (
-                <span className="text-[#313131]">{record?.profile?.lastname}</span>
-            ),
-        },
-        {
-            key: '5',
-            title: 'Role',
-            dataIndex: 'role',
-            render: (text, record, index) => (
-                <span className="text-[#313131]">{record?.user_role_name}</span>
-            ),
-        },
-        {
-            key: '6',
-            title: 'Status',
-            dataIndex: 'status',
-            editable: false,
-            render: (text, record, index) => (
-                <Space size="middle">
-                    {record.user_role !== 'super_admin' &&
-                    <button
-                        className={`btn text-sm flex items-center gap-2 ${record.is_active ? 'border-[#255625] bg-[#398439] text-white' : 'border-[#761c19] bg-[#c9302c] text-white'}`}
-                        disabled={isSavingStatus[record.id]}
-                        aria-disabled={isSavingStatus[record.id]}
-                        onClick={
-                            ()=>toggleCurrentPersonStatus(text, record, index, record.is_active)
-                          }
-                          >
-                            {isSavingStatus[record.id] ? (
-                                <>
-                                    <LoaderIcon
-                                        extraClass="text-white h-2 w-3"
-                                        className="animate-spin mr-1"
-                                    />
-                                </>
-                            ) : (
-                                record.is_active ? 'Active' : 'Inactive'
-                            )}
-                    </button>}
-                </Space>
+                <span className="text-[#313131]">{record?.user?.lastname}</span>
             ),
         },
         {
             title: 'Action',
-            key: '7',
+            key: '5',
+            width: '2%',
             render: (_, record) => {
                 return (
-                        <Space size="middle">
+                        <Space size="middle" className='flex whitespace-nowrap'>
+                            <Link href={'/admin/users/students/'+ record?.user?.id + '/test-results'} 
+                                className="flex btn-info items-center gap-1 text-xs" 
+                                
+                            >
+                                <Paper size={14}/>Results
+                            </Link>
                             <button 
                                 className="flex btn-info items-center gap-1 text-xs" 
                                 onClick={() => {
                                     setIsEditingUser(true);
-                                    setCurrentUser(record);
+                                    setCurrentUser(record?.user);
                                     onUserEditOpen();
                                   }}
                             >
                                 <Edit size={14}/>Edit
                             </button>
-                            <button className='flex  btn-red items-center gap-1 text-xs  ' onClick={(e)=>deleteUser(record)}><Trash size={12}/> Delete</button>
-                            <button className='flex  btn-warning items-center gap-1 text-xs  ' onClick={(e)=>loginAsUser(record)}><Recycle size={12}/> Login As</button>
+                            <button className='flex  btn-red items-center gap-1 text-xs  ' onClick={(e)=>deleteUser(record?.user)}><Trash size={12}/> Delete</button>
+                            <button className='flex  btn-warning items-center gap-1 text-xs  ' onClick={(e)=>loginAsUser(record?.user)}><Recycle size={12}/> Login As</button>
                         </Space>
                     )
             
@@ -403,7 +373,7 @@ const UsersTable = () => {
                                     onUserEditOpen();
                                 }}
                                 >
-                                Add User
+                                Add Student
                             </Button>
                         </Flex>
                         <Table 
@@ -451,4 +421,4 @@ const UsersTable = () => {
         </>
     );
 };
-export default UsersTable;
+export default StudentsTable;

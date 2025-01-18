@@ -53,7 +53,7 @@ const StudentsResultManagerTable = ({ test_id}) => {
         // width: 10,
         width: '2%',
         render: (text, record, index) => (
-            <span className="text-[#313131] text-base">{(currentPage - 1) * pageSize + index + 1}</span>
+            <span className="text-[#313131]">{(currentPage - 1) * pageSize + index + 1}</span>
         ),
     },
     {
@@ -62,7 +62,7 @@ const StudentsResultManagerTable = ({ test_id}) => {
         dataIndex: 'email',
         width: '10%',
         render: (text, record, index) => (
-            <span className="text-[#313131] text-base">{record?.student?.user?.email}</span>
+            <span className="text-[#313131]">{record?.student?.user?.email}</span>
         ),
     },
     {
@@ -71,7 +71,7 @@ const StudentsResultManagerTable = ({ test_id}) => {
         dataIndex: 'name',
         width: '10%',
         render: (text, record, index) => (
-            <span className="text-[#313131] text-base">{record?.student?.user?.name}</span>
+            <span className="text-[#313131]">{record?.student?.user?.name}</span>
         ),
     },
     {
@@ -80,7 +80,7 @@ const StudentsResultManagerTable = ({ test_id}) => {
         dataIndex: 'date',
         width: '10%',
         render: (text, record, index) => (
-            <span className="text-[#313131] text-base">
+            <span className="text-[#313131]">
               {formatMomentDate(record?.createdAt)}
             </span>
         ),
@@ -91,9 +91,10 @@ const StudentsResultManagerTable = ({ test_id}) => {
         dataIndex: 'marks',
         width: '5%',
         render: (text, record, index) => (
-            <span className="text-[#313131] text-base">
-              {record?.totalScored}
-            </span>
+            <p className="text-[#313131]">
+              <span className=''>{record?.totalScored}</span> / 
+              <span className=''> {record?.totalMarks}</span> 
+            </p>
         ),
     },
     {
@@ -102,7 +103,7 @@ const StudentsResultManagerTable = ({ test_id}) => {
         dataIndex: 'time_elapsed',
         width: '5%',
         render: (text, record, index) => (
-            <span className="text-[#313131] text-base">
+            <span className="text-[#313131]">
               {formatDuration(record?.startDate, record?.endDate)}
             </span>
         ),
@@ -113,7 +114,7 @@ const StudentsResultManagerTable = ({ test_id}) => {
         dataIndex: 'status',
         width: '5%',
         render: (text, record, index) => (
-            <span className="text-[#313131] text-base">
+            <span className="text-[#313131]">
               {record?.status}
             </span>
         ),
@@ -137,7 +138,7 @@ const StudentsResultManagerTable = ({ test_id}) => {
 
   return (
     <>
-        <div className='shadow-lg'>
+        <div className='shadow-lg p-4'>
 
           <Flex gap="middle" vertical>
               <Table

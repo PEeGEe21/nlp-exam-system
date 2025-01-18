@@ -14,7 +14,8 @@ import Link from 'next/link'
 import { PenAdd, Trash } from 'iconsax-react'
 import { dateFormat } from '@/app/lib/utils'
 
-const ResultManagerStudentTable = ({ results = []}) => {
+const ResultManagerStudentTable = ({ results = [], isAdmin = false}) => {
+    // const route = 
   return (
     <>
         <div className='shadow-lg'>
@@ -90,9 +91,15 @@ const ResultManagerStudentTable = ({ results = []}) => {
                           </Td>
                           <Td className="px-2 py-4 text-sm whitespace-nowrap">
                               <div className="text-[#313131] text-xs flex items-center justify-center gap-2 flex-row">
+                                {!isAdmin ? 
                                   <Link href={'/student/test-results/'+result.id +'/test-details?test='+ result.testId+ '&student='+ result?.student?.id} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
                                       Details
                                   </Link>
+                                  :
+                                  <Link href={'/admin/result-manager/'+ result.id + '/test-details?test='+result.testId + '&student='+ result?.student?.id} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
+                                      Details
+                                  </Link>
+                                  }
                                   {/* <Link href={'/admin/result-manager/'+ result.id + '/test-details?test='+test_id + '&student='+ result?.student?.id} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
                                       Test Details
                                   </Link> */}

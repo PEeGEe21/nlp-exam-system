@@ -10,12 +10,31 @@ import { useRouter } from 'next/navigation';
 import React, {useState, useEffect, useMemo} from 'react'
 
 const TestManagement = () => {
+  const [user, setUser] = useState(null);
   const [tests, setTests] = useState([]);
   const [reloadKey, setReloadKey] = useState(0); // State to trigger reload
   const [loading, setLoading] = useState(false); // State for loading
   const [searchQuery, setSearchQuery] = useState("");
 
   const router = useRouter();
+
+  useEffect(()=>{
+    setLoading(true);
+    const getUser = async ()=>{
+        // Start loading
+        try{
+            if (localStorage.getItem('exam-system-user')){
+                const data = await JSON.parse(
+                    localStorage.getItem("exam-system-user")
+                );
+                setUser(data)
+            }else{
+                router.push("/auth/login")
+            }
+        }catch(err){}
+    };
+    getUser()
+  }, [])
 
   const reload = () => {
     setReloadKey(prev => prev + 1); // Change state to trigger useEffect
@@ -110,7 +129,7 @@ const TestManagement = () => {
               </div>
 
             <div className="py-6">
-                <ExamsListTable tests={tests} setTests={setTests}/>
+                <ExamsListTable tests={tests} setTests={setTests} user={user}/>
             </div>
         </div>
     </>
