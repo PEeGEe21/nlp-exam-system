@@ -442,3 +442,11 @@ export const mainQuestions = [
     correctAnswerId: 4
   }
 ];
+
+export const departments = [
+  "Computer Science",
+  "Mechanical Engineering",
+  "Mathematics",
+  "Architecture",
+  "Chemical Engineering",
+];

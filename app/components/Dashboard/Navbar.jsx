@@ -76,6 +76,10 @@ const Navbar = ({ isOpen, toggleSidebar, user }) => {
                     <Menu className=" bg-card-background">
                       <MenuButton>
                         <div className="flex items-center justify-start gap-2 bg-card-background rounded-l-full h-auto">
+                          <div className='flex flex-col justify-start items-start'>
+                            <span className='text-white'>{shortenTitle(user?.staffId??user?.matricNo??user?.email)}</span>
+                            <span className='text-white'>{user?.level? (user?.level + ' level') : ''}</span>
+                          </div>
                           <Image
                             src={'/images/navbar-img/avatar-1.png'}
                             alt=""

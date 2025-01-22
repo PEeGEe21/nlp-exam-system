@@ -14,6 +14,11 @@ import toast from 'react-hot-toast';
 const SignupAdminPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [staffId, setStaffId] = useState("")
+  const [username, setUsername] = useState("")
+  const [phone, setPhone] = useState("")
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,12 +35,27 @@ const SignupAdminPage = () => {
       toast.error('Please enter password');
       return;
     }
+
+    if(!staffId){
+      toast.error('Please enter staff id');
+      return;
+    }
+
+    if(!phone){
+      toast.error('Please enter phone');
+      return;
+    }
     setLoading(true);
 
 
     const data = {
       email,
       password,
+      fname: firstName,
+      lname: lastName,
+      phonenumber: phone,
+      staffId,
+      username,
     };
     try {
         const response = await axios.post(hostUrl + 'auth/admin-signup', data);
@@ -67,16 +87,102 @@ const SignupAdminPage = () => {
   return (
         <div className="">
           <div
-            className="grid mt-10 mb-6 text-black">
+            className="grid mt-7 mb-6 text-black">
               <A4Animation baseText={'Sign Up As An Admin...'} texts={signUpAdminTexts}/>
           </div>
           <div>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {success && <p style={{ color: 'green' }}>{success}</p>}
           </div>
-          <div className="flex flex-col gap-3 text-gray-700 bg-gradient-to-b  from-bg-200  via-bg-100  to-bg-200  border-[0.5px]  border-border-100  shadow-sm  rounded-[2rem] mt-7  sm:mt-8  mx-auto  pt-5  sm:pt-6  sm:pb-9  pb-6   px-8  sm:px-12 text-sm text-text-100">
+          <div className="flex flex-col gap-3 text-gray-700 bg-gradient-to-b  from-bg-200  via-bg-100  to-bg-200  border-[0.5px]  border-border-100  shadow-sm  rounded-[2rem] mt-7  sm:mt-8  mx-auto  pt-5  sm:pt-6  sm:pb-9  pb-6   px-8  sm:px-8 text-sm text-text-100">
             
             <div className="flex flex-col gap-4 pt-6">
+              <div className='flex w-full gap-2'>
+
+                <div className="w-1/2">
+                  <label className="flex mb-2 font-medium" htmlFor='first_name'>
+                    First Name
+                  </label>
+                  <input
+                    id="first_name"
+                    className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                    type="text"
+                    name="first_name"
+                    required
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setFirstName(value)
+                    }}
+                  />
+                </div>
+                <div className="w-1/2">
+                  <label className="flex mb-2 font-medium" htmlFor='last_name'>
+                    Last Name
+                  </label>
+                  <input
+                    id="last_name"
+                    className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                    type="text"
+                    name="last_name"
+                    required
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setLastName(value)
+                    }}
+                  />
+                </div>
+              </div>
+              <div className='flex w-full gap-2'>
+
+              <div className="w-1/2">
+                <label className="flex mb-2 font-medium" htmlFor='staffId'>
+                  Staff Id
+                </label>
+                <input
+                  id="staffId"
+                  className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                  type="text"
+                  name="staffId"
+                  required
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setStaffId(value)
+                  }}
+                />
+              </div>
+              <div className="w-1/2">
+                <label className="flex mb-2 font-medium" htmlFor='phone'>
+                  Phone Number
+                </label>
+                <input
+                  id="phone"
+                  className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                  type="tel"
+                  name="phone"
+                  required
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setPhone(value)
+                  }}
+                />
+              </div>
+              </div>
+              <div className="w-full">
+                <label className="flex mb-2 font-medium" htmlFor='username'>
+                  Username
+                </label>
+                <input
+                  id="username"
+                  className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                  type="text"
+                  name="username"
+                  required
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setUsername(value)
+                  }}
+                />
+              </div>
               <div className="w-full">
                 <label className="flex mb-2 font-medium" htmlFor='email'>
                   Email

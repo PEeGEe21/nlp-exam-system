@@ -16,6 +16,8 @@ import {getGeneratedPassword } from '../../lib/utils';
 import { LoaderIcon } from '../ui/IconComponent';
 import { Check, Danger, Eye, EyeSlash, Refresh } from 'iconsax-react';
 import { hostUrl } from '@/app/lib/utils';
+import StateSelect from '../StateSelect';
+import { departments } from '@/app/lib/constants';
 
 const EditUserForm = ({
   onClose,
@@ -42,8 +44,15 @@ const EditUserForm = ({
     email: currentUser?.email??'',
     password: '',
     cpassword: '',
-    userRole: currentUser?.user_role ?? null
+    userRole: currentUser?.user_role ?? null,
+    phonenumber: currentUser?.profile?.phonenumber ?? '',
+    staffId: currentUser?.staffId ?? null,
+    matricNo: currentUser?.matricNo ?? null
   });
+  const [selectedState, setSelectedState] = useState(currentUser?.profile?.state??'');
+  const [level, setLevel] = useState(currentUser?.level??'');
+  const [department, setDepartment] = useState(currentUser?.department??'');
+
 
   // console.log(inputs, currentUser?.rolesIds)
   const chakraToast = useToast();
@@ -88,13 +97,17 @@ const EditUserForm = ({
   };
 
   const handleValidation = () => {
-    const { fname, lname, username, email } = inputs;
+    const { fname, lname, username, email, userRole } = inputs;
     if (email === '') {
       toast.error('Fill in all required fields');
       setIsSaving(false);
       return false;
     } else if (email === '') {
       toast.error('Email is required');
+      setIsSaving(false);
+      return false;
+    }  else if (userRole == '' || !userRole) {
+      toast.error('Select a role');
       setIsSaving(false);
       return false;
     }
@@ -107,7 +120,7 @@ const EditUserForm = ({
 
     if (handleValidation()) {
       try {
-        const { fname, lname, email, username, password, cpassword, userRole } = inputs;
+        const { fname, lname, email, username, password, cpassword, userRole, phonenumber, staffId, matricNo } = inputs;
 
         var payload = {
           fname,
@@ -116,7 +129,29 @@ const EditUserForm = ({
           username,
           password,
           cpassword,
-          user_role: userRole
+          user_role: userRole,
+          phonenumber
+        }
+
+        if(userRole == 'admin'){
+          if (staffId == '') {
+            toast.error('Fill in all required fields');
+            setIsSaving(false);
+            return false;
+          } 
+          payload.staffId = staffId
+        }
+
+        if(userRole == 'student'){
+          if (matricNo == '') {
+            toast.error('Fill in all required fields');
+            setIsSaving(false);
+            return false;
+          } 
+          
+          payload.matricNo = matricNo,
+          payload.level = parseInt(level)
+          payload.department = department
         }
 
         if(currentUser){
@@ -269,7 +304,7 @@ const EditUserForm = ({
                 className="border border-gray-400 focus:border-gray-500 h-10 focus:outline-0 bg-transparent rounded mb-3 px-2 w-full"
               />
             </div>
-            <div className='w-full gap-2 items-center'>
+            <div className='w-full gap-2 items-center mb-4'>
               {currentUser && 
                 (<div className="pb-1 rounded-lg mb-2">
                     <div className="flex items-center w-full gap-1 text-red-500">
@@ -296,7 +331,7 @@ const EditUserForm = ({
                     </button>
                     <input 
                       type={showPassword ? "text" : "password"}
-                      className=" block min-w-full border border-gray-400 focus:border-gray-500 h-10  w-full  focus:outline-0 bg-transparent rounded px-2 pr-10 text-sm"
+                      className=" block min-w-full border border-gray-400 focus:border-gray-500 h-10  w-full  focus:outline-0 bg-transparent rounded px-2 pr-10 text-sm mb-3"
                       name="password"
                       id="password"
                       required
@@ -322,7 +357,7 @@ const EditUserForm = ({
 
                     <input 
                       type={showCPassword ? "text" : "password"}
-                      className="block min-w-full border border-gray-400 focus:border-gray-500 h-10 w-full focus:outline-0 bg-transparent rounded px-2 pr-10 text-sm"
+                      className="block min-w-full border border-gray-400 focus:border-gray-500 h-10 w-full focus:outline-0 bg-transparent rounded px-2 pr-10 text-sm mb-3"
                       name="cpassword"
                       id="cpassword"
                       required
@@ -336,7 +371,7 @@ const EditUserForm = ({
                   <label className="text-sm" htmlFor="cpassword">
                     &nbsp;
                   </label>
-                  <button type='button' onClick={generateRandomPassword} className='bg-gray-600 h-10 w-10 px-2 rounded text-white flex items-center justify-center gap-2'>
+                  <button type='button' onClick={generateRandomPassword} className='bg-gray-600 h-10 w-10 px-2 rounded text-white flex items-center justify-center gap-2 mb-3'>
                     {isGenerating ? <LoaderIcon
                         extraClass="text-white h-5 w-5"
                         className="animate-spin "
@@ -347,6 +382,118 @@ const EditUserForm = ({
                 </div>
 
               </div>
+            </div>
+            
+            
+
+            {inputs.userRole == 'admin' && <>
+                <div className="mb-4 flex flex-col gap-1">
+                  <label className="text-sm" htmlFor="staffId">
+                    Staff Id
+                  </label>
+                  <input
+                    id="staffId"
+                    type="text"
+                    name="staffId"
+                    value={inputs.staffId}
+                    onChange={handleChange}
+                    placeholder="Staff Id"
+                    className="border border-gray-400 focus:border-gray-500 h-10 focus:outline-0 bg-transparent rounded mb-3 px-2 w-full"
+                  />
+                </div>
+              </>
+            }
+
+            {inputs.userRole == 'student' && <>
+                <div className="mb-4 flex flex-col gap-1">
+                  <label className="text-sm" htmlFor="matricno">
+                    Matric Number
+                  </label>
+                  <input
+                    id="matricno"
+                    type="text"
+                    name="matricno"
+                    value={inputs.matricNo}
+                    onChange={handleChange}
+                    placeholder="Matric Number"
+                    className="border border-gray-400 focus:border-gray-500 h-10 focus:outline-0 bg-transparent rounded mb-3 px-2 w-full"
+                  />
+                </div>
+
+                <div className="mb-4 flex flex-col gap-1 w-full">
+                  <label className="text-sm" htmlFor="fname">
+                    State
+                  </label>
+                  <StateSelect selectedState={selectedState} setSelectedState={setSelectedState}/>
+                </div>
+                <div className='flex w-full gap-2'>
+                  <div className="mb-4 flex flex-col gap-1 w-1/2">
+                    <label className="text-sm" htmlFor="level">
+                      Level
+                    </label>
+                    <select 
+                      onChange={(e) => {
+                        const value = e.target.value
+                        setLevel(value)
+                      }}
+                      value={level}
+                      className="border border-gray-400 focus:border-gray-500 h-10 focus:outline-0 bg-transparent rounded mb-3 px-2 w-full"
+                      >
+                      <option value="" disabled>Select Level</option>
+                      <option value="100">100</option>
+                      <option value="200">200</option>
+                      <option value="300">300</option>
+                      <option value="400">400</option>
+                      <option value="500">500</option>
+                    </select>
+                  </div>
+
+                  <div className="mb-4 flex flex-col gap-1 w-1/2">
+                    <label className="text-sm" htmlFor="lname">
+                      Department
+                    </label>
+                    <select
+                        id="department"
+                        name="department"
+                        value={department}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          setDepartment(value)
+                        }}
+                        className="border border-gray-400 focus:border-gray-500 h-10 focus:outline-0 bg-transparent rounded mb-3 px-2 w-full"
+                        >
+                      <option value="" disabled>
+                        Choose a department
+                      </option>
+                      {departments.map((department, index) => (
+                        <option key={index} value={department}>
+                          {department}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                </div>
+              </>
+            }
+            <div className='flex w-full gap-2'>
+
+              <div className="mb-4 flex flex-col gap-1 w-full">
+                <label className="text-sm" htmlFor="phonenumber">
+                  Phone Number
+                </label>
+                <input 
+                  type="tel"
+                  className="border border-gray-400 focus:border-gray-500 h-10 focus:outline-0 bg-transparent rounded mb-3 px-2 text-sm"
+                  name="phonenumber"
+                  id="phonenumber"
+                  required
+                  placeholder="Phone Number"
+                  value={inputs.phonenumber}
+                  onChange={handleChange}
+                />
+              </div>
+
             </div>
 
             {/* {currentUser && */}

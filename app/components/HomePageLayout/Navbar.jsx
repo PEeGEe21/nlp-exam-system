@@ -2,15 +2,36 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-// import "../../styles/navbar.css";
-import { ArrowDown, ArrowDown2, Global } from 'iconsax-react';
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
+  IconButton,
+  Portal
+} from '@chakra-ui/react';
+import { ArrowDown, ArrowDown2, Global, LogoutCurve, User } from 'iconsax-react';
 import { shortenTitle } from '@/app/lib/utils';
+import { logout } from '@/app/utils/common';
+import toast from 'react-hot-toast';
 // import { MenuContext } from '@/app/utils/context';
 
 const Navbar = ({user, start, isDesktop =true}) => {
   const [loading, setLoading] = useState(true)
   // const { toggle, showMenu } = useContext(MenuContext) || {};
   const showMenu = null;
+
+  const handleLogOut = () => {
+    logout();
+    toast.success('Successfully logged out')
+    setTimeout(() => {
+        window.location.href = '/';
+    }, 500);
+  };
 
 
   return (
@@ -56,22 +77,55 @@ const Navbar = ({user, start, isDesktop =true}) => {
                               </> : 
                             
                               <>
-                                <button
+                              <Menu className=" bg-card-background" >
+
+                                <MenuButton
                                   className="text-[#353535] leading-7 "
-                                  onClick={()=>start(user?.user_role)}
                                 >
-                                    {shortenTitle(user?.email)}
-                                </button>
+                                  <div className="inline-flex justify-between items-center text-sm font-medium gap-6 rounded-[12px] bg-white h-12">
+
+                                    <span>{shortenTitle(user?.email)}</span>
+                                
                               
-                                <div className="flex items-center justify-start gap-2 bg-card-background rounded-l-full h-auto">
-                                  <Image
-                                    src={'/images/navbar-img/avatar-1.png'}
-                                    alt=""
-                                    width={35}
-                                    height={35}
-                                    className="rounded-full"
-                                  />
+                                  <div className="flex items-center justify-start gap-2 bg-card-background rounded-l-full h-auto">
+                                    <Image
+                                      src={'/images/navbar-img/avatar-1.png'}
+                                      alt=""
+                                      width={35}
+                                      height={35}
+                                      className="rounded-full"
+                                    />
+                                  </div>
                                 </div>
+                                </MenuButton>
+
+                                <Portal className='test-popup'>
+
+                                  <MenuList
+                                      className="bg-[#0F1B2D] py-2 text-white text-sm border border-[#737272] rounded-md z-[99] w-full "
+                                      minWidth="150px"
+                                      maxWidth="250px"
+                                      sx={{
+                                        '--popper-transform-origin': 'top left !important',
+                                        transformOrigin: 'top left !important'
+                                      }}                   
+                                  >
+                                      <button
+                                        onClick={()=>start((user?.user_role).toLowerCase())}
+                                        className="hover:bg-[#008080] transition duration-200 ease-in-out px-3 py-3 bg-[#0F1B2D] text-sm whitespace-nowrap flex items-center justify-start gap-2 text-center text-white w-full"
+                                      >
+                                        <User size={14} color="white" className='hidden md:block'/> <span>Dashboard</span>
+                                      </button>
+
+                                    <MenuItem
+                                      onClick={handleLogOut}
+                                      className="hover:bg-[#008080] transition duration-200 ease-in-out px-3 py-3 bg-[#0F1B2D] text-sm whitespace-nowrap flex items-center justify-start gap-2 text-center text-white"
+                                    >
+                                      <LogoutCurve size={14} color="white" className='hidden md:block'/> <span>Sign Out</span>
+                                    </MenuItem>
+                                  </MenuList>
+                                </Portal>
+                              </Menu>
                             </> 
                           }
                         </> 

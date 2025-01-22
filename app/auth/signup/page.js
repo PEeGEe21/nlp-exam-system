@@ -3,17 +3,28 @@
 import React, {useState} from 'react'
 import Link from 'next/link';
 import A4Animation from '@/app/components/motion/Layout';
-import { signUpTexts } from '@/app/lib/constants';
+import { departments, signUpTexts } from '@/app/lib/constants';
 import { LoaderIcon } from '@/app/components/ui/IconComponent';
 import { Eye, EyeSlash } from 'iconsax-react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { hostUrl } from '@/app/lib/utils';
 import toast from 'react-hot-toast';
+import StateSelect from '@/app/components/StateSelect';
 
 const SignupPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [matricNo, setMatricNo] = useState("")
+  const [phone, setPhone] = useState("")
+  const [level, setLevel] = useState("")
+  const [username, setUsername] = useState("")
+  const [stateOfOrigin, setStateOfOrigin] = useState("")
+  const [selectedState, setSelectedState] = useState('');
+  
+  const [department, setDepartment] = useState("")
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,11 +41,24 @@ const SignupPage = () => {
       toast.error('Please enter password');
       return;
     }
+
+    if(!matricNo){
+      toast.error('Please enter matric no');
+      return;
+    }
     setLoading(true);
 
     const data = {
       email,
       password,
+      fname: firstName,
+      lname: lastName,
+      phonenumber: phone,
+      matricNo,
+      level: parseInt(level),
+      department,
+      state: selectedState,
+      username,
     };
     try {
         const response = await axios.post(hostUrl + 'auth/signup', data);
@@ -62,16 +86,118 @@ const SignupPage = () => {
   return (
         <div className="">
           <div
-            className="grid mt-10 mb-6 text-black">
+            className="grid mt-7 mb-6 text-black">
               <A4Animation baseText={'Sign Up...'} texts={signUpTexts}/>
           </div>
           <div>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {success && <p style={{ color: 'green' }}>{success}</p>}
           </div>
-          <div className="flex flex-col gap-3 text-gray-700 bg-gradient-to-b  from-bg-200  via-bg-100  to-bg-200  border-[0.5px]  border-border-100  shadow-sm  rounded-[2rem] mt-7  sm:mt-8  mx-auto  pt-5  sm:pt-6  sm:pb-9  pb-6   px-8  sm:px-12 text-sm text-text-100">
+          <div className="flex flex-col gap-3 text-gray-700 bg-gradient-to-b  from-bg-200  via-bg-100  to-bg-200  border-[0.5px]  border-border-100  shadow-sm  rounded-[2rem] mt-7  sm:mt-8  mx-auto  pt-5  sm:pt-6  sm:pb-9  pb-6   px-8  sm:px-8 text-sm text-text-100">
             
             <div className="flex flex-col gap-4 pt-6">
+              <div className="w-full">
+                <label className="flex mb-2 font-medium" htmlFor='matricNo'>
+                  Matric Number
+                </label>
+                <input
+                  id="matricNo"
+                  className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                  type="text"
+                  required
+                  name="matricNo"
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setMatricNo(value)
+                  }}
+                />
+              </div>
+              <div className='flex w-full gap-2'>
+              <div className="w-1/2 ">
+                <label className="flex mb-2 font-medium" htmlFor='first_name'>
+                  First Name
+                </label>
+                <input
+                  id="first_name"
+                  className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                  type="text"
+                  name="first_name"
+                  required
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setFirstName(value)
+                  }}
+                />
+              </div>
+              <div className="w-1/2">
+                <label className="flex mb-2 font-medium" htmlFor='last_name'>
+                  Last Name
+                </label>
+                <input
+                  id="last_name"
+                  className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                  type="text"
+                  name="last_name"
+                  required
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setLastName(value)
+                  }}
+                />
+              </div>
+              </div>
+              <div className='flex w-full gap-2'>
+
+              <div className="w-1/2">
+                <label className="flex mb-2 font-medium" htmlFor='state'>
+                  State of Origin
+                </label>
+                {/* <input
+                  id="state"
+                  type="text"
+                  required
+                  name="state"
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setStateOfOrigin(value)
+                  }}
+                /> */}
+
+                <StateSelect selectedState={selectedState} setSelectedState={setSelectedState}/>
+              </div>
+              <div className="w-1/2">
+                <label className="flex mb-2 font-medium" htmlFor='phone'>
+                  Phone Number
+                </label>
+                <input
+                  id="phone"
+                  className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                  type="tel"
+                  name="phone"
+                  required
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setPhone(value)
+                  }}
+                />
+              </div>
+              </div>
+              <div className="w-full">
+                <label className="flex mb-2 font-medium" htmlFor='username'>
+                  Username
+                </label>
+                <input
+                  id="username"
+                  className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                  type="text"
+                  required
+                  name="username"
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setUsername(value)
+                  }}
+                />
+              </div>
               <div className="w-full">
                 <label className="flex mb-2 font-medium" htmlFor='email'>
                   Email
@@ -88,6 +214,7 @@ const SignupPage = () => {
                   }}
                 />
               </div>
+              
               <div className="w-full">
                 <label className="flex mb-2 font-medium" htmlFor='password'>
                   Password
@@ -115,6 +242,53 @@ const SignupPage = () => {
                     </div>
                 </div>
               </div>
+              <div className='flex w-full gap-2'>
+                <div className="w-1/2">
+                  <label className="flex mb-2 font-medium" htmlFor='level'>
+                    Level
+                  </label>
+                  <select 
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setLevel(value)
+                    }}
+                    value={level}
+                    className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                  >
+                    <option value="" disabled>Select Level</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                    <option value="400">400</option>
+                    <option value="500">500</option>
+                  </select>
+                </div>
+                <div className="w-1/2">
+                  <label className="flex mb-2 font-medium" htmlFor='department'>
+                    Department
+                  </label>
+                      <select
+                        id="department"
+                        name="department"
+                        value={department}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          setDepartment(value)
+                        }}
+                        className="h-11 w-full rounded-[7px] border border-border-100/50 focus:border focus:border-border-100 bg-white px-3 py-2.5 font-sans text-sm font-normal outline outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                      >
+                      <option value="" disabled>
+                        Choose a department
+                      </option>
+                      {departments.map((department, index) => (
+                        <option key={index} value={department}>
+                          {department}
+                        </option>
+                      ))}
+                    </select>
+                </div>
+              </div>
+
 
               <div className="pt-6">
                 <button
@@ -145,6 +319,15 @@ const SignupPage = () => {
             </div>
 
             
+          </div>
+          <div>
+            <p className="flex justify-start mt-3 font-sans text-based antialiased font-light leading-normal text-inherit">
+                Are you a lecturer?
+                <Link href="/auth/sign-up-admin"
+                  className="block ml-1 font-sans text-sm font-bold text-blue-gray-900 underline">
+                  Sign up here
+                </Link>
+              </p>
           </div>
           
         </div>

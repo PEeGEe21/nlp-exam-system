@@ -215,6 +215,15 @@ const LoginPage = () => {
                   
               </form>
           </div>
+          <div>
+            <p className="flex justify-start mt-3 font-sans text-based antialiased font-light leading-normal text-inherit">
+                Are you a lecturer?
+                <Link href="/auth/sign-up-admin"
+                  className="block ml-1 font-sans text-sm font-bold text-blue-gray-900 underline">
+                  Sign up here
+                </Link>
+              </p>
+          </div>
       </div>
     </>
   )
