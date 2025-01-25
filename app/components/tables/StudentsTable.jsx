@@ -106,7 +106,7 @@ const StudentsTable = () => {
         toast.success('Successfully logged out')
         setTimeout(()=>{
             loginUser(user);
-        }, 300)
+        }, 3000)
     }
 
     const loginUser = async (user) => {
@@ -223,7 +223,8 @@ const StudentsTable = () => {
                                 <Edit size={14}/>Edit
                             </button>
                             <button className='flex  btn-red items-center gap-1 text-xs  ' onClick={(e)=>deleteUser(record?.user)}><Trash size={12}/> Delete</button>
-                            <button className='flex  btn-warning items-center gap-1 text-xs  ' onClick={(e)=>loginAsUser(record?.user)}><Recycle size={12}/> Login As</button>
+                            {record?.user?.is_active && (
+                            <button className='flex  btn-warning items-center gap-1 text-xs  ' onClick={(e)=>loginAsUser(record?.user)}><Recycle size={12}/> Login As</button>)}
                         </Space>
                     )
             

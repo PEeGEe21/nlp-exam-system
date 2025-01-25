@@ -270,6 +270,7 @@ export function getTotalMinutes(durationHours, durationMinutes) {
 
 export const formatMomentDate = (date) =>{
   const formattedDate = moment(date).format('ddd MMM Do, YYYY hh:mma');
+  // const formattedDate = moment(date).utc().format('ddd MMM Do, YYYY hh:mma [UTC]');
   return formattedDate;
 }
 export const formattedDateString = (date) =>{

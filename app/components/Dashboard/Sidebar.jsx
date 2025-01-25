@@ -21,6 +21,7 @@ import { Category } from 'react-iconly';
 import { signOut } from 'next-auth/react';
 import './nav.css';
 import toast from 'react-hot-toast';
+import { start } from '@/app/utils/common';
 
 const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
   const [isDropdown, setIsDropdown] = useState(true);
@@ -211,8 +212,8 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
           <div className="px-4 h-14">
             <div className="flex items-center justify-center py-5 border-b  border-[#373636]  relative h-full ">
               <div className="px-3 w-full block h-full ">
-                <Link
-                  href={'/admin/dashboard'}
+                <button
+                  onClick={()=>start((userRole).toLowerCase(), router.push)}
                   className="flex items-center w-full justify-center h-full text-white text-lg font-bold tracking-wide "
                 >
                   <Image
@@ -223,7 +224,7 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
                     priority
                     alt="logo dash"
                   /> Exam System
-                </Link>
+                </button>
               </div>
             </div>
           </div>

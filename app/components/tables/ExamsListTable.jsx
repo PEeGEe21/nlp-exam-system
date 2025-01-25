@@ -266,7 +266,7 @@ const ExamsListTable = ({ tests = [], setTests, user}) => {
                 const status = getStatus(record);
                 return(
                     <div className="text-[#313131] text-xs flex items-center justify-end gap-2 flex-row">
-                        {(record.isPublished !== 1 || status === 'Upcoming') && (user?.user_role == 'super_admin') && (
+                        {(record.isPublished !== 1 || status === 'Upcoming') && (
                             <button onClick={()=>publishTest(record.id)} className='btn p-1 bg-[#1c699f] border border-[#15527c] rounded text-white flex items-center'>
                                 Publish
                             </button>
