@@ -280,7 +280,7 @@ export const formatMomentDate = (date) =>{
   return formattedDate;
 }
 export const formattedDateString = (date) =>{
-  const formattedDate = dayjs(date).set('month', 11).set('date', 1).set('hour', 23).set('minute', 59).set('second', 59).format('YYYY-MM-DD HH:mm:ss');;
+  const formattedDate = dayjs(date).utc().set('month', 11).set('date', 1).set('hour', 23).set('minute', 59).set('second', 59).format('YYYY-MM-DD HH:mm:ss');;
   return formattedDate;
 }
 
