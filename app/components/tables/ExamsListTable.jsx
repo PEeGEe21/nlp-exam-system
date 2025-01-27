@@ -271,7 +271,7 @@ const ExamsListTable = ({ tests = [], setTests, user}) => {
                                 Publish
                             </button>
                         )}
-                        {(record.isPublished == 1 ) && (user?.user_role == 'super_admin') && (
+                        {(record.isPublished == 1 ) && (
                             <button onClick={()=>unPublishTest(record.id)} className='btn p-1 bg-[#F1C40F] border border-[#15527c] rounded text-white flex items-center'>
                                 UnPublish
                             </button>
