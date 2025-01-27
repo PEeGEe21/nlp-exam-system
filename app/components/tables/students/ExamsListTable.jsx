@@ -151,7 +151,7 @@ const ExamsListTable = ({ tests = []}) => {
                           <Td className="px-2 py-4 text-sm whitespace-nowrap">
                               <div className="text-[#313131] text-xs flex items-center justify-center gap-2 flex-row">
                                 {/* && status === 'In Progress'  */}
-                                {(test?.totalQuestions > 0 ) ?
+                                {(test?.totalQuestions > 0 ) && (status === 'In Progress') ?
                                   <button onClick={()=>takeTest(test?.id)} className='btn px-2 py-1 bg-[#e1e5ec] border border-[#e1e5ec] rounded text-[#666] flex items-center'>
                                       Take Test
                                   </button>
