@@ -9,8 +9,10 @@ import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import { successtoastOptions } from './constants';
 import duration from 'dayjs/plugin/duration';
+import advancedFormat from "dayjs/plugin/advancedFormat";
 
 dayjs.extend(duration);
+dayjs.extend(advancedFormat);
 
 
 const isWindowDefined = typeof window !== 'undefined';
@@ -269,8 +271,10 @@ export function getTotalMinutes(durationHours, durationMinutes) {
 }
 
 export const formatMomentDate = (date) =>{
-  const formattedDate = moment(date).format('ddd MMM Do, YYYY hh:mma');
-  // const formattedDate = moment(date).utc().format('ddd MMM Do, YYYY hh:mma [UTC]');
+  // const formattedDate = moment(date).format('ddd MMM Do, YYYY hh:mma');
+  const formattedDate = dayjs(date).format("ddd MMM Do, YYYY hh:mma");
+
+  // const formattedDate = moment(date).utc().format('ddd MMM Do, YYYY hh:mma');
   return formattedDate;
 }
 export const formattedDateString = (date) =>{

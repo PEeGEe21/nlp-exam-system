@@ -4,7 +4,7 @@ import useCountdown from '@/app/hooks/useCountdown';
 import { mainQuestions } from '@/app/lib/constants';
 import { ArrowLeft, ArrowRight, Play } from 'iconsax-react';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Swal from 'sweetalert2';
 import { useRouter, useParams } from 'next/navigation'
 import { getTotalMinutes,formattedDateString, calculateDuration, hostUrl } from '@/app/lib/utils';
@@ -17,6 +17,7 @@ const TakeTest = () => {
   const [loading, setLoading] = useState(true);
   const [isWelcomePage, setIsWelcomePage] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [test, setTest] = useState(null);
   const [user, setUser] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -224,7 +225,8 @@ const TakeTest = () => {
 const formStart = formattedDateString(test?.startDate);
 const formEnd = formattedDateString(test?.endDate);
 
-const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.endDate);
+// const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.endDate);
+
 
 
   const submitTest = async () => {
@@ -252,8 +254,8 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
             .then(() => {
               // Actions to perform after user clicks "OK" on the success dialog
               setIsFullscreen(false);
-              finishTest();
             });
+            finishTest();
             // setIsFinished(true);
             // setIsFullscreen(false);
 
@@ -276,6 +278,9 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
     // setIsFullscreen(false);
     // setHasSubmitted(true);
   }
+
+  const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.endDate, submitTest, isWelcomePage);
+
 
   const startTest = async () => {
     setIsWelcomePage(false);
@@ -437,6 +442,19 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
     router.push('/student/test-results'); // Redirect if needed
   };
 
+  const now = Date.now();
+  const start_date = new Date(test?.startDate);
+  const end_date = new Date(test?.endDate);
+
+  const status = useMemo(() => {
+    if (start_date.getTime() <= now && now <= end_date.getTime()) {
+      return "In Progress";
+    }
+    if (now > end_date.getTime()) {
+      return "Ended";
+    }
+    return "Upcoming";
+  }, [test?.startDate, test?.endDate]);
 
 
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
@@ -501,8 +519,7 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
                         </div>
 
                         <div className=' flex-1 '>
-
-                          {test && user ? 
+                          {test && user && (status === 'In Progress') ? 
                             <div className='flex align-center justify-center flex-col text-center cursor-pointer'>
                               <span className='flex align-center justify-center w-full'>
                                 <button  type="button" onClick={startTest}  className='bg-[#6457EF] rounded-full p-3 h-12 w-12 flex justify-center items-center text-[#EEEEF0B8] animate-pulse'>
@@ -535,7 +552,7 @@ const { days, hours, minutes, seconds } = useCountdown(test?.startDate, test?.en
 
 
       {!isWelcomePage && 
-        <div className='w-full flex flex-col gap-4  max-w-7xl mx-auto py-12 h-full'>
+        <div className={`w-full flex flex-col gap-4  max-w-7xl mx-auto py-12 h-full ${hasSubmitted ? '!pointer-events-none' : ''}`}>
           {/* <button onClick={toggleFullscreen}>
             {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
           </button> */}
