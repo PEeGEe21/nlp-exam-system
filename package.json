@@ -55,6 +55,8 @@
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
     "timeago.js": "^4.0.2",
+    "timezone": "^1.0.23",
+    "utc": "^0.1.0",
     "zod": "^3.23.8",
     "zustand": "^4.5.4"
   },

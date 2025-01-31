@@ -11,10 +11,13 @@ import { successtoastOptions } from './constants';
 import duration from 'dayjs/plugin/duration';
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import utc from 'dayjs/plugin/utc';
+import timezone from "dayjs/plugin/timezone";
+
 
 dayjs.extend(utc);
 dayjs.extend(duration);
 dayjs.extend(advancedFormat);
+dayjs.extend(timezone);
 
 
 const isWindowDefined = typeof window !== 'undefined';
@@ -274,10 +277,18 @@ export function getTotalMinutes(durationHours, durationMinutes) {
 
 export const formatMomentDate = (date) =>{
   // const formattedDate = moment(date).format('ddd MMM Do, YYYY hh:mma');
-  const formattedDate = dayjs(date).utc().format("ddd MMM Do, YYYY hh:mma");
+  // const formattedDate = dayjs(date).utc().format("ddd MMM Do, YYYY hh:mma");
+  // const formattedDate = dayjs.utc(date).local().format("ddd MMM Do, YYYY hh:mma");
 
+  // const formattedDate = dayjs(date).format("ddd MMM Do, YYYY hh:mma z"); // added z to see timezone
+  // const formattedDate = dayjs(date).tz('UTC')
+  // .format("ddd MMM Do, YYYY hh:mma") // added z to see timezone
+  
+  return dayjs.utc(date).format("ddd MMM Do, YYYY hh:mma")
+
+  // console.log(date, formattedDate);
   // const formattedDate = moment(date).utc().format('ddd MMM Do, YYYY hh:mma');
-  return formattedDate;
+  // return formattedDate;
 }
 export const formattedDateString = (date) =>{
   const formattedDate = dayjs(date).utc().set('month', 11).set('date', 1).set('hour', 23).set('minute', 59).set('second', 59).format('YYYY-MM-DD HH:mm:ss');;
