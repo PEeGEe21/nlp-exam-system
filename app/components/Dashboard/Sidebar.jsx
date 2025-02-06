@@ -22,6 +22,7 @@ import { signOut } from 'next-auth/react';
 import './nav.css';
 import toast from 'react-hot-toast';
 import { start } from '@/app/utils/common';
+import { Gears } from '@carbon/icons-react';
 
 const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
   const [isDropdown, setIsDropdown] = useState(true);
@@ -165,6 +166,14 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
         }
       ]
     },
+
+    {
+      label: 'Settings',
+      href: '/admin/settings',
+      icon: <Gears size={16} color="#ffffff"/>,
+      rolesPermitted: ['super_admin'],
+      isDropdownMenu: false,
+    },
     // {
     //   label: 'Sign Out',
     //   href: '#',
@@ -175,9 +184,6 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
     //   icon: <LogoutCurve size={16} color="#ffffff" />,
     //   isDropdownMenu: false,
     // },
-  ];
-  const studentMenuLinks = [
-
   ];
 
   const filteredMenuLinks = menuLinks.filter(menuItem => 

@@ -106,7 +106,7 @@ const StudentsTable = () => {
         toast.success('Successfully logged out')
         setTimeout(()=>{
             loginUser(user);
-        }, 3000)
+        }, 10000)
     }
 
     const loginUser = async (user) => {

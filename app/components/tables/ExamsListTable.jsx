@@ -177,6 +177,7 @@ const ExamsListTable = ({ tests = [], setTests, user}) => {
     //     return "Upcoming";
     // }, [test.startDate, test.endDate]);
 
+    
     function getStatus(record){
         const now = Date.now();
         const start_date = new Date(record?.startDate);

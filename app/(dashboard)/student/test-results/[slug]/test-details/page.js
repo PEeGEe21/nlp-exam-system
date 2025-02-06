@@ -413,7 +413,7 @@ const MyTestDetail = () => {
 
                                                                         </td>
                                                                     </tr>
-                                                                    {_itx?.question?.hints && _itx?.question?.optionTypeId === 3 ? 
+                                                                    {_itx?.question?.hints && _itx?.question?.optionTypeId === 3 && _itx?.question?.showHints == 1 ? 
                                                                         <tr>
                                                                             <td className='w-[30%]'>
                                                                                 Question Hints

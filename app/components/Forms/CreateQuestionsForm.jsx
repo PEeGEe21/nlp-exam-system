@@ -11,6 +11,7 @@ import { LoaderIcon } from '../ui/IconComponent';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { hostUrl } from '@/app/lib/utils';
+import { Switch } from '@chakra-ui/switch';
 
 const CreateQuestionsForm = ({id, user}) => {
     const [questionTypes, setQuestionTypes] = useState([]);
@@ -24,6 +25,8 @@ const CreateQuestionsForm = ({id, user}) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+    const [showHints, setShowHints] = useState(true);
+
     const router = useRouter();
 
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
@@ -64,6 +67,7 @@ const CreateQuestionsForm = ({id, user}) => {
                         setQDifficulty(result.difficultyId);
                         setAnswers(result.answers || []);
                         setHints(result?.hints || []);
+                        setShowHints(result.showHints==1?true:false)
                     } else {
                         throw new Error('Failed to fetch the question');
                     }
@@ -215,6 +219,7 @@ const CreateQuestionsForm = ({id, user}) => {
             difficultyId: qDifficulty,
             optionTypeId: questionType,
             question: question,
+            showHints: showHints,
         }
 
         if(questionType == '1'){
@@ -445,67 +450,88 @@ const CreateQuestionsForm = ({id, user}) => {
                             </div>
                         </div>
                     }
-                    {(questionType == 3) &&
-                        <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
-                            <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                                <div className='flex items-center justify-between'>
-                                    <label
-                                        htmlFor="token_name"
-                                        className="text-lg mb-1 font-medium"
-                                    >Question Hints</label>
-                                </div>
+                    {(questionType == 3) && (
+                        <>
+                            <div className="relative flex flex-col w-full gap-1 mb-6 ">
+                                <label
+                                    htmlFor="show_hints"
+                                    className="text-lg mb-1 font-medium"
+                                >
+                                    Use Hints
+                                </label>
                                 <div>
-                                    {questionType == 3 ?
-                                        <div>
-                                            {(hints).map((answer, index)=>(
-                                                <div key={index} className="relative flex flex-row w-full gap-4 mb-6  whitespace-nowrap items-center">
-                                                    <label
-                                                        htmlFor={`name-${index}`}
-                                                        className="text-sm mb-1"
-                                                    >
-                                                        Hint {index+1}
-                                                    </label>
-                                                    <textarea
-                                                            type="text"
-                                                            id={`name-${index}`}
-                                                            className="block p-2 w-full text-sm text-gray-800 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent disabled:bg-[#3E3D3C] rounded-md focus:outline-0 "
-                                                            name="name"
-                                                            value={answer.content}
-                                                            rows={5}
-
-                                                            // required
-                                                            autoComplete="off"
-                                                            onChange={(e) => updateHintContent(answer.id, e.target.value)}
-                                                        />
-                                                    <button
-                                                        onClick={() => deleteHint(answer.id)}
-                                                        disabled={hints.length <= 1}
-                                                        className="ml-2 p-2 bg-red-500 text-white rounded cursor-pointer"
-                                                    >
-                                                        <Trash size={14}/>
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    : ""
-                                    }  
-                                    <div className='flex items-center justify-end w-full'>
-                                        <button
-                                            onClick={addHints}
-                                            type={"button"}
-                                            className="bg-[#008080] disabled:cursor-wait hover:bg-[#008080] min-w-[100px] whitespace-nowrap w-full md:w-auto
-                                            disabled:opacity-50 rounded-lg 
-                                            transition-all duration-75 border-none px-5 
-                                            font-medium p-3 text-white block text-sm inline-flex items-center gap-1"
-                                        >
-                                            <Add size={14}/> Add Hint
-                                        </button>
-                                    </div>
-
+                                    <Switch 
+                                        isChecked={showHints}
+                                        size='lg' 
+                                        id='show_hints' 
+                                        onChange={()=>{setShowHints(!showHints)}}/>
                                 </div>
-                                
                             </div>
-                        </div>
+
+                            
+                            {(showHints) && (
+                                <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                                        <div className='flex items-center justify-between'>
+                                            <label
+                                                htmlFor="token_name"
+                                                className="text-lg mb-1 font-medium"
+                                            >Question Hints</label>
+                                        </div>
+                                        <div>
+                                            {questionType == 3 ?
+                                                <div>
+                                                    {(hints).map((answer, index)=>(
+                                                        <div key={index} className="relative flex flex-row w-full gap-4 mb-6  whitespace-nowrap items-center">
+                                                            <label
+                                                                htmlFor={`name-${index}`}
+                                                                className="text-sm mb-1"
+                                                            >
+                                                                Hint {index+1}
+                                                            </label>
+                                                            <textarea
+                                                                    type="text"
+                                                                    id={`name-${index}`}
+                                                                    className="block p-2 w-full text-sm text-gray-800 border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent disabled:bg-[#3E3D3C] rounded-md focus:outline-0 "
+                                                                    name="name"
+                                                                    value={answer.content}
+                                                                    rows={5}
+
+                                                                    // required
+                                                                    autoComplete="off"
+                                                                    onChange={(e) => updateHintContent(answer.id, e.target.value)}
+                                                                />
+                                                            <button
+                                                                onClick={() => deleteHint(answer.id)}
+                                                                disabled={hints.length <= 1}
+                                                                className="ml-2 p-2 bg-red-500 text-white rounded cursor-pointer"
+                                                            >
+                                                                <Trash size={14}/>
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            : ""
+                                            }  
+                                            <div className='flex items-center justify-end w-full'>
+                                                <button
+                                                    onClick={addHints}
+                                                    type={"button"}
+                                                    className="bg-[#008080] disabled:cursor-wait hover:bg-[#008080] min-w-[100px] whitespace-nowrap w-full md:w-auto
+                                                    disabled:opacity-50 rounded-lg 
+                                                    transition-all duration-75 border-none px-5 
+                                                    font-medium p-3 text-white block text-sm inline-flex items-center gap-1"
+                                                >
+                                                    <Add size={14}/> Add Hint
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            )}
+                        </>)
                     }
                 </div>
                 <div>

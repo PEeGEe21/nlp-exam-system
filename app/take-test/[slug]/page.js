@@ -675,7 +675,7 @@ const formEnd = formattedDateString(test?.endDate);
                                                   </div>
                                 {/* {questions[currentQuestionIndex].questionRelation.question} */}
                           </div>
-                          {test?.showHints == 1 && questions[currentQuestionIndex].questionRelation.optionTypeId === 3 ? 
+                          {test?.showHints == 1 && questions[currentQuestionIndex].questionRelation.optionTypeId === 3 && questions[currentQuestionIndex].questionRelation.showHints == 1  ? 
                             <>
                               <div className='mb-3'> 
                                 <h5 className='text-[14px] underline'>Hints</h5>
